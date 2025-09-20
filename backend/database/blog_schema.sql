@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS blogs (
     excerpt TEXT,
     content LONGTEXT NOT NULL,
     featured_image VARCHAR(500),
-    author_id VARCHAR(50) NOT NULL,
+    author_id VARCHAR(20) NOT NULL,
     status ENUM('draft', 'published') DEFAULT 'draft',
     published_at TIMESTAMP NULL,
     meta_title VARCHAR(255),
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS content_media (
     caption TEXT,
     is_featured BOOLEAN DEFAULT FALSE,
     sort_order INT DEFAULT 0,
-    uploaded_by VARCHAR(50) NOT NULL,
+    uploaded_by VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE,

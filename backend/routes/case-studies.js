@@ -85,14 +85,12 @@ router.get('/', async (req, res) => {
 
     // Main query
     const query = `
-      SELECT 
+      SELECT
         cs.id,
         cs.title,
         cs.slug,
         cs.company_name,
         cs.industry,
-        cs.company_size,
-        cs.featured_image,
         cs.company_logo,
         cs.challenge,
         cs.solution,
@@ -101,7 +99,6 @@ router.get('/', async (req, res) => {
         cs.tags,
         cs.views,
         cs.is_featured,
-        cs.completion_date,
         cs.project_duration,
         cs.created_at
       FROM case_studies cs
@@ -180,7 +177,7 @@ router.get('/:slug', validateSlug, async (req, res) => {
 
     // Get related case studies
     const relatedQuery = `
-      SELECT id, title, slug, company_name, industry, featured_image, company_logo
+      SELECT id, title, slug, company_name, industry, company_logo
       FROM case_studies
       WHERE status = 'published' AND id != ?
       ${caseStudy.industry ? 'AND industry = ?' : ''}
@@ -271,7 +268,7 @@ router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) =
     }
 
     const query = `
-      SELECT 
+      SELECT
         cs.id,
         cs.title,
         cs.slug,
@@ -280,7 +277,6 @@ router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) =
         cs.status,
         cs.views,
         cs.is_featured,
-        cs.completion_date,
         cs.created_at,
         cs.updated_at
       FROM case_studies cs
@@ -338,22 +334,22 @@ router.post('/', verifyToken, requireRole(['admin']), validateCaseStudy, async (
       title,
       company_name,
       industry,
-      company_size,
+      company_size = null,
       challenge,
       solution,
       results,
-      content,
-      featured_image,
-      company_logo,
-      testimonial,
-      testimonial_author,
-      testimonial_position,
-      metrics,
-      tags,
+      content = null,
+      featured_image = null,
+      company_logo = null,
+      testimonial = null,
+      testimonial_author = null,
+      testimonial_position = null,
+      metrics = null,
+      tags = null,
       status = 'draft',
       is_featured = false,
-      completion_date,
-      project_duration
+      completion_date = null,
+      project_duration = null
     } = req.body;
 
     // Generate slug from title
@@ -369,11 +365,11 @@ router.post('/', verifyToken, requireRole(['admin']), validateCaseStudy, async (
 
     const query = `
       INSERT INTO case_studies (
-        title, slug, company_name, industry, company_size, challenge,
-        solution, results, content, featured_image, company_logo,
+        title, slug, company_name, industry, challenge,
+        solution, results, featured_image, company_logo,
         testimonial, testimonial_author, testimonial_position, metrics,
-        tags, status, is_featured, completion_date, project_duration
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        tags, status, is_featured, project_duration
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const result = await executeQuery(query, [
@@ -381,21 +377,18 @@ router.post('/', verifyToken, requireRole(['admin']), validateCaseStudy, async (
       slug,
       company_name,
       industry,
-      company_size,
       challenge,
       solution,
       results,
-      content,
       featured_image,
       company_logo,
       testimonial,
       testimonial_author,
       testimonial_position,
-      JSON.stringify(metrics || {}),
-      JSON.stringify(tags || []),
+      metrics ? JSON.stringify(metrics) : null,
+      tags ? JSON.stringify(tags) : null,
       status,
-      is_featured,
-      completion_date,
+      is_featured ? 1 : 0,
       project_duration
     ]);
 
@@ -437,22 +430,22 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateCaseStudy, async
       title,
       company_name,
       industry,
-      company_size,
+      company_size = null,
       challenge,
       solution,
       results,
-      content,
-      featured_image,
-      company_logo,
-      testimonial,
-      testimonial_author,
-      testimonial_position,
-      metrics,
-      tags,
+      content = null,
+      featured_image = null,
+      company_logo = null,
+      testimonial = null,
+      testimonial_author = null,
+      testimonial_position = null,
+      metrics = null,
+      tags = null,
       status,
       is_featured,
-      completion_date,
-      project_duration
+      completion_date = null,
+      project_duration = null
     } = req.body;
 
     // Check if case study exists
@@ -480,10 +473,10 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateCaseStudy, async
 
     const query = `
       UPDATE case_studies SET
-        title = ?, slug = ?, company_name = ?, industry = ?, company_size = ?,
-        challenge = ?, solution = ?, results = ?, content = ?, featured_image = ?,
-        company_logo = ?, testimonial = ?, testimonial_author = ?, testimonial_position = ?,
-        metrics = ?, tags = ?, status = ?, is_featured = ?, completion_date = ?,
+        title = ?, slug = ?, company_name = ?, industry = ?,
+        challenge = ?, solution = ?, results = ?, featured_image = ?, company_logo = ?,
+        testimonial = ?, testimonial_author = ?, testimonial_position = ?,
+        metrics = ?, tags = ?, status = ?, is_featured = ?,
         project_duration = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `;
@@ -493,21 +486,18 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateCaseStudy, async
       slug,
       company_name,
       industry,
-      company_size,
       challenge,
       solution,
       results,
-      content,
       featured_image,
       company_logo,
       testimonial,
       testimonial_author,
       testimonial_position,
-      JSON.stringify(metrics || {}),
-      JSON.stringify(tags || []),
+      metrics ? JSON.stringify(metrics) : null,
+      tags ? JSON.stringify(tags) : null,
       status,
-      is_featured,
-      completion_date,
+      is_featured ? 1 : 0,
       project_duration,
       id
     ]);

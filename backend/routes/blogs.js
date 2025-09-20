@@ -99,7 +99,7 @@ router.get('/', async (req, res) => {
         bp.created_at,
         u.first_name as author_first_name,
         u.last_name as author_last_name
-      FROM blog_posts bp
+      FROM blogs bp
       JOIN users u ON bp.author_id = u.id
       ${whereClause}
       ORDER BY bp.is_featured DESC, bp.publish_date DESC
@@ -110,7 +110,7 @@ router.get('/', async (req, res) => {
     // Get total count
     const countQuery = `
       SELECT COUNT(*) as total
-      FROM blog_posts bp
+      FROM blogs bp
       ${whereClause}
     `;
     const countParams = params; // No need to slice since limit/offset are not in params anymore
@@ -159,14 +159,14 @@ router.get('/:slug', validateSlug, async (req, res) => {
     }
 
     const { slug } = req.params;
+    console.log("slugslugslugslugslug",slug)
 
     const query = `
       SELECT 
         bp.*,
         u.first_name as author_first_name,
-        u.last_name as author_last_name,
-        u.bio as author_bio
-      FROM blog_posts bp
+        u.last_name as author_last_name
+      FROM blogs bp
       JOIN users u ON bp.author_id = u.id
       WHERE bp.slug = ? AND bp.status = 'published'
     `;
@@ -182,14 +182,14 @@ router.get('/:slug', validateSlug, async (req, res) => {
 
     // Increment view count
     await executeQuery(
-      'UPDATE blog_posts SET views = views + 1 WHERE id = ?',
+      'UPDATE blogs SET views = views + 1 WHERE id = ?',
       [blog.id]
     );
 
     // Get related blogs
     const relatedQuery = `
       SELECT id, title, slug, excerpt, featured_image, publish_date
-      FROM blog_posts
+      FROM blogs
       WHERE status = 'published' AND id != ?
       ORDER BY RAND()
       LIMIT 3
@@ -218,6 +218,82 @@ router.get('/:slug', validateSlug, async (req, res) => {
 
 // Admin routes - require authentication and admin role
 // Get all blogs (including drafts) - Admin only
+// router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) => {
+//   try {
+//     const { page = 1, limit = 20, status, search } = req.query;
+//     const pageNum = parseInt(page);
+//     const limitNum = parseInt(limit);
+//     const offset = (pageNum - 1) * limitNum;
+
+//     let whereClause = "WHERE 1=1";
+//     const params = [];
+
+//     if (status && status !== 'all') {
+//       whereClause += " AND bp.status = ?";
+//       params.push(status);
+//     }
+
+//     if (search) {
+//       whereClause += " AND (bp.title LIKE ? OR bp.content LIKE ?)";
+//       const searchTerm = `%${search}%`;
+//       params.push(searchTerm, searchTerm);
+//     }
+
+//     const query = `
+//       SELECT 
+//         bp.id,
+//         bp.title,
+//         bp.slug,
+//         bp.excerpt,
+//         bp.status,
+//         bp.views,
+//         bp.is_featured,
+//         bp.publish_date,
+//         bp.created_at,
+//         bp.updated_at,
+//         u.first_name as author_first_name,
+//         u.last_name as author_last_name
+//       FROM blogs bp
+//       JOIN users u ON bp.author_id = u.id
+//       ${whereClause}
+//       ORDER BY bp.updated_at DESC
+//       LIMIT ? OFFSET ?
+//     `;
+
+//     params.push(limitNum, offset);
+//     const blogs = await executeQuery(query, params);
+
+//     // Get total count
+//     const countQuery = `
+//       SELECT COUNT(*) as total
+//       FROM blogs bp
+//       ${whereClause}
+//     `;
+//     const countParams = params.slice(0, -2);
+//     const countResult = await executeQuery(countQuery, countParams);
+//     const total = countResult[0].total;
+
+//     res.json({
+//       success: true,
+//       data: {
+//         blogs,
+//         pagination: {
+//           page: pageNum,
+//           limit: limitNum,
+//           total,
+//           pages: Math.ceil(total / limitNum)
+//         }
+//       }
+//     });
+
+//   } catch (error) {
+//     console.error('Get admin blogs error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Failed to retrieve blogs'
+//     });
+//   }
+// });
 router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, search } = req.query;
@@ -226,21 +302,22 @@ router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) =
     const offset = (pageNum - 1) * limitNum;
 
     let whereClause = "WHERE 1=1";
-    const params = [];
+    const filterParams = [];
 
     if (status && status !== 'all') {
       whereClause += " AND bp.status = ?";
-      params.push(status);
+      filterParams.push(status);
     }
 
     if (search) {
       whereClause += " AND (bp.title LIKE ? OR bp.content LIKE ?)";
       const searchTerm = `%${search}%`;
-      params.push(searchTerm, searchTerm);
+      filterParams.push(searchTerm, searchTerm);
     }
 
+    // Main query with pagination
     const query = `
-      SELECT 
+      SELECT
         bp.id,
         bp.title,
         bp.slug,
@@ -253,24 +330,22 @@ router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) =
         bp.updated_at,
         u.first_name as author_first_name,
         u.last_name as author_last_name
-      FROM blog_posts bp
+      FROM blogs bp
       JOIN users u ON bp.author_id = u.id
       ${whereClause}
       ORDER BY bp.updated_at DESC
-      LIMIT ? OFFSET ?
+      LIMIT ${limitNum} OFFSET ${offset}
     `;
 
-    params.push(limitNum, offset);
-    const blogs = await executeQuery(query, params);
+    const blogs = await executeQuery(query, filterParams);
 
-    // Get total count
+    // Count query (no LIMIT/OFFSET)
     const countQuery = `
       SELECT COUNT(*) as total
-      FROM blog_posts bp
+      FROM blogs bp
       ${whereClause}
     `;
-    const countParams = params.slice(0, -2);
-    const countResult = await executeQuery(countQuery, countParams);
+    const countResult = await executeQuery(countQuery, filterParams);
     const total = countResult[0].total;
 
     res.json({
@@ -294,6 +369,8 @@ router.get('/admin/all', verifyToken, requireRole(['admin']), async (req, res) =
     });
   }
 });
+
+
 
 // Create new blog - Admin only
 router.post('/', verifyToken, requireRole(['admin']), validateBlog, async (req, res) => {
@@ -325,7 +402,7 @@ router.post('/', verifyToken, requireRole(['admin']), validateBlog, async (req, 
     // Ensure slug is unique
     let slugCounter = 1;
     let originalSlug = slug;
-    while (await getOne('SELECT id FROM blog_posts WHERE slug = ?', [slug])) {
+    while (await getOne('SELECT id FROM blogs WHERE slug = ?', [slug])) {
       slug = `${originalSlug}-${slugCounter}`;
       slugCounter++;
     }
@@ -334,7 +411,7 @@ router.post('/', verifyToken, requireRole(['admin']), validateBlog, async (req, 
     const readingTime = calculateReadingTime(content);
 
     const query = `
-      INSERT INTO blog_posts (
+      INSERT INTO blogs (
         title, slug, excerpt, content, featured_image, author_id,
         tags, status, is_featured, meta_title, meta_description,
         publish_date
@@ -360,7 +437,7 @@ router.post('/', verifyToken, requireRole(['admin']), validateBlog, async (req, 
 
     // Get the created blog
     const createdBlog = await getOne(
-      'SELECT * FROM blog_posts WHERE id = ?',
+      'SELECT * FROM blogs WHERE id = ?',
       [result.insertId]
     );
 
@@ -405,7 +482,7 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateBlog, async (req
     } = req.body;
 
     // Check if blog exists
-    const existingBlog = await getOne('SELECT * FROM blog_posts WHERE id = ?', [id]);
+    const existingBlog = await getOne('SELECT * FROM blogs WHERE id = ?', [id]);
     if (!existingBlog) {
       return res.status(404).json({
         success: false,
@@ -421,7 +498,7 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateBlog, async (req
       // Ensure slug is unique (excluding current blog)
       let slugCounter = 1;
       let originalSlug = slug;
-      while (await getOne('SELECT id FROM blog_posts WHERE slug = ? AND id != ?', [slug, id])) {
+      while (await getOne('SELECT id FROM blogs WHERE slug = ? AND id != ?', [slug, id])) {
         slug = `${originalSlug}-${slugCounter}`;
         slugCounter++;
       }
@@ -434,7 +511,7 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateBlog, async (req
     }
 
     const query = `
-      UPDATE blog_posts SET
+      UPDATE blogs SET
         title = ?, slug = ?, excerpt = ?, content = ?, featured_image = ?,
         tags = ?, status = ?, is_featured = ?, meta_title = ?, meta_description = ?,
         publish_date = ?, updated_at = CURRENT_TIMESTAMP
@@ -457,7 +534,7 @@ router.put('/:id', verifyToken, requireRole(['admin']), validateBlog, async (req
     ]);
 
     // Get updated blog
-    const updatedBlog = await getOne('SELECT * FROM blog_posts WHERE id = ?', [id]);
+    const updatedBlog = await getOne('SELECT * FROM blogs WHERE id = ?', [id]);
 
     res.json({
       success: true,
@@ -479,7 +556,7 @@ router.delete('/:id', verifyToken, requireRole(['admin']), async (req, res) => {
   try {
     const { id } = req.params;
 
-    const blog = await getOne('SELECT id FROM blog_posts WHERE id = ?', [id]);
+    const blog = await getOne('SELECT id FROM blogs WHERE id = ?', [id]);
     if (!blog) {
       return res.status(404).json({
         success: false,
@@ -487,7 +564,7 @@ router.delete('/:id', verifyToken, requireRole(['admin']), async (req, res) => {
       });
     }
 
-    await executeQuery('DELETE FROM blog_posts WHERE id = ?', [id]);
+    await executeQuery('DELETE FROM blogs WHERE id = ?', [id]);
 
     res.json({
       success: true,

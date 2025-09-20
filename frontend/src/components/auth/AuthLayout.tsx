@@ -4,13 +4,21 @@ interface AuthLayoutProps {
   children: React.ReactNode;
   title: string;
   subtitle: string;
+  isSignup?: boolean;
+  isWideForm?: boolean;
 }
 
-const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) => {
+const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle, isSignup = false, isWideForm = false }) => {
+  // Detect if current path is signup if not explicitly provided
+  const isSignupPage = isSignup || (typeof window !== 'undefined' && window.location.pathname === '/signup');
+
+  // Determine if we need wide layout - includes signup pages and explicit wide form requests
+  const needsWideLayout = isSignupPage || isWideForm;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-navy to-brand-blue flex items-center justify-center p-4">
       {/* Back to Home Link */}
-      <a 
+      <a
         href="/"
         className="absolute top-6 left-6 flex items-center gap-2 text-white/90 hover:text-white transition-colors text-sm font-medium"
       >
@@ -20,7 +28,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
         Back to Home
       </a>
 
-      <div className="w-full max-w-md">
+      <div className={`w-full ${needsWideLayout ? 'max-w-6xl' : 'max-w-md'}`}>
         {/* Auth Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Header */}
@@ -28,12 +36,12 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
             <h1 className="text-3xl font-bold text-brand-blue mb-2">
               Zuvomo
             </h1>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            {/* <h2 className="text-xl font-semibold text-gray-900 mb-2">
               {title}
             </h2>
             <p className="text-gray-600 text-sm">
               {subtitle}
-            </p>
+            </p> */}
           </div>
 
           {/* Content */}

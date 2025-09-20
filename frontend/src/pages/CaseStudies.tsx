@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import api from '../services/api';
+import CaseStudyCard from '@/components/CaseStudyCard';
 
 interface CaseStudy {
   id: string;
@@ -166,10 +167,14 @@ const CaseStudies: React.FC = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-600 to-emerald-600 py-20">
+      <section className="to-emerald-600 py-20" style={{
+              backgroundImage: `url('/Bg.png')`, backgroundPosition: 'left center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat'
+            }}>
         <div className="container mx-auto px-4">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-6">Success Stories</h1>
+          <div className="text-center text-black">
+            <h1 className="text-5xl font-bold mb-6 ">Success Stories</h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
               Discover how we've helped startups and businesses achieve remarkable growth through strategic funding and expert guidance
             </p>
@@ -184,40 +189,41 @@ const CaseStudies: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="pl-10 py-3 text-lg"
+                   className="pl-10 py-3 text-lg text-black placeholder:text-black caret-black"
                 />
               </div>
-              <Button onClick={handleSearch} size="lg" className="bg-white text-green-600 hover:bg-gray-100">
-                Search
-              </Button>
+                <Button onClick={handleSearch} size="lg">
+                              Search
+                            </Button>
+            
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">$50M+</div>
+              <div className="text-3xl font-bold text-black-600 mb-2">$50M+</div>
               <div className="text-gray-600">Total Funding Raised</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">200+</div>
+              <div className="text-3xl font-bold text-black-600 mb-2">200+</div>
               <div className="text-gray-600">Success Stories</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">95%</div>
+              <div className="text-3xl font-bold text-black-600 mb-2">95%</div>
               <div className="text-gray-600">Client Satisfaction</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">15+</div>
+              <div className="text-3xl font-bold text-black-600 mb-2">15+</div>
               <div className="text-gray-600">Industries Served</div>
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Case Studies */}
       {featuredCaseStudies.length > 0 && (
@@ -226,75 +232,82 @@ const CaseStudies: React.FC = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Featured Success Stories</h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {featuredCaseStudies.map((caseStudy) => (
-                <Card key={caseStudy.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  {caseStudy.featured_image && (
-                    <div className="h-48 overflow-hidden relative">
-                      <img
-                        src={caseStudy.featured_image}
-                        alt={caseStudy.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      />
-                      <Badge className="absolute top-4 left-4 bg-green-600 text-white">
-                        <Award className="w-3 h-3 mr-1" />
-                        Featured
-                      </Badge>
-                    </div>
-                  )}
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      {caseStudy.company_logo ? (
-                        <img
-                          src={caseStudy.company_logo}
-                          alt={caseStudy.company_name}
-                          className="w-10 h-10 object-contain"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <Building className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="font-semibold text-lg">{caseStudy.company_name}</h3>
-                        {caseStudy.industry && (
-                          <p className="text-sm text-gray-500">{caseStudy.industry}</p>
-                        )}
-                      </div>
-                    </div>
+               <CaseStudyCard
+  key={caseStudy.id}
+  title={caseStudy.title}
+  description={caseStudy?.challenge}
+  category={caseStudy?.tags?.[0] || 'General'}
+  image={caseStudy?.featured_image}
+/>
+                // <Card key={caseStudy.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                //   {caseStudy.featured_image && (
+                //     <div className="h-48 overflow-hidden relative">
+                //       <img
+                //         src={caseStudy.featured_image}
+                //         alt={caseStudy.title}
+                //         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                //       />
+                //       <Badge className="absolute top-4 left-4 bg-[#2C91D5] text-white">
+                //         <Award className="w-3 h-3 mr-1" />
+                //         Featured
+                //       </Badge>
+                //     </div>
+                //   )}
+                //   <CardContent className="p-6">
+                //     <div className="flex items-center gap-3 mb-4">
+                //       {caseStudy.company_logo ? (
+                //         <img
+                //           src={caseStudy.company_logo}
+                //           alt={caseStudy.company_name}
+                //           className="w-10 h-10 object-contain"
+                //         />
+                //       ) : (
+                //         <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                //           <Building className="w-5 h-5 text-gray-400" />
+                //         </div>
+                //       )}
+                //       <div>
+                //         <h3 className="font-semibold text-lg">{caseStudy.company_name}</h3>
+                //         {caseStudy.industry && (
+                //           <p className="text-sm text-gray-500">{caseStudy.industry}</p>
+                //         )}
+                //       </div>
+                //     </div>
                     
-                    <h4 className="text-xl font-semibold mb-3 line-clamp-2">
-                      <Link
-                        to={`/case-studies/${caseStudy.slug}`}
-                        className="hover:text-green-600 transition-colors"
-                      >
-                        {caseStudy.title}
-                      </Link>
-                    </h4>
+                //     <h4 className="text-xl font-semibold mb-3 line-clamp-2">
+                //       <Link
+                //         to={`/case-studies/${caseStudy.slug}`}
+                //         className="hover:text-black-600 transition-colors"
+                //       >
+                //         {caseStudy.title}
+                //       </Link>
+                //     </h4>
                     
-                    <p className="text-gray-600 mb-4 line-clamp-3">{caseStudy.challenge}</p>
+                //     <p className="text-gray-600 mb-4 line-clamp-3">{caseStudy.challenge}</p>
                     
-                    {/* Key Metric */}
-                    {caseStudy.metrics && Object.keys(caseStudy.metrics).length > 0 && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                        {(() => {
-                          const keyMetric = getKeyMetric(caseStudy.metrics);
-                          return keyMetric ? (
-                            <div className="text-center">
-                              <div className="text-2xl font-bold text-green-600">{keyMetric.value}</div>
-                              <div className="text-sm text-gray-600">{keyMetric.label}</div>
-                            </div>
-                          ) : null;
-                        })()}
-                      </div>
-                    )}
+                //     {/* Key Metric */}
+                //     {caseStudy.metrics && Object.keys(caseStudy.metrics).length > 0 && (
+                //       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                //         {(() => {
+                //           const keyMetric = getKeyMetric(caseStudy.metrics);
+                //           return keyMetric ? (
+                //             <div className="text-center">
+                //               <div className="text-2xl font-bold text-black-600">{keyMetric.value}</div>
+                //               <div className="text-sm text-gray-600">{keyMetric.label}</div>
+                //             </div>
+                //           ) : null;
+                //         })()}
+                //       </div>
+                //     )}
                     
-                    <Link
-                      to={`/case-studies/${caseStudy.slug}`}
-                      className="text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-1"
-                    >
-                      Read Full Story <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </CardContent>
-                </Card>
+                //     <Link
+                //       to={`/case-studies/${caseStudy.slug}`}
+                //       className="text-black-600 hover:text-black-700 font-medium text-sm flex items-center gap-1"
+                //     >
+                //       Read Full Story <ChevronRight className="w-4 h-4" />
+                //     </Link>
+                //   </CardContent>
+                // </Card>
               ))}
             </div>
           </div>
@@ -305,7 +318,7 @@ const CaseStudies: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Main Content */}
-          <div className="lg:w-3/4">
+          <div className="lg:w-4/4">
             
             {/* Filters */}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
@@ -324,7 +337,7 @@ const CaseStudies: React.FC = () => {
                 </select>
                 
                 {selectedTag && (
-                  <Badge variant="outline" className="text-green-600 border-green-600">
+                  <Badge variant="outline" className="text-black-600 border-green-600">
                     {selectedTag}
                     <button
                       onClick={() => setSelectedTag('')}
@@ -344,7 +357,7 @@ const CaseStudies: React.FC = () => {
               </div>
             ) : caseStudies.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {caseStudies.map((caseStudy) => (
                     <Card key={caseStudy.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                       {caseStudy.featured_image && (
@@ -355,7 +368,7 @@ const CaseStudies: React.FC = () => {
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                           />
                           {caseStudy.is_featured && (
-                            <Badge className="absolute top-4 left-4 bg-green-600 text-white">
+                            <Badge className="absolute top-4 left-4 bg-[#2C91D5] text-white">
                               <Award className="w-3 h-3 mr-1" />
                               Featured
                             </Badge>
@@ -398,7 +411,7 @@ const CaseStudies: React.FC = () => {
                         <h4 className="text-xl font-semibold mb-3 line-clamp-2">
                           <Link
                             to={`/case-studies/${caseStudy.slug}`}
-                            className="hover:text-green-600 transition-colors"
+                            className="hover:text-black-600 transition-colors"
                           >
                             {caseStudy.title}
                           </Link>
@@ -424,11 +437,11 @@ const CaseStudies: React.FC = () => {
                         
                         {/* Key Metrics */}
                         {caseStudy.metrics && Object.keys(caseStudy.metrics).length > 0 && (
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                             <div className="grid grid-cols-2 gap-4">
                               {Object.entries(caseStudy.metrics).slice(0, 2).map(([key, value]) => (
                                 <div key={key} className="text-center">
-                                  <div className="text-lg font-bold text-green-600">{value}</div>
+                                  <div className="text-lg font-bold text-black-600">{value}</div>
                                   <div className="text-xs text-gray-600 capitalize">
                                     {key.replace(/_/g, ' ')}
                                   </div>
@@ -445,7 +458,7 @@ const CaseStudies: React.FC = () => {
                               <button
                                 key={index}
                                 onClick={() => setSelectedTag(tag)}
-                                className="text-xs text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1 rounded transition-colors"
+                                className="text-xs text-black-600 hover:text-black-700 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded transition-colors"
                               >
                                 #{tag}
                               </button>
@@ -455,7 +468,7 @@ const CaseStudies: React.FC = () => {
                         
                         <Link
                           to={`/case-studies/${caseStudy.slug}`}
-                          className="text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-1"
+                          className="text-black-600 hover:text-black-700 font-medium text-sm flex items-center gap-1"
                         >
                           Read Full Story <ChevronRight className="w-4 h-4" />
                         </Link>
@@ -507,62 +520,7 @@ const CaseStudies: React.FC = () => {
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="sticky top-8 space-y-6">
-              
-              {/* Industries */}
-              <Card>
-                <CardHeader>
-                  <h3 className="text-lg font-semibold">Industries</h3>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setSelectedIndustry('')}
-                      className={`block w-full text-left px-3 py-2 rounded transition-colors ${
-                        !selectedIndustry 
-                          ? 'bg-green-600 text-white' 
-                          : 'hover:bg-gray-100'
-                      }`}
-                    >
-                      All Industries
-                    </button>
-                    {industries.slice(0, 8).map((industry) => (
-                      <button
-                        key={industry.industry}
-                        onClick={() => setSelectedIndustry(industry.industry)}
-                        className={`block w-full text-left px-3 py-2 rounded transition-colors ${
-                          selectedIndustry === industry.industry
-                            ? 'bg-green-600 text-white'
-                            : 'hover:bg-gray-100'
-                        }`}
-                      >
-                        <div className="flex justify-between items-center">
-                          <span>{industry.industry}</span>
-                          <span className="text-sm opacity-75">({industry.count})</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* CTA Card */}
-              <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white">
-                <CardContent className="p-6 text-center">
-                  <TrendingUp className="w-12 h-12 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Ready to Grow?</h3>
-                  <p className="text-sm mb-4 opacity-90">
-                    Join hundreds of successful startups that have achieved their funding goals with Zuvomo.
-                  </p>
-                  <Button className="w-full bg-white text-green-600 hover:bg-gray-100">
-                    Start Your Journey
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+        
         </div>
       </div>
 

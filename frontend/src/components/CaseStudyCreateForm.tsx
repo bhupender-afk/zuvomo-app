@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { X, Plus, Upload, Eye, Save, TrendingUp, Target, CheckCircle } from 'lucide-react';
 import api from '../services/api';
+import { useToastMessages } from '@/hooks/use-toast';
 
 interface CaseStudyCreateFormProps {
   onCaseStudyCreated: (caseStudy: any) => void;
@@ -16,6 +17,7 @@ interface CaseStudyCreateFormProps {
 }
 
 const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCreated, onCancel }) => {
+  const { success, error, warning } = useToastMessages();
   const [formData, setFormData] = useState({
     title: '',
     company_name: '',
@@ -98,26 +100,25 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file.');
+      error('Please select an image file.');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      alert('Image size must be less than 5MB.');
+      error('Image size must be less than 5MB.');
       return;
     }
 
     setIsUploading(true);
+    console.log("Uploading image:", file, "Type:", type);
     try {
-      const uploadData = new FormData();
-      uploadData.append('file', file);
-      uploadData.append('type', type === 'featured' ? 'case_study_image' : 'company_logo');
+      const data = new FormData();
+      data.append('file', file);
+      // uploadData.append('type', type === 'featured' ? 'case_study_image' : 'company_logo');
+      data.append('type', type === 'featured' ? 'case_study_featured' : 'case_study_logo');
 
-      const response = await api.post('/admin/upload', uploadData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+
+      const response = await api.post('/admin/upload', data);
 
       if (response.data?.success) {
         const field = type === 'featured' ? 'featured_image' : 'company_logo';
@@ -125,18 +126,18 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
       } else {
         throw new Error(response.data?.message || 'Upload failed');
       }
-    } catch (error: any) {
-      console.error('Image upload error:', error);
-      alert('Failed to upload image. Please try again.');
+    } catch (uploadError: any) {
+      console.error('Image upload error:', uploadError);
+      error('Failed to upload image. Please try again.');
     } finally {
       setIsUploading(false);
     }
   };
 
   const handleSubmit = async (status: 'draft' | 'published') => {
-    if (!formData.title.trim() || !formData.company_name.trim() || 
+    if (!formData.title.trim() || !formData.company_name.trim() ||
         !formData.challenge.trim() || !formData.solution.trim() || !formData.results.trim()) {
-      alert('Please fill in all required fields.');
+      error('Please fill in all required fields.');
       return;
     }
 
@@ -150,13 +151,14 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
       const response = await api.post('/case-studies', submitData);
 
       if (response.data?.success) {
+        success(`Case study ${status === 'published' ? 'published' : 'saved as draft'} successfully!`);
         onCaseStudyCreated(response.data.data);
       } else {
         throw new Error(response.data?.message || 'Failed to create case study');
       }
-    } catch (error: any) {
-      console.error('Case study creation error:', error);
-      alert(error.response?.data?.message || 'Failed to create case study. Please try again.');
+    } catch (submitError: any) {
+      console.error('Case study creation error:', submitError);
+      error(submitError.response?.data?.message || 'Failed to create case study. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

@@ -2,24 +2,23 @@ import React, { useEffect, useState } from 'react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
-import { 
-  Users, 
-  FileText, 
-  BarChart3, 
-  Settings, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  CheckCircle, 
-  XCircle, 
-  Edit, 
+import {
+  Users,
+  FileText,
+  BarChart3,
+  Settings,
+  Search,
+  Filter,
+  MoreVertical,
+  CheckCircle,
+  XCircle,
+  Edit,
   Eye,
   Star,
   Calendar,
@@ -29,13 +28,28 @@ import {
   AlertTriangle,
   DollarSign,
   PieChart,
-  Clock
+  Clock,
+  Menu,
+  X,
+  Bell,
+  LogOut,
+  Loader2,
+  Trash2
 } from 'lucide-react';
 import api from '../../services/api';
 import AdminProjectEditForm from '../../components/AdminProjectEditForm';
 import { AdminUserCreateForm } from '../../components/AdminUserCreateForm';
 import BlogCreateForm from '../../components/BlogCreateForm';
+import BlogEditForm from '../../components/BlogEditForm';
+import BlogViewModal from '../../components/BlogViewModal';
 import CaseStudyCreateForm from '../../components/CaseStudyCreateForm';
+import CaseStudyEditForm from '../../components/CaseStudyEditForm';
+import CaseStudyViewModal from '../../components/admin/CaseStudyViewModal';
+import UserManagementTable from '../../components/UserManagementTable';
+import AdminOverviewTab from '../../components/admin/AdminOverviewTab';
+import AdminStatsCard from '../../components/admin/AdminStatsCard';
+import { useAuth } from '@/contexts/AuthContext';
+import { formatCurrency, formatDate, getStatusColor } from '@/utils/adminHelpers';
 
 interface AdminStats {
   project_counts: {
@@ -135,7 +149,9 @@ interface UserFilters {
 }
 
 const AdminDashboard: React.FC = () => {
+  const { logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -167,7 +183,14 @@ const AdminDashboard: React.FC = () => {
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [caseStudiesLoading, setCaseStudiesLoading] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState<any>(null);
+  const [showEditBlog, setShowEditBlog] = useState(false);
+  const [showViewBlog, setShowViewBlog] = useState(false);
   const [showCreateCaseStudy, setShowCreateCaseStudy] = useState(false);
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<any>(null);
+  const [showEditCaseStudy, setShowEditCaseStudy] = useState(false);
+  const [showViewCaseStudy, setShowViewCaseStudy] = useState(false);
+  const [userRefreshTrigger, setUserRefreshTrigger] = useState(0);
   const [blogStats, setBlogStats] = useState({
     total: 0,
     published: 0,
@@ -179,6 +202,18 @@ const AdminDashboard: React.FC = () => {
     published: 0,
     industries: 0,
     views: 0
+  });
+
+  // Search and filter states for blogs and case studies
+  const [blogFilters, setBlogFilters] = useState({
+    search: '',
+    status: 'all',
+    featured: 'all'
+  });
+  const [caseStudyFilters, setCaseStudyFilters] = useState({
+    search: '',
+    status: 'all',
+    industry: 'all'
   });
 
   useEffect(() => {
@@ -248,6 +283,28 @@ const AdminDashboard: React.FC = () => {
       fetchCaseStudies();
     }
   }, [activeTab]);
+
+  // Debounced search for blogs
+  useEffect(() => {
+    if (activeTab === 'content') {
+      const timeoutId = setTimeout(() => {
+        fetchBlogs();
+      }, 500); // 500ms debounce
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [blogFilters, activeTab]);
+
+  // Debounced search for case studies
+  useEffect(() => {
+    if (activeTab === 'case-studies') {
+      const timeoutId = setTimeout(() => {
+        fetchCaseStudies();
+      }, 500); // 500ms debounce
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [caseStudyFilters, activeTab]);
 
   const fetchProjects = async () => {
     try {
@@ -326,27 +383,36 @@ const AdminDashboard: React.FC = () => {
   const fetchBlogs = async () => {
     try {
       setBlogsLoading(true);
-      console.log('AdminDashboard: Fetching blogs');
-      const response = await api.get('/blogs/admin/all');
+      console.log('AdminDashboard: Fetching blogs with filters', blogFilters);
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (blogFilters.search) queryParams.append('search', blogFilters.search);
+      if (blogFilters.status !== 'all') queryParams.append('status', blogFilters.status);
+
+      const response = await api.get(`/blogs/admin/all${queryParams.toString() ? '?' + queryParams.toString() : ''}`);
       console.log('AdminDashboard: Blogs response', response);
-      
+
       if (response.data && response.data.success) {
-        setBlogs(response.data.data || []);
+        const blogData = response.data.data?.blogs || [];
+        setBlogs(blogData);
         // Update blog stats
-        const blogData = response.data.data || [];
         setBlogStats({
           total: blogData.length,
           published: blogData.filter((blog: any) => blog.status === 'published').length,
           drafts: blogData.filter((blog: any) => blog.status === 'draft').length,
           views: blogData.reduce((sum: number, blog: any) => sum + (blog.views || 0), 0)
         });
+        console.log('AdminDashboard: Blog stats updated', { total: blogData.length, published: blogData.filter((blog: any) => blog.status === 'published').length });
       } else {
         console.error('AdminDashboard: Failed to fetch blogs', response.error);
         setBlogs([]);
+        setBlogStats({ total: 0, published: 0, drafts: 0, views: 0 });
       }
     } catch (error) {
       console.error('Failed to fetch blogs:', error);
       setBlogs([]);
+      setBlogStats({ total: 0, published: 0, drafts: 0, views: 0 });
     } finally {
       setBlogsLoading(false);
     }
@@ -355,14 +421,21 @@ const AdminDashboard: React.FC = () => {
   const fetchCaseStudies = async () => {
     try {
       setCaseStudiesLoading(true);
-      console.log('AdminDashboard: Fetching case studies');
-      const response = await api.get('/case-studies/admin/all');
+      console.log('AdminDashboard: Fetching case studies with filters', caseStudyFilters);
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (caseStudyFilters.search) queryParams.append('search', caseStudyFilters.search);
+      if (caseStudyFilters.status !== 'all') queryParams.append('status', caseStudyFilters.status);
+      if (caseStudyFilters.industry !== 'all') queryParams.append('industry', caseStudyFilters.industry);
+
+      const response = await api.get(`/case-studies/admin/all${queryParams.toString() ? '?' + queryParams.toString() : ''}`);
       console.log('AdminDashboard: Case studies response', response);
-      
+
       if (response.data && response.data.success) {
-        setCaseStudies(response.data.data || []);
+        const caseStudyData = response.data.data?.case_studies || [];
+        setCaseStudies(caseStudyData);
         // Update case study stats
-        const caseStudyData = response.data.data || [];
         const uniqueIndustries = new Set(caseStudyData.map((cs: any) => cs.industry).filter(Boolean));
         setCaseStudyStats({
           total: caseStudyData.length,
@@ -370,13 +443,16 @@ const AdminDashboard: React.FC = () => {
           industries: uniqueIndustries.size,
           views: caseStudyData.reduce((sum: number, cs: any) => sum + (cs.views || 0), 0)
         });
+        console.log('AdminDashboard: Case study stats updated', { total: caseStudyData.length, published: caseStudyData.filter((cs: any) => cs.status === 'published').length });
       } else {
         console.error('AdminDashboard: Failed to fetch case studies', response.error);
         setCaseStudies([]);
+        setCaseStudyStats({ total: 0, published: 0, industries: 0, views: 0 });
       }
     } catch (error) {
       console.error('Failed to fetch case studies:', error);
       setCaseStudies([]);
+      setCaseStudyStats({ total: 0, published: 0, industries: 0, views: 0 });
     } finally {
       setCaseStudiesLoading(false);
     }
@@ -495,34 +571,6 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'pending': case 'under_review': case 'submitted': return 'bg-yellow-100 text-yellow-800';
-      case 'pending_update': return 'bg-orange-100 text-orange-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'funded': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const getRoleColor = (role: string) => {
     switch (role) {
@@ -588,6 +636,130 @@ const AdminDashboard: React.FC = () => {
     alert('✅ Case study created successfully!');
   };
 
+  // Blog CRUD handlers
+  const handleBlogEdit = (blog: any) => {
+    setSelectedBlog(blog);
+    setShowEditBlog(true);
+  };
+
+  const handleBlogView = (blog: any) => {
+    setSelectedBlog(blog);
+    setShowViewBlog(true);
+  };
+
+  const handleBlogUpdated = (updatedBlog: any) => {
+    console.log('Blog updated:', updatedBlog);
+    setShowEditBlog(false);
+    setSelectedBlog(null);
+    fetchBlogs(); // Refresh the blogs list
+    alert('✅ Blog post updated successfully!');
+  };
+
+  const handleBlogDelete = async (blogId: string) => {
+    if (!confirm('Are you sure you want to delete this blog post? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await api.delete(`/blogs/${blogId}`);
+      if (response.data?.success) {
+        fetchBlogs(); // Refresh the blogs list
+        alert('✅ Blog post deleted successfully!');
+      } else {
+        throw new Error(response.data?.message || 'Failed to delete blog post');
+      }
+    } catch (error: any) {
+      console.error('Blog deletion error:', error);
+      alert(error.response?.data?.message || 'Failed to delete blog post. Please try again.');
+    }
+  };
+
+  // Case Study CRUD handlers
+  const handleCaseStudyEdit = (caseStudy: any) => {
+    setSelectedCaseStudy(caseStudy);
+    setShowEditCaseStudy(true);
+  };
+
+  const handleCaseStudyView = (caseStudy: any) => {
+    setSelectedCaseStudy(caseStudy);
+    setShowViewCaseStudy(true);
+  };
+
+  const handleCaseStudyUpdated = (updatedCaseStudy: any) => {
+    console.log('Case study updated:', updatedCaseStudy);
+    setShowEditCaseStudy(false);
+    setSelectedCaseStudy(null);
+    fetchCaseStudies(); // Refresh the case studies list
+    alert('✅ Case study updated successfully!');
+  };
+
+  const handleCaseStudyDelete = async (caseStudyId: string) => {
+    if (!confirm('Are you sure you want to delete this case study? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await api.delete(`/case-studies/${caseStudyId}`);
+      if (response.data?.success) {
+        fetchCaseStudies(); // Refresh the case studies list
+        alert('✅ Case study deleted successfully!');
+      } else {
+        throw new Error(response.data?.message || 'Failed to delete case study');
+      }
+    } catch (error: any) {
+      console.error('Case study deletion error:', error);
+      alert(error.response?.data?.message || 'Failed to delete case study. Please try again.');
+    }
+  };
+
+  // Sidebar navigation items
+  const navigationItems = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      icon: BarChart3,
+      badge: null
+    },
+    {
+      id: 'pending-reviews',
+      label: 'Pending Reviews',
+      icon: Clock,
+      badge: ((stats?.project_counts.pending || 0) + (stats?.project_counts?.submitted || 0) + (stats?.project_counts.under_review || 0)) > 0
+        ? (stats?.project_counts.pending || 0) + (stats?.project_counts?.submitted || 0) + (stats?.project_counts.under_review || 0)
+        : null
+    },
+    {
+      id: 'projects',
+      label: 'All Projects',
+      icon: FileText,
+      badge: null
+    },
+    {
+      id: 'users',
+      label: 'User Management',
+      icon: Users,
+      badge: null
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: PieChart,
+      badge: null
+    },
+    {
+      id: 'blogs',
+      label: 'Blog Posts',
+      icon: FileText,
+      badge: null
+    },
+    {
+      id: 'case-studies',
+      label: 'Case Studies',
+      icon: Star,
+      badge: null
+    }
+  ];
+
 
   if (loading) {
     return (
@@ -605,246 +777,125 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <ProtectedRoute allowedRoles={['admin']}>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Sidebar */}
+        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="flex flex-col h-full">
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
               <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-gray-900">Zuvomo</h1>
-                <span className="ml-3 text-sm text-gray-500">Admin Dashboard</span>
+                <h1 className="text-xl font-bold text-[#2C91D5]">Zuvomo</h1>
+                <span className="ml-2 text-xs text-gray-500">Admin</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex-1 px-4 py-6 space-y-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                      activeTab === item.id
+                        ? 'bg-[#2C91D5] text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <Icon className="w-4 h-4 mr-3" />
+                      {item.label}
+                    </div>
+                    {item.badge && (
+                      <Badge className="bg-yellow-500 text-white" variant="secondary">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Sidebar Footer */}
+            <div className="border-t border-gray-200 p-4">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-gray-700 hover:bg-gray-100"
+                onClick={logout}
+              >
+                <LogOut className="w-4 h-4 mr-3" />
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar Overlay for Mobile */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Top Navbar */}
+          <header className="bg-white border-b border-gray-200 h-16">
+            <div className="flex items-center justify-between h-full px-6">
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="lg:hidden mr-4"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <Menu className="w-4 h-4" />
+                </Button>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {navigationItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+                  </h2>
+                  <p className="text-sm text-gray-500">Manage your platform</p>
+                </div>
               </div>
               <div className="flex items-center space-x-4">
+                <Button variant="ghost" size="sm">
+                  <Bell className="w-4 h-4" />
+                </Button>
                 <Button variant="outline" size="sm">
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </Button>
-                <Button variant="ghost" size="sm">Logout</Button>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-8">
-              <TabsTrigger value="overview" className="flex items-center">
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value="pending-reviews" className="flex items-center">
-                <Clock className="w-4 h-4 mr-2" />
-                Pending Reviews
-                {((stats?.project_counts.pending || 0) + (stats?.project_counts.submitted || 0) + (stats?.project_counts.under_review || 0)) > 0 && (
-                  <Badge className="ml-2 bg-yellow-500 text-white" variant="secondary">
-                    {(stats?.project_counts.pending || 0) + (stats?.project_counts.submitted || 0) + (stats?.project_counts.under_review || 0)}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="projects" className="flex items-center">
-                <FileText className="w-4 h-4 mr-2" />
-                All Projects
-              </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center">
-                <Users className="w-4 h-4 mr-2" />
-                User Management
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center">
-                <PieChart className="w-4 h-4 mr-2" />
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="blogs" className="flex items-center">
-                <FileText className="w-4 h-4 mr-2" />
-                Blog Posts
-              </TabsTrigger>
-              <TabsTrigger value="case-studies" className="flex items-center">
-                <Star className="w-4 h-4 mr-2" />
-                Case Studies
-              </TabsTrigger>
-            </TabsList>
+          {/* Main Content Area */}
+          <main className="flex-1 p-6">
+            <div className="max-w-7xl mx-auto">
+              {/* Content will be rendered here based on activeTab */}
 
             {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-6">
-              {/* Pending Projects Alert */}
-              {((stats?.project_counts.pending || 0) + (stats?.project_counts.submitted || 0) + (stats?.project_counts.under_review || 0)) > 0 && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <AlertTriangle className="w-5 h-5 text-yellow-600 mr-3" />
-                      <div>
-                        <h3 className="font-medium text-yellow-800">
-                          {(stats.project_counts.pending || 0) + (stats.project_counts.submitted || 0) + (stats.project_counts.under_review || 0)} Project{((stats.project_counts.pending || 0) + (stats.project_counts.submitted || 0) + (stats.project_counts.under_review || 0)) > 1 ? 's' : ''} Awaiting Review
-                        </h3>
-                        <p className="text-sm text-yellow-700">
-                          New projects have been submitted and need admin approval to go live.
-                        </p>
-                      </div>
-                    </div>
-                    <Button 
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white"
-                      onClick={() => setActiveTab('pending-reviews')}
-                    >
-                      Review Now
-                    </Button>
-                  </div>
-                </div>
-              )}
-              
-              {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{stats?.project_counts.total || 0}</div>
-                    <p className="text-xs text-muted-foreground">All projects</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-yellow-600">
-                      {(stats?.project_counts.pending || 0) + (stats?.project_counts.submitted || 0) + (stats?.project_counts.under_review || 0)}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Awaiting approval</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Approved Projects</CardTitle>
-                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-green-600">{stats?.project_counts.approved || 0}</div>
-                    <p className="text-xs text-muted-foreground">Live projects</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Funding</CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{formatCurrency(stats?.funding_stats.total_current_funding || 0)}</div>
-                    <p className="text-xs text-muted-foreground">Current funding</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recent Activity & Quick Actions */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Activity className="w-4 h-4 mr-2" />
-                      Recent Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {stats?.recent_activity && stats.recent_activity.length > 0 ? (
-                      <div className="space-y-4">
-                        {stats.recent_activity.slice(0, 5).map((activity) => (
-                          <div key={activity.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                            <div>
-                              <h4 className="font-medium text-gray-900">{activity.title}</h4>
-                              <p className="text-sm text-gray-500">by {activity.owner_name}</p>
-                              <p className="text-xs text-gray-400">{formatDate(activity.created_at)}</p>
-                            </div>
-                            <Badge className={getStatusColor(activity.status)}>
-                              {activity.status}
-                            </Badge>
-                          </div>
-                        ))}
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full"
-                          onClick={() => setActiveTab('projects')}
-                        >
-                          View All Projects
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="text-center py-8">
-                        <Activity className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500">No recent activity</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Quick Actions</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <Button 
-                        className="w-full justify-start bg-blue-600 hover:bg-blue-700"
-                        onClick={() => setActiveTab('pending-reviews')}
-                      >
-                        <Clock className="w-4 h-4 mr-2" />
-                        Review Pending Projects ({stats?.project_counts.pending || 0})
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start"
-                        onClick={() => setActiveTab('users')}
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        Manage Users
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start"
-                        onClick={() => setActiveTab('analytics')}
-                      >
-                        <BarChart3 className="w-4 h-4 mr-2" />
-                        View Analytics
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Category Breakdown */}
-              {stats?.category_breakdown && stats.category_breakdown.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Category Breakdown</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {stats.category_breakdown.map((category) => (
-                        <div key={category.category} className="p-4 border border-gray-200 rounded-lg">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <h3 className="font-medium">{category.category}</h3>
-                              <p className="text-sm text-gray-500">{category.count} projects</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-medium">{formatCurrency(category.total_funding)}</p>
-                              <p className="text-xs text-gray-500">total funding</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
+            {activeTab === 'overview' && (
+              <AdminOverviewTab
+                stats={stats}
+                onTabChange={setActiveTab}
+              />
+            )}
 
             {/* Pending Reviews Tab */}
-            <TabsContent value="pending-reviews" className="space-y-6">
+            {activeTab === 'pending-reviews' && (
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Pending Reviews</h2>
@@ -864,7 +915,8 @@ const AdminDashboard: React.FC = () => {
 
               {/* Pending Projects Table */}
               <Card>
-                <Table>
+                <div className="overflow-x-auto">
+                  <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Project</TableHead>
@@ -981,11 +1033,14 @@ const AdminDashboard: React.FC = () => {
                     )}
                   </TableBody>
                 </Table>
+                </div>
               </Card>
-            </TabsContent>
+              </div>
+            )}
 
             {/* Project Management Tab */}
-            <TabsContent value="projects" className="space-y-6">
+            {activeTab === 'projects' && (
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Project Management</h2>
@@ -1077,7 +1132,8 @@ const AdminDashboard: React.FC = () => {
                 </Card>
               ) : (
                 <Card>
-                  <Table>
+                  <div className="overflow-x-auto">
+                    <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Project</TableHead>
@@ -1252,185 +1308,22 @@ const AdminDashboard: React.FC = () => {
                       )}
                     </TableBody>
                   </Table>
+                  </div>
                 </Card>
               )}
-            </TabsContent>
+              </div>
+            )}
 
             {/* User Management Tab */}
-            <TabsContent value="users" className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
-                  <p className="text-gray-600">Manage platform users and their permissions</p>
-                </div>
-                <Button onClick={() => setShowCreateUserForm(true)} className="bg-blue-600 hover:bg-blue-700">
-                  <Users className="w-4 h-4 mr-2" />
-                  Create New User
-                </Button>
+            {activeTab === 'users' && (
+              <div className="space-y-6">
+              <UserManagementTable refreshTrigger={userRefreshTrigger} />
               </div>
-
-              {/* User Filters */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Search & Filters
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="Search users..."
-                        value={userFilters.search}
-                        onChange={(e) => setUserFilters(prev => ({ ...prev, search: e.target.value }))}
-                        className="pl-10"
-                      />
-                    </div>
-                    
-                    <Select value={userFilters.role} onValueChange={(value) => setUserFilters(prev => ({ ...prev, role: value }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Roles</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="project_owner">Project Owner</SelectItem>
-                        <SelectItem value="investor">Investor</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select value={userFilters.status} onValueChange={(value) => setUserFilters(prev => ({ ...prev, status: value }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="verified">Verified</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Select value={userFilters.sort} onValueChange={(value) => setUserFilters(prev => ({ ...prev, sort: value }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="created_at">Latest</SelectItem>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="role">Role</SelectItem>
-                        <SelectItem value="last_login">Last Login</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Users Table */}
-              {usersLoading ? (
-                <Card>
-                  <CardContent className="p-8">
-                    <div className="animate-pulse space-y-4">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex space-x-4">
-                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                          <div className="h-4 bg-gray-200 rounded w-1/6"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>User</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Company</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Joined</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {users.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center py-8">
-                            <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                            <div>
-                              <p className="text-gray-500 mb-2">No users found</p>
-                              <p className="text-sm text-gray-400">
-                                No users match the current filter criteria, or users are still loading
-                              </p>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        users.map((user) => (
-                          <TableRow key={user.id}>
-                            <TableCell>
-                              <div>
-                                <p className="font-medium">{user.first_name} {user.last_name}</p>
-                                <p className="text-sm text-gray-500">{user.email}</p>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={getRoleColor(user.role)}>
-                                {user.role.replace('_', ' ')}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm">{user.company || 'N/A'}</span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                {user.is_active ? (
-                                  <Badge className="bg-green-100 text-green-800">Active</Badge>
-                                ) : (
-                                  <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
-                                )}
-                                {user.email_verified && (
-                                  <Badge variant="outline" className="text-xs">Verified</Badge>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-sm">{formatDate(user.created_at)}</span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setSelectedUser(user)}
-                                >
-                                  <Eye className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setSelectedUser(user)}
-                                >
-                                  <Edit className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </Card>
-              )}
-            </TabsContent>
+            )}
 
             {/* Analytics Tab */}
-            <TabsContent value="analytics" className="space-y-6">
+            {activeTab === 'analytics' && (
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Platform Analytics</h2>
@@ -1530,10 +1423,12 @@ const AdminDashboard: React.FC = () => {
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
+              </div>
+            )}
 
             {/* Blog Management Tab */}
-            <TabsContent value="blogs" className="space-y-6">
+            {activeTab === 'blogs' && (
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Blog Management</h2>
@@ -1606,9 +1501,11 @@ const AdminDashboard: React.FC = () => {
                         <Input
                           placeholder="Search posts..."
                           className="pl-8 w-64"
+                          value={blogFilters.search}
+                          onChange={(e) => setBlogFilters(prev => ({ ...prev, search: e.target.value }))}
                         />
                       </div>
-                      <Select defaultValue="all">
+                      <Select value={blogFilters.status} onValueChange={(value) => setBlogFilters(prev => ({ ...prev, status: value }))}>
                         <SelectTrigger className="w-32">
                           <SelectValue />
                         </SelectTrigger>
@@ -1616,27 +1513,137 @@ const AdminDashboard: React.FC = () => {
                           <SelectItem value="all">All Status</SelectItem>
                           <SelectItem value="published">Published</SelectItem>
                           <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
+                  {/* Filter Results Indicator */}
+                  {(blogFilters.search || blogFilters.status !== 'all') && (
+                    <div className="px-6 py-2 bg-blue-50 border-b">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-blue-700">
+                          {blogFilters.search && (
+                            <span>Searching for "{blogFilters.search}"</span>
+                          )}
+                          {blogFilters.search && blogFilters.status !== 'all' && <span> • </span>}
+                          {blogFilters.status !== 'all' && (
+                            <span>Status: {blogFilters.status}</span>
+                          )}
+                          <span className="ml-2">({blogs.length} result{blogs.length !== 1 ? 's' : ''})</span>
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setBlogFilters({ search: '', status: 'all', featured: 'all' })}
+                        >
+                          Clear Filters
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-12">
-                    <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-600 mb-2">No blog posts yet</h3>
-                    <p className="text-gray-500 mb-4">Create your first blog post to get started</p>
-                    <Button className="bg-[#2C91D5] hover:bg-blue-700">
-                      Create Your First Post
-                    </Button>
-                  </div>
+                  {blogsLoading ? (
+                    <div className="text-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-[#2C91D5] mx-auto mb-4" />
+                      <p className="text-gray-600">Loading blog posts...</p>
+                    </div>
+                  ) : blogs.length === 0 ? (
+                    <div className="text-center py-12">
+                      <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-600 mb-2">No blog posts yet</h3>
+                      <p className="text-gray-500 mb-4">Create your first blog post to get started</p>
+                      <Button
+                        className="bg-[#2C91D5] hover:bg-blue-700"
+                        onClick={() => setShowCreateBlog(true)}
+                      >
+                        Create Your First Post
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Blog posts table */}
+                      <div className="overflow-x-auto">
+                        <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Author</TableHead>
+                            <TableHead>Publish Date</TableHead>
+                            <TableHead>Views</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {blogs.map((blog: any) => (
+                            <TableRow key={blog.id}>
+                              <TableCell>
+                                <div className="space-y-1">
+                                  <div className="font-medium">{blog.title}</div>
+                                  {blog.is_featured && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      Featured
+                                    </Badge>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={blog.status === 'published' ? 'default' : 'secondary'}
+                                  className={blog.status === 'published' ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'}
+                                >
+                                  {blog.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {blog.author_first_name} {blog.author_last_name}
+                              </TableCell>
+                              <TableCell>
+                                {blog.publish_date ? new Date(blog.publish_date).toLocaleDateString() : 'Not published'}
+                              </TableCell>
+                              <TableCell>{blog.views || 0}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleBlogView(blog)}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleBlogEdit(blog)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleBlogDelete(blog.id)}
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                       </div>
+                    </div>
+                  )}
                 </CardContent>
-              </Card>
-            </TabsContent>
+             </Card>
+              </div>
+             
+            )}
 
             {/* Case Studies Management Tab */}
-            <TabsContent value="case-studies" className="space-y-6">
+            {activeTab === 'case-studies' && (
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Case Studies Management</h2>
@@ -1709,9 +1716,11 @@ const AdminDashboard: React.FC = () => {
                         <Input
                           placeholder="Search case studies..."
                           className="pl-8 w-64"
+                          value={caseStudyFilters.search}
+                          onChange={(e) => setCaseStudyFilters(prev => ({ ...prev, search: e.target.value }))}
                         />
                       </div>
-                      <Select defaultValue="all">
+                      <Select value={caseStudyFilters.status} onValueChange={(value) => setCaseStudyFilters(prev => ({ ...prev, status: value }))}>
                         <SelectTrigger className="w-32">
                           <SelectValue />
                         </SelectTrigger>
@@ -1719,37 +1728,158 @@ const AdminDashboard: React.FC = () => {
                           <SelectItem value="all">All Status</SelectItem>
                           <SelectItem value="published">Published</SelectItem>
                           <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Select defaultValue="all-industries">
+                      <Select value={caseStudyFilters.industry} onValueChange={(value) => setCaseStudyFilters(prev => ({ ...prev, industry: value }))}>
                         <SelectTrigger className="w-40">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all-industries">All Industries</SelectItem>
-                          <SelectItem value="technology">Technology</SelectItem>
-                          <SelectItem value="healthcare">Healthcare</SelectItem>
-                          <SelectItem value="finance">Finance</SelectItem>
-                          <SelectItem value="education">Education</SelectItem>
+                          <SelectItem value="all">All Industries</SelectItem>
+                          <SelectItem value="Technology">Technology</SelectItem>
+                          <SelectItem value="Healthcare">Healthcare</SelectItem>
+                          <SelectItem value="Finance">Finance</SelectItem>
+                          <SelectItem value="Education">Education</SelectItem>
+                          <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                          <SelectItem value="Retail">Retail</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
+                  {/* Filter Results Indicator */}
+                  {(caseStudyFilters.search || caseStudyFilters.status !== 'all' || caseStudyFilters.industry !== 'all') && (
+                    <div className="px-6 py-2 bg-green-50 border-b">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-green-700">
+                          {caseStudyFilters.search && (
+                            <span>Searching for "{caseStudyFilters.search}"</span>
+                          )}
+                          {caseStudyFilters.search && (caseStudyFilters.status !== 'all' || caseStudyFilters.industry !== 'all') && <span> • </span>}
+                          {caseStudyFilters.status !== 'all' && (
+                            <span>Status: {caseStudyFilters.status}</span>
+                          )}
+                          {caseStudyFilters.status !== 'all' && caseStudyFilters.industry !== 'all' && <span> • </span>}
+                          {caseStudyFilters.industry !== 'all' && (
+                            <span>Industry: {caseStudyFilters.industry}</span>
+                          )}
+                          <span className="ml-2">({caseStudies.length} result{caseStudies.length !== 1 ? 's' : ''})</span>
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCaseStudyFilters({ search: '', status: 'all', industry: 'all' })}
+                        >
+                          Clear Filters
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-12">
-                    <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-600 mb-2">No case studies yet</h3>
-                    <p className="text-gray-500 mb-4">Create your first success story to showcase your impact</p>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      Create Your First Case Study
-                    </Button>
-                  </div>
+                  {caseStudiesLoading ? (
+                    <div className="text-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-green-600 mx-auto mb-4" />
+                      <p className="text-gray-600">Loading case studies...</p>
+                    </div>
+                  ) : caseStudies.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-600 mb-2">No case studies yet</h3>
+                      <p className="text-gray-500 mb-4">Create your first success story to showcase your impact</p>
+                      <Button
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() => setShowCreateCaseStudy(true)}
+                      >
+                        Create Your First Case Study
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Case studies table */}
+                      <div className="overflow-x-auto">
+                        <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Company</TableHead>
+                            <TableHead>Industry</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Views</TableHead>
+                            <TableHead>Featured</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {caseStudies.map((caseStudy: any) => (
+                            <TableRow key={caseStudy.id}>
+                              <TableCell>
+                                <div className="font-medium">{caseStudy.title}</div>
+                              </TableCell>
+                              <TableCell>
+                                {caseStudy.company_name || 'N/A'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className="text-xs">
+                                  {caseStudy.industry || 'N/A'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={caseStudy.status === 'published' ? 'default' : 'secondary'}
+                                  className={caseStudy.status === 'published' ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'}
+                                >
+                                  {caseStudy.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{caseStudy.views || 0}</TableCell>
+                              <TableCell>
+                                {caseStudy.is_featured ? (
+                                  <Badge variant="default" className="bg-blue-600">
+                                    <Star className="w-3 h-3 mr-1" />
+                                    Featured
+                                  </Badge>
+                                ) : (
+                                  <span className="text-gray-400">No</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleCaseStudyView(caseStudy)}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleCaseStudyEdit(caseStudy)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleCaseStudyDelete(caseStudy.id)}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+              </div>
+            )}
+            </div>
+          </main>
 
           {/* Project Details Modal */}
           {selectedProject && (
@@ -2024,7 +2154,63 @@ const AdminDashboard: React.FC = () => {
               </DialogContent>
             </Dialog>
           )}
-        </main>
+
+          {/* Blog Edit Modal */}
+          {showEditBlog && selectedBlog && (
+            <Dialog open={showEditBlog} onOpenChange={(open) => setShowEditBlog(open)}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <BlogEditForm
+                  blog={selectedBlog}
+                  onBlogUpdated={handleBlogUpdated}
+                  onCancel={() => {
+                    setShowEditBlog(false);
+                    setSelectedBlog(null);
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+          )}
+
+          {/* Blog View Modal */}
+          <BlogViewModal
+            blog={selectedBlog}
+            isOpen={showViewBlog}
+            onClose={() => {
+              setShowViewBlog(false);
+              setSelectedBlog(null);
+            }}
+            onEdit={() => {
+              setShowViewBlog(false);
+              setShowEditBlog(true);
+            }}
+          />
+
+          {/* Case Study Edit Modal */}
+          {showEditCaseStudy && selectedCaseStudy && (
+            <Dialog open={showEditCaseStudy} onOpenChange={(open) => setShowEditCaseStudy(open)}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <CaseStudyEditForm
+                  caseStudy={selectedCaseStudy}
+                  onCaseStudyUpdated={handleCaseStudyUpdated}
+                  onCancel={() => {
+                    setShowEditCaseStudy(false);
+                    setSelectedCaseStudy(null);
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+          )}
+
+          {/* Case Study View Modal */}
+          <CaseStudyViewModal
+            caseStudy={selectedCaseStudy}
+            isOpen={showViewCaseStudy}
+            onClose={() => {
+              setShowViewCaseStudy(false);
+              setSelectedCaseStudy(null);
+            }}
+          />
+        </div>
       </div>
     </ProtectedRoute>
   );

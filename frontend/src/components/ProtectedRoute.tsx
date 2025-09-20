@@ -12,7 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles = [], 
   requireApproval = true 
 }) => {
-  const { isAuthenticated, user, isLoading, hasRole, isApproved } = useAuth();
+  const { isAuthenticated, user, isLoading, hasRole, isApproved,logout } = useAuth();
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
@@ -127,10 +127,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                 Return to Homepage
               </button>
               <button
-                onClick={async () => {
-                  const { logout } = useAuth();
-                  await logout();
-                }}
+                onClick={logout}
                 className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
               >
                 Logout

@@ -61,6 +61,7 @@ const upload = multer({
 // Get all approved projects (public route)
 router.get('/approved', optionalAuth, async (req, res) => {
   try {
+    console.log('API Request approved:',req.query );
     const { page = 1, limit = 12, category, search, sort = 'created_at' } = req.query;
     const pageNum = parseInt(page) || 1;
     const limitNum = parseInt(limit) || 12;
@@ -313,131 +314,6 @@ router.get('/my/projects', verifyToken, requireRole(['project_owner']), async (r
   }
 });
 
-// Update project (project owners only, own projects only)
-router.put('/:id', verifyToken, requireRole(['project_owner']), validateProjectUpdate, async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Check if project exists and belongs to user
-    const project = await getOne(
-      'SELECT id, owner_id, project_status FROM projects WHERE id = ? AND owner_id = ?',
-      [id, req.user.id]
-    );
-
-    if (!project) {
-      return res.status(404).json({ error: 'Project not found or access denied' });
-    }
-
-    // Handle different update scenarios based on project status
-    let newStatus = project.project_status;
-    
-    if (['draft', 'rejected'].includes(project.project_status)) {
-      // Draft and rejected projects can be updated normally
-      newStatus = project.project_status;
-    } else if (['approved'].includes(project.project_status)) {
-      // Approved projects get pending_update status when edited
-      newStatus = 'pending_update';
-    } else {
-      // Submitted, pending, under_review projects cannot be updated
-      return res.status(403).json({ 
-        error: 'Cannot update project while it is under review. Please wait for admin approval or rejection.' 
-      });
-    }
-
-    const {
-      title, description, category, industry, funding_goal, funding_from_other_sources, minimum_investment,
-      equity_percentage, location, team_size, stage, project_stage, valuation, tags
-    } = req.body;
-
-    // Map frontend field names to backend field names
-    const actualCategory = category || industry;
-    const actualStage = stage || project_stage;
-
-    // Build update query
-    const updates = [];
-    const params = [];
-
-    if (title !== undefined) {
-      updates.push('title = ?');
-      params.push(title);
-    }
-    if (description !== undefined) {
-      updates.push('description = ?');
-      params.push(description);
-    }
-    if (actualCategory !== undefined) {
-      updates.push('industry = ?');
-      params.push(actualCategory);
-    }
-    if (funding_goal !== undefined) {
-      updates.push('funding_goal = ?');
-      params.push(funding_goal);
-    }
-    if (funding_from_other_sources !== undefined) {
-      updates.push('funding_from_other_sources = ?');
-      params.push(funding_from_other_sources);
-    }
-    if (minimum_investment !== undefined) {
-      updates.push('minimum_investment = ?');
-      params.push(minimum_investment);
-    }
-    if (equity_percentage !== undefined) {
-      updates.push('equity_percentage = ?');
-      params.push(equity_percentage);
-    }
-    if (location !== undefined) {
-      updates.push('location = ?');
-      params.push(location);
-    }
-    if (team_size !== undefined) {
-      updates.push('team_size = ?');
-      params.push(team_size);
-    }
-    if (actualStage !== undefined) {
-      updates.push('stage = ?');
-      params.push(actualStage);
-    }
-    if (valuation !== undefined) {
-      updates.push('valuation = ?');
-      params.push(valuation);
-    }
-    if (tags !== undefined) {
-      updates.push('tags = ?');
-      params.push(tags);
-    }
-
-    if (updates.length === 0) {
-      return res.status(400).json({ error: 'No valid fields to update' });
-    }
-
-    // Update project status based on current status
-    if (newStatus !== project.project_status) {
-      updates.push('project_status = ?');
-      params.push(newStatus);
-    }
-
-    params.push(id);
-
-    await executeQuery(
-      `UPDATE projects SET ${updates.join(', ')} WHERE id = ?`,
-      params
-    );
-
-    const updatedProject = await getOne(
-      'SELECT * FROM projects WHERE id = ?',
-      [id]
-    );
-
-    res.json({
-      message: 'Project updated successfully',
-      project: updatedProject
-    });
-
-  } catch (error) {
-    console.error('Update project error:', error);
-    res.status(500).json({ error: 'Failed to update project' });
-  }
-});
 
 // Submit project for review
 router.put('/:id/submit', verifyToken, requireRole(['project_owner']), async (req, res) => {
@@ -789,6 +665,132 @@ router.get('/search', optionalAuth, async (req, res) => {
       success: false, 
       message: 'Failed to search projects' 
     });
+  }
+});
+
+// Update project (project owners only, own projects only)
+router.put('/:id', verifyToken, requireRole(['project_owner']), validateProjectUpdate, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if project exists and belongs to user
+    const project = await getOne(
+      'SELECT id, owner_id, project_status FROM projects WHERE id = ? AND owner_id = ?',
+      [id, req.user.id]
+    );
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found or access denied' });
+    }
+
+    // Handle different update scenarios based on project status
+    let newStatus = project.project_status;
+    
+    if (['draft', 'rejected'].includes(project.project_status)) {
+      // Draft and rejected projects can be updated normally
+      newStatus = project.project_status;
+    } else if (['approved'].includes(project.project_status)) {
+      // Approved projects get pending_update status when edited
+      newStatus = 'pending_update';
+    } else {
+      // Submitted, pending, under_review projects cannot be updated
+      return res.status(403).json({ 
+        error: 'Cannot update project while it is under review. Please wait for admin approval or rejection.' 
+      });
+    }
+
+    const {
+      title, description, category, industry, funding_goal, funding_from_other_sources, minimum_investment,
+      equity_percentage, location, team_size, stage, project_stage, valuation, tags
+    } = req.body;
+
+    // Map frontend field names to backend field names
+    const actualCategory = category || industry;
+    const actualStage = stage || project_stage;
+
+    // Build update query
+    const updates = [];
+    const params = [];
+
+    if (title !== undefined) {
+      updates.push('title = ?');
+      params.push(title);
+    }
+    if (description !== undefined) {
+      updates.push('description = ?');
+      params.push(description);
+    }
+    if (actualCategory !== undefined) {
+      updates.push('industry = ?');
+      params.push(actualCategory);
+    }
+    if (funding_goal !== undefined) {
+      updates.push('funding_goal = ?');
+      params.push(funding_goal);
+    }
+    if (funding_from_other_sources !== undefined) {
+      updates.push('funding_from_other_sources = ?');
+      params.push(funding_from_other_sources);
+    }
+    if (minimum_investment !== undefined) {
+      updates.push('minimum_investment = ?');
+      params.push(minimum_investment);
+    }
+    if (equity_percentage !== undefined) {
+      updates.push('equity_percentage = ?');
+      params.push(equity_percentage);
+    }
+    if (location !== undefined) {
+      updates.push('location = ?');
+      params.push(location);
+    }
+    if (team_size !== undefined) {
+      updates.push('team_size = ?');
+      params.push(team_size);
+    }
+    if (actualStage !== undefined) {
+      updates.push('stage = ?');
+      params.push(actualStage);
+    }
+    if (valuation !== undefined) {
+      updates.push('valuation = ?');
+      params.push(valuation);
+    }
+    if (tags !== undefined) {
+      updates.push('tags = ?');
+      params.push(tags);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No valid fields to update' });
+    }
+
+    // Update project status based on current status
+    if (newStatus !== project.project_status) {
+      updates.push('project_status = ?');
+      params.push(newStatus);
+    }
+
+    params.push(id);
+
+    await executeQuery(
+      `UPDATE projects SET ${updates.join(', ')} WHERE id = ?`,
+      params
+    );
+
+    const updatedProject = await getOne(
+      'SELECT * FROM projects WHERE id = ?',
+      [id]
+    );
+
+    res.json({
+      message: 'Project updated successfully',
+      project: updatedProject
+    });
+
+  } catch (error) {
+    console.error('Update project error:', error);
+    res.status(500).json({ error: 'Failed to update project' });
   }
 });
 

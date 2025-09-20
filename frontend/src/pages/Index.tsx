@@ -15,6 +15,7 @@ import Footer from '@/components/Footer';
 import Carousel from '@/components/Carousel';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import StickyCTABar from '@/components/StickyCTABar';
+import { MeetTeam } from '@/components/staticComponents/LandingPage';
 
 interface ProjectData {
   id: string;
@@ -52,15 +53,20 @@ const Index = () => {
       let data;
       
       try {
-        // First try the approved projects endpoint
-        response = await fetch('/api/projects/approved?limit=9');
+        // Get backend URL based on environment
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+        const apiBase = import.meta.env.MODE === 'production' ? `${backendUrl}/api` : '/api';
+
+        // First try the approved projects endpoint /approved
+        response = await fetch(`${apiBase}/projects/approved?limit=9`);
+        console.log("Response from /approved:", response);
         if (!response.ok) {
           // Fallback to search endpoint with approved filter
-          response = await fetch('/api/projects/search?status=approved&limit=9');
+          response = await fetch(`${apiBase}/projects/search?status=approved&limit=9`);
         }
         if (!response.ok) {
           // Final fallback to all projects endpoint
-          response = await fetch('/api/projects?status=approved&limit=9');
+          response = await fetch(`${apiBase}/projects?status=approved&limit=9`);
         }
       } catch (fetchError) {
         throw new Error('Failed to connect to server');
@@ -114,7 +120,8 @@ const Index = () => {
                 image: (() => {
                   let imageUrl = project.image || project.image_url || project.logo_url;
                   if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/placeholder')) {
-                    imageUrl = `http://13.200.209.191:8080${imageUrl}`;
+                    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://13.200.209.191:8080';
+                    imageUrl = `${backendUrl}${imageUrl}`;
                   }
                   console.log(`[Homepage] Image URL for ${project.title}: ${imageUrl}`);
                   return imageUrl || '/placeholder.svg';
@@ -589,7 +596,7 @@ const Index = () => {
             <div className="flex justify-center mt-10">
               <button 
                 onClick={handleJoinNow}
-                className="px-12 py-3 text-base text-[#2C91D5] font-medium border border-[#2C91D5] rounded-full hover:bg-[#2C91D5] hover:text-white transition-all duration-200"
+                className="px-12 py-3 text-base text-[#2C91D5] font-medium border border-[#2C91D5] rounded-full  hover:bg-[rgb(30,120,180)] hover:text-white transition-all duration-200"
               >
                 Join Now
               </button>
@@ -694,42 +701,7 @@ const Index = () => {
         </section>
 
         {/* Team Section */}
-        <section id="team" className="w-full py-12 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-4 font-inter leading-tight">
-              Meet Our Talented Team
-            </h2>
-            <p className="text-center text-[#6b7280] text-[16px] mb-12 max-w-2xl mx-auto font-inter leading-relaxed">
-              Our experienced team combines expertise in blockchain, finance, and technology to drive innovation and success for startups worldwide.
-            </p>
-            
-            {/* Mobile: Simple grid, Desktop: Carousel */}
-            <div className="block md:hidden">
-              <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
-                {teamData.slice(0, 3).map((member, index) => (
-                  <TeamMember key={index} {...member} />
-                ))}
-              </div>
-            </div>
-            
-            <div className="hidden md:block">
-              <Carousel
-                itemsPerView={3}
-                gap={24}
-                showArrows={true}
-                showDots={true}
-                autoPlay={false}
-                autoPlayInterval={4000}
-              >
-                {teamData.slice(0, 3).map((member, index) => (
-                  <div key={index} className="px-2">
-                    <TeamMember {...member} />
-                  </div>
-                ))}
-              </Carousel>
-            </div>
-          </div>
-        </section>
+       <MeetTeam/>
 
         {/* Testimonials Section */}
         <section className="w-full bg-[#F6FBFF] py-16">

@@ -188,4 +188,39 @@ function useToast() {
   }
 }
 
+// Enhanced toast utilities for better UX
+export const useToastMessages = () => {
+  const { toast } = useToast();
+
+  return {
+    success: (message: string, title?: string) =>
+      toast({
+        variant: "default",
+        title: title || "Success",
+        description: message,
+        className: "bg-green-50 border-green-200 text-green-800"
+      }),
+    error: (message: string, title?: string) =>
+      toast({
+        variant: "destructive",
+        title: title || "Error",
+        description: message
+      }),
+    info: (message: string, title?: string) =>
+      toast({
+        variant: "default",
+        title: title || "Info",
+        description: message,
+        className: "bg-blue-50 border-blue-200 text-blue-800"
+      }),
+    warning: (message: string, title?: string) =>
+      toast({
+        variant: "default",
+        title: title || "Warning",
+        description: message,
+        className: "bg-yellow-50 border-yellow-200 text-yellow-800"
+      })
+  };
+};
+
 export { useToast, toast }

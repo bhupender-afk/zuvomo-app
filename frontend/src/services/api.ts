@@ -1,4 +1,22 @@
-const API_BASE_URL = '/api';
+// Dynamic API base URL configuration
+const getApiBaseUrl = () => {
+  // 1. Use environment variable if set
+  if (import.meta.env.VITE_API_BASE_URL) {
+    console.log('🔗 Using VITE_API_BASE_URL from env:', import.meta.env.VITE_API_BASE_URL);
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  // 2. Fallback based on environment mode
+  if (import.meta.env.MODE === 'production') {
+    // In production, use the current origin with /api path
+    return `${window.location.origin}/api`;
+  } else {
+    // In development, use localhost backend
+    return 'http://localhost:3001/api';
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // API response types
 interface ApiResponse<T = any> {
@@ -101,14 +119,36 @@ class ApiClient {
     }
   }
 
-  async post<T = any>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T = any>(endpoint: string, data?: any, options?: { headers?: HeadersInit }): Promise<ApiResponse<T>> {
     try {
+      // Check if data is FormData - if so, don't stringify and don't set Content-Type
+      const isFormData = data instanceof FormData;
+
+      let headers = options?.headers;
+      let body: string | FormData | undefined;
+
+      if (isFormData) {
+        // For FormData, don't set Content-Type (let browser set it with boundary)
+        headers = {
+          ...this.getAuthHeaders(''),
+          ...options?.headers
+        };
+        body = data;
+      } else {
+        // For regular JSON data
+        headers = {
+          ...this.getAuthHeaders(),
+          ...options?.headers
+        };
+        body = data ? JSON.stringify(data) : undefined;
+      }
+
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
-        body: data ? JSON.stringify(data) : undefined,
+        headers,
+        body,
       });
-      
+
       return this.handleResponse<T>(response);
     } catch (error) {
       return { error: 'Network error' };

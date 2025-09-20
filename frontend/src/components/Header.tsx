@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import ChangePassword from './auth/ChangePassword';
 
 const Header = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isApproved } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
+  // Reusable navigation link styles
+  const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
+    `relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+      isActive
+        ? "bg-brand-orange text-white shadow-lg"
+        : "text-white hover:text-white hover:bg-white/10 hover:scale-105"
+    }`;
 
   // Handle scroll effect for header
   useEffect(() => {
@@ -32,8 +43,24 @@ const Header = () => {
 
   const getDashboardUrl = () => {
     if (!user) return '/login';
+
+    // Admin users always get access to dashboard regardless of approval status
+    if (user.role === 'admin') {
+      return '/admin';
+    }
+
+    // For non-admin users, check approval status
+    if (!isApproved()) {
+      console.log('Header: User not approved, redirecting to login', {
+        userRole: user.role,
+        approvalStatus: user.approval_status,
+        isApproved: isApproved()
+      });
+      return '/login';
+    }
+
+    // Approved users get their respective dashboards
     switch (user.role) {
-      case 'admin': return '/admin';
       case 'project_owner': return '/project-owner';
       case 'investor': return '/investor';
       default: return '/login';
@@ -44,27 +71,21 @@ const Header = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleNavClick = (sectionId: string, event: React.MouseEvent) => {
-    event.preventDefault();
-    
-    // Close mobile menu if open
+  const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-    
-    // Smooth scroll to section
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
   };
 
-  const handleExternalLink = (url: string, event: React.MouseEvent) => {
-    event.preventDefault();
-    setIsMobileMenuOpen(false);
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMobileMenuOpen]);
   return (
     <>
       {/* Top notification bar */}
@@ -81,7 +102,11 @@ const Header = () => {
       </div>
 
       {/* Main navigation */}
-      <header className={`w-full bg-[#2C91D5] shadow-[0_2px_6px_0_rgba(44,145,213,0.20)] border-b border-[#2C91D5]/20 transition-all duration-300 ${isScrolled ? 'shadow-lg' : ''} sticky top-0 z-50`}>
+      <header className={`w-full bg-[#2F3A63] border-b border-[#2F3A63]/20 transition-all duration-300 sticky top-0 z-50
+  ${isScrolled
+          ? 'shadow-[0_4px_12px_0_rgba(47,58,99,0.35)]'  // darker, deeper shadow when scrolled
+          : 'shadow-[0_2px_6px_0_rgba(47,58,99,0.20)]'   // subtle shadow by default
+        }`}>
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -92,60 +117,32 @@ const Header = () => {
                 alt="Zuvomo Logo"
               />
             </a>
-            
+
             {/* Navigation */}
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-              <a 
-                href="#projects" 
-                onClick={(e) => handleNavClick('projects', e)}
-                className="text-white px-4 py-1.5 bg-brand-orange rounded-full text-sm hover:bg-orange-600 transition-colors"
-              >
+            <nav className="hidden lg:flex items-center space-x-2">
+              <NavLink to="/" className={navLinkStyles}>
                 Explore
-              </a>
-              <a 
-                href="#projects" 
-                onClick={(e) => handleNavClick('projects', e)}
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-              >
+              </NavLink>
+              <NavLink to="/startups" className={navLinkStyles}>
                 Startups
-              </a>
-              <a 
-                href="#services" 
-                onClick={(e) => handleNavClick('services', e)}
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-              >
+              </NavLink>
+              <NavLink to="/investors" className={navLinkStyles}>
                 For Investors
-              </a>
-              <a 
-                href="#team" 
-                onClick={(e) => handleNavClick('team', e)}
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-              >
-                About Us
-              </a>
-              <a 
-                href="#services" 
-                onClick={(e) => handleNavClick('services', e)}
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-              >
-                Our Services
-              </a>
-              <Link 
-                to="/blog"
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              </NavLink>
+              <NavLink to="/blog" className={navLinkStyles}>
                 Blog
-              </Link>
-              <Link 
-                to="/case-studies"
-                className="text-white hover:text-[#E3F2FD] transition-colors text-sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              </NavLink>
+              <NavLink to="/case-studies" className={navLinkStyles}>
                 Case Studies
-              </Link>
+              </NavLink>
+              <NavLink to="/about-us" className={navLinkStyles}>
+                About Us
+              </NavLink>
+              <NavLink to="/our-service" className={navLinkStyles}>
+                Our Services
+              </NavLink>
             </nav>
-            
+
             {/* Auth buttons / User menu */}
             <div className="hidden lg:flex items-center gap-3">
               {isAuthenticated && user ? (
@@ -189,6 +186,15 @@ const Header = () => {
                       >
                         Profile Settings
                       </a>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setShowChangePassword(true);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Change Password
+                      </button>
                       <hr className="my-1" />
                       <button
                         onClick={() => {
@@ -204,13 +210,13 @@ const Header = () => {
                 </div>
               ) : (
                 <>
-                  <button 
+                  <button
                     onClick={handleLogin}
                     className="px-5 py-2 text-[13px] text-[#2C91D5] bg-white font-medium rounded-full border border-[#2C91D5] hover:bg-[#2C91D5] hover:text-white transition-all duration-200 hover:scale-105"
                   >
                     Log In
                   </button>
-                  <button 
+                  <button
                     onClick={handleSignUp}
                     className="px-5 py-2 text-sm text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 hover:scale-105"
                   >
@@ -219,134 +225,221 @@ const Header = () => {
                 </>
               )}
             </div>
-            
+
             {/* Mobile menu button */}
-            <button 
-              onClick={toggleMobileMenu}
-              className="lg:hidden text-white hover:text-[#E3F2FD] transition-colors"
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMobileMenu();
+              }}
+              className="lg:hidden text-white hover:text-[#E3F2FD] transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-105"
               aria-label="Toggle mobile menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} 
-                />
-              </svg>
+              <div className="w-6 h-6 flex items-center justify-center">
+                <div className="relative">
+                  {/* Hamburger lines with smooth animation */}
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
+                  }`}></span>
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                  }`}></span>
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
+                    isMobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
+                  }`}></span>
+                </div>
+              </div>
             </button>
           </div>
-          
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 border-t border-white/20">
-              <nav className="flex flex-col space-y-3 pt-4">
-                <a 
-                  href="#projects" 
-                  onClick={(e) => handleNavClick('projects', e)}
-                  className="text-white px-4 py-2 bg-brand-orange rounded-full text-sm text-center hover:bg-orange-600 transition-colors"
-                >
-                  Explore
-                </a>
-                <a 
-                  href="#projects" 
-                  onClick={(e) => handleNavClick('projects', e)}
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                >
-                  Startups
-                </a>
-                <a 
-                  href="#services" 
-                  onClick={(e) => handleNavClick('services', e)}
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                >
-                  For Investors
-                </a>
-                <a 
-                  href="#team" 
-                  onClick={(e) => handleNavClick('team', e)}
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                >
-                  About Us
-                </a>
-                <a 
-                  href="#services" 
-                  onClick={(e) => handleNavClick('services', e)}
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                >
-                  Our Services
-                </a>
-                <Link 
-                  to="/blog"
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Blog
-                </Link>
-                <Link 
-                  to="/case-studies"
-                  className="text-white hover:text-[#E3F2FD] transition-colors text-sm px-4 py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Case Studies
-                </Link>
-                
-                {/* Mobile auth buttons / User menu */}
-                <div className="flex flex-col gap-2 pt-4">
-                  {isAuthenticated && user ? (
-                    <>
-                      <div className="flex items-center space-x-3 px-4 py-3 bg-white/10 rounded-lg mb-2">
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                          <span className="text-brand-navy font-medium">
-                            {user.first_name?.[0]}{user.last_name?.[0]}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-white">
-                            {user.first_name} {user.last_name}
-                          </p>
-                          <p className="text-xs text-white/80 capitalize">{user.role.replace('_', ' ')}</p>
-                        </div>
+
+        {/* Mobile Navigation Backdrop */}
+        {isMobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={closeMobileMenu}
+          />
+        )}
+
+        {/* Mobile Navigation Menu */}
+        <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+          isMobileMenuOpen
+            ? 'max-h-screen opacity-100'
+            : 'max-h-0 opacity-0'
+        }`}>
+          <div className="bg-[#2F3A63] border-t border-white/10 pb-6">
+            <nav className="flex flex-col space-y-1 pt-4 px-4">
+              {/* Mobile Navigation Links */}
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                Explore
+              </NavLink>
+              <NavLink
+                to="/startups"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                Startups
+              </NavLink>
+              <NavLink
+                to="/investors"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                For Investors
+              </NavLink>
+              <NavLink
+                to="/blog"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                Blog
+              </NavLink>
+              <NavLink
+                to="/case-studies"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                Case Studies
+              </NavLink>
+              <NavLink
+                to="/about-us"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                About Us
+              </NavLink>
+              <NavLink
+                to="/our-service"
+                className={({ isActive }) =>
+                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand-orange text-white shadow-lg'
+                      : 'text-white hover:bg-white/10 hover:text-white'
+                  }`
+                }
+                onClick={closeMobileMenu}
+              >
+                Our Services
+              </NavLink>
+
+              {/* Mobile Auth Section */}
+              <div className="pt-6 border-t border-white/10 mt-4">
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center space-x-3 px-4 py-4 bg-white/5 rounded-xl mb-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-brand-navy font-semibold text-sm">
+                          {user.first_name?.[0]}{user.last_name?.[0]}
+                        </span>
                       </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white">
+                          {user.first_name} {user.last_name}
+                        </p>
+                        <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
                       <a
                         href={getDashboardUrl()}
-                        className="px-5 py-2 text-sm text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-opacity text-center"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 text-center block"
+                        onClick={closeMobileMenu}
                       >
                         Dashboard
                       </a>
-                      <button 
+                      <button
                         onClick={() => {
-                          setIsMobileMenuOpen(false);
+                          closeMobileMenu();
                           handleLogout();
                         }}
-                        className="px-5 py-2 text-[13px] text-[#2C91D5] bg-white font-medium rounded-full border border-[#2C91D5] hover:bg-[#2C91D5] hover:text-white transition-colors"
+                        className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
                       >
                         Sign Out
                       </button>
-                    </>
-                  ) : (
-                    <>
-                      <button 
-                        onClick={handleLogin}
-                        className="px-5 py-2 text-[13px] text-[#2C91D5] bg-white font-medium rounded-full border border-[#2C91D5] hover:bg-[#2C91D5] hover:text-white transition-colors"
-                      >
-                        Log In
-                      </button>
-                      <button 
-                        onClick={handleSignUp}
-                        className="px-5 py-2 text-sm text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-opacity"
-                      >
-                        Sign Up
-                      </button>
-                    </>
-                  )}
-                </div>
-              </nav>
-            </div>
-          )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => {
+                        closeMobileMenu();
+                        handleLogin();
+                      }}
+                      className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
+                    >
+                      Log In
+                    </button>
+                    <button
+                      onClick={() => {
+                        closeMobileMenu();
+                        handleSignUp();
+                      }}
+                      className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
+        </div>
         </div>
       </header>
+
+      {/* Change Password Modal */}
+      <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+          <ChangePassword
+            onSuccess={() => {
+              setShowChangePassword(false);
+            }}
+            onCancel={() => setShowChangePassword(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -1,10 +1,52 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const { executeQuery, getOne } = require('../config/database');
 const { verifyToken, requireRole } = require('../middleware/auth');
 const { validateUserRegistration, validateUserUpdate } = require('../middleware/validation');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
+
+// Configure multer for admin file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '../uploads/admin');
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename with timestamp
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  }
+});
+
+// File filter for images
+const fileFilter = (req, file, cb) => {
+  // Accept images only
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+// Configure upload middleware
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1 // Single file upload
+  }
+});
 
 // Apply admin authentication to all routes
 router.use(verifyToken);
@@ -562,7 +604,7 @@ router.put('/projects/:id/featured', async (req, res) => {
       [is_featured ? 1 : 0, id]
     );
 
-    res.json({ 
+    res.json({
       message: `Project ${is_featured ? 'featured' : 'unfeatured'} successfully`,
       is_featured: is_featured
     });
@@ -570,6 +612,312 @@ router.put('/projects/:id/featured', async (req, res) => {
   } catch (error) {
     console.error('Toggle featured error:', error);
     res.status(500).json({ error: 'Failed to update featured status' });
+  }
+});
+
+// Approve user account with email notification
+router.put('/users/:id/approve', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { admin_notes } = req.body;
+
+    // Get user details before approval
+    const user = await getOne(
+      'SELECT id, email, first_name, last_name, user_type, approval_status FROM users WHERE id = ?',
+      [id]
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.approval_status === 'approved') {
+      return res.status(400).json({ error: 'User is already approved' });
+    }
+
+    // Update user approval status
+    await executeQuery(
+      'UPDATE users SET approval_status = ? WHERE id = ?',
+      ['approved', id]
+    );
+
+    // Send welcome email
+    try {
+      await emailService.sendWelcomeEmail({
+        ...user,
+        role: user.user_type
+      });
+      console.log(`Welcome email sent to ${user.email}`);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Don't fail the approval if email fails
+    }
+
+    // Log admin action
+    try {
+      await executeQuery(
+        'INSERT INTO admin_actions (admin_id, action_type, target_id, target_type, notes) VALUES (?, ?, ?, ?, ?)',
+        [req.user.id, 'user_approved', id, 'user', admin_notes || 'User account approved']
+      );
+    } catch (logError) {
+      console.error('Failed to log admin action:', logError);
+    }
+
+    res.json({
+      message: 'User approved successfully and welcome email sent',
+      user: {
+        id: user.id,
+        email: user.email,
+        approval_status: 'approved'
+      }
+    });
+
+  } catch (error) {
+    console.error('Approve user error:', error);
+    res.status(500).json({ error: 'Failed to approve user' });
+  }
+});
+
+// Reject user account with email notification
+router.put('/users/:id/reject', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rejection_reason, admin_notes } = req.body;
+
+    if (!rejection_reason || rejection_reason.trim().length === 0) {
+      return res.status(400).json({ error: 'Rejection reason is required' });
+    }
+
+    // Get user details before rejection
+    const user = await getOne(
+      'SELECT id, email, first_name, last_name, user_type, approval_status FROM users WHERE id = ?',
+      [id]
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.approval_status === 'rejected') {
+      return res.status(400).json({ error: 'User is already rejected' });
+    }
+
+    console.log('Rejection reason:', user);
+    // Update user approval status
+    await executeQuery(
+      'UPDATE users SET approval_status = ?, rejection_reason = ? WHERE id = ?',
+      ['rejected', rejection_reason, id]
+    );
+
+    // Send rejection email
+    try {
+      await emailService.sendRejectionEmail({
+        ...user,
+        role: user.user_type
+      }, rejection_reason);
+      console.log(`Rejection email sent to ${user.email}`);
+    } catch (emailError) {
+      console.error('Failed to send rejection email:', emailError);
+      // Don't fail the rejection if email fails
+    }
+
+    // Log admin action
+    try {
+      await executeQuery(
+        'INSERT INTO admin_actions (admin_id, action_type, target_id, target_type, notes) VALUES (?, ?, ?, ?, ?)',
+        [req.user.id, 'user_rejected', id, 'user', rejection_reason]
+      );
+    } catch (logError) {
+      console.error('Failed to log admin action:', logError);
+    }
+
+    res.json({
+      message: 'User rejected successfully and notification email sent',
+      user: {
+        id: user.id,
+        email: user.email,
+        approval_status: 'rejected',
+        rejection_reason
+      }
+    });
+
+  } catch (error) {
+    console.error('Reject user error:', error);
+    res.status(500).json({ error: 'Failed to reject user' });
+  }
+});
+
+// Bulk approve users
+router.post('/users/bulk-approve', async (req, res) => {
+  try {
+    const { user_ids, admin_notes } = req.body;
+
+    if (!user_ids || !Array.isArray(user_ids) || user_ids.length === 0) {
+      return res.status(400).json({ error: 'Valid user IDs array is required' });
+    }
+
+    // Get users to approve
+    const placeholders = user_ids.map(() => '?').join(',');
+    const users = await executeQuery(
+      `SELECT id, email, first_name, last_name, user_type, approval_status
+       FROM users WHERE id IN (${placeholders}) AND approval_status = 'pending'`,
+      user_ids
+    );
+
+    if (users.length === 0) {
+      return res.status(400).json({ error: 'No pending users found for approval' });
+    }
+
+    // Approve all users
+    await executeQuery(
+      `UPDATE users SET approval_status = 'approved'
+       WHERE id IN (${placeholders}) AND approval_status = 'pending'`,
+      user_ids
+    );
+
+    // Send welcome emails
+    let emailsSent = 0;
+    for (const user of users) {
+      try {
+        await emailService.sendWelcomeEmail({
+          ...user,
+          role: user.user_type
+        });
+        emailsSent++;
+      } catch (emailError) {
+        console.error(`Failed to send welcome email to ${user.email}:`, emailError);
+      }
+    }
+
+    res.json({
+      message: `${users.length} users approved successfully`,
+      approved_count: users.length,
+      emails_sent: emailsSent,
+      users: users.map(u => ({ id: u.id, email: u.email }))
+    });
+
+  } catch (error) {
+    console.error('Bulk approve users error:', error);
+    res.status(500).json({ error: 'Failed to bulk approve users' });
+  }
+});
+
+// Get pending users for approval
+router.get('/users/pending', async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 20;
+    const offset = (pageNum - 1) * limitNum;
+
+    // Get pending users count
+    const totalResult = await executeQuery(
+      'SELECT COUNT(*) as total FROM users WHERE approval_status = ?',
+      ['pending']
+    );
+    const total = totalResult[0].total;
+
+    // Get pending users
+    const users = await executeQuery(
+      `SELECT id, email, first_name, last_name, user_type, company, location,
+              created_at, is_verified
+       FROM users
+       WHERE approval_status = 'pending'
+       ORDER BY created_at ASC
+       LIMIT ${limitNum} OFFSET ${offset}`,
+      []
+    );
+
+    res.json({
+      users: users.map(user => ({
+        ...user,
+        role: user.user_type,
+        days_waiting: Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24))
+      })),
+      pagination: {
+        current_page: pageNum,
+        per_page: limitNum,
+        total,
+        total_pages: Math.ceil(total / limitNum)
+      }
+    });
+
+  } catch (error) {
+    console.error('Get pending users error:', error);
+    res.status(500).json({ error: 'Failed to fetch pending users' });
+  }
+});
+
+// Admin upload endpoint for blog and case study images
+router.post('/upload', upload.single('file'), async (req, res) => {
+  try {
+    console.log('[ADMIN UPLOAD] Starting upload...', {
+      hasFile: !!req.file,
+      fileType: req.body.type,
+      adminId: req.user?.id
+    });
+    console.log('[ADMIN UPLOAD] File received:', req.body)
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No file uploaded'
+      });
+    }
+
+    console.log('[ADMIN UPLOAD] File received:', req)
+    const { type } = req.body;
+
+    // Validate upload type
+    const allowedTypes = ['blog_image', 'case_study_featured', 'case_study_logo'];
+    if (type && !allowedTypes.includes(type)) {
+      // Clean up uploaded file
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error cleaning up file:', err);
+      });
+
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid upload type'
+      });
+    }
+
+    // Generate the file URL
+    const fileUrl = `/uploads/admin/${req.file.filename}`;
+
+    console.log('[ADMIN UPLOAD] Upload successful', {
+      filename: req.file.filename,
+      fileUrl: fileUrl,
+      type: type,
+      size: req.file.size
+    });
+
+    res.json({
+      success: true,
+      message: 'File uploaded successfully',
+      fileUrl: fileUrl,
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      size: req.file.size,
+      mimeType: req.file.mimetype,
+      type: type
+    });
+
+  } catch (error) {
+    console.error('[ADMIN UPLOAD] Upload error:', error);
+
+    // Clean up uploaded file on error
+    if (req.file && req.file.path) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error cleaning up file:', err);
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload file',
+      error: error.message
+    });
   }
 });
 

@@ -24,9 +24,19 @@ export interface SignupRequest {
   password: string;
   first_name: string;
   last_name: string;
+  phone_number?: string;
+  telegram_handle?: string;
+  website_url?: string;
+  linkedin?: string;
   user_type: 'project_owner' | 'investor';
   company?: string;
   location?: string;
+  // Investor-specific fields
+  investment_focus?: string;
+  preferred_category?: string;
+  investment_range?: string;
+  current_portfolio_size?: string;
+  past_investments?: string;
 }
 
 export interface AuthResponse {

@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import authService, { User } from '../services/auth';
+import authService, { User, SignupRequest } from '../services/auth';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (userData: any) => Promise<{ success: boolean; error?: string }>;
+  signup: (userData: SignupRequest) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   hasRole: (roles: string[]) => boolean;
   isApproved: () => boolean;
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (userData: any) => {
+  const signup = async (userData: SignupRequest) => {
     setIsLoading(true);
     
     try {

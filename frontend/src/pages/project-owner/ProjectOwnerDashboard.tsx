@@ -39,6 +39,7 @@ import {
   Activity
 } from 'lucide-react';
 import api from '../../services/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Project {
   id: string;
@@ -101,6 +102,7 @@ interface ValidationErrors {
 }
 
 const ProjectOwnerDashboard: React.FC = () => {
+  const { user,logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -680,7 +682,8 @@ const ProjectOwnerDashboard: React.FC = () => {
     
     // Construct full URL if it's a relative path
     if (imageUrl && !imageUrl.startsWith('http')) {
-      imageUrl = `http://13.200.209.191:8080${imageUrl}`;
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://13.200.209.191:8080';
+      imageUrl = `${backendUrl}${imageUrl}`;
     }
     
     console.log(`[ProjectOwner] Image URL for ${project.title}: ${imageUrl}`);
@@ -1224,7 +1227,7 @@ const ProjectOwnerDashboard: React.FC = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
-                <Button variant="ghost" size="sm">Logout</Button>
+                <Button variant="ghost" size="sm" onClick={logout}>Logout</Button>
               </div>
             </div>
           </div>

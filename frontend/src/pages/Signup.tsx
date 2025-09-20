@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import AuthLayout from '../components/auth/AuthLayout';
-import SignupForm from '../components/auth/SignupForm';
+import ModularSignupForm from '../components/auth/ModularSignupForm';
 
 const Signup: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
@@ -10,7 +9,7 @@ const Signup: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated && user) {
       // Redirect based on user role
-      switch (user.role) {
+      switch (user.role || user.user_type) {
         case 'admin':
           window.location.href = '/admin';
           break;
@@ -27,13 +26,21 @@ const Signup: React.FC = () => {
     }
   }, [isAuthenticated, user]);
 
+  const handleSignupSuccess = () => {
+    // Modular signup form handles the complete flow including waiting screen
+    console.log('Signup process initiated - user will be notified of approval status');
+  };
+
+  const handleSignupError = (error: string) => {
+    console.error('Signup error:', error);
+    // Could add toast notification here if needed
+  };
+
   return (
-    <AuthLayout
-      title="Join Zuvomo"
-      subtitle="Create your account to get started"
-    >
-      <SignupForm />
-    </AuthLayout>
+    <ModularSignupForm
+      onSuccess={handleSignupSuccess}
+      onError={handleSignupError}
+    />
   );
 };
 

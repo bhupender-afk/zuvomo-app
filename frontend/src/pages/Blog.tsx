@@ -142,13 +142,18 @@ const Blog: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#2C91D5] to-blue-600 py-20">
+
+
+  {/* Hero Section */}
+      <section className="to-emerald-600 py-20" style={{
+              backgroundImage: `url('/Bg.png')`, backgroundPosition: 'left center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat'
+            }}>
         <div className="container mx-auto px-4">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-6">Zuvomo Blog</h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
+          <div className="text-center text-black">
+            <h1 className="text-5xl font-bold mb-6 ">Zuvomo Blog</h1>
+            <p className="text-xl mb-8 max-w-3xl mx-auto">
               Insights, stories, and expert advice from the world of startup funding and entrepreneurship
             </p>
             
@@ -156,22 +161,24 @@ const Blog: React.FC = () => {
             <div className="max-w-2xl mx-auto flex gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
+                 <Input
                   type="text"
                   placeholder="Search articles..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="pl-10 py-3 text-lg"
+                   className="pl-10 py-3 text-lg text-black placeholder:text-black caret-black"
                 />
               </div>
-              <Button onClick={handleSearch} size="lg">
-                Search
-              </Button>
+                <Button onClick={handleSearch} size="lg">
+                              Search
+                            </Button>
+            
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Featured Articles */}
       {featuredBlogs.length > 0 && (
@@ -234,7 +241,7 @@ const Blog: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Main Content */}
-          <div className="lg:w-3/4">
+          <div className="lg:w-4/4">
             
             {/* Filters and View Toggle */}
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
@@ -413,11 +420,11 @@ const Blog: React.FC = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="sticky top-8">
+          {/* <div className="lg:w-1/4">
+            <div className="sticky top-8"> */}
               
               {/* Categories */}
-              <Card className="mb-6">
+              {/* <Card className="mb-6">
                 <CardHeader>
                   <h3 className="text-lg font-semibold">Categories</h3>
                 </CardHeader>
@@ -448,10 +455,10 @@ const Blog: React.FC = () => {
                     ))}
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Newsletter Signup */}
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <h3 className="text-lg font-semibold">Stay Updated</h3>
                 </CardHeader>
@@ -469,9 +476,9 @@ const Blog: React.FC = () => {
                     We respect your privacy. Unsubscribe at any time.
                   </p>
                 </CardContent>
-              </Card>
-            </div>
-          </div>
+              </Card> */}
+            {/* </div>
+          </div> */}
         </div>
       </div>
 

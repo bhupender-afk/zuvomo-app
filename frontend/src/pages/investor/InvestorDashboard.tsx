@@ -141,11 +141,12 @@ const transformBackendToHomepageFormat = (projects: BackendProject[]): ProjectDa
 };
 
 const InvestorDashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user,logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [featuredProjects, setFeaturedProjects] = useState<ProjectData[]>([]);
+  const [newProjects, setNewProjects] = useState<ProjectData[]>([]);
   const [allProjects, setAllProjects] = useState<ProjectData[]>([]);
   const [recentProjects, setRecentProjects] = useState<ProjectData[]>([]);
   const [recommendedProjects, setRecommendedProjects] = useState<ProjectData[]>([]);
@@ -208,13 +209,28 @@ const InvestorDashboard: React.FC = () => {
           console.log('✅ Transformed projects:', transformedProjects.length);
           console.log('✅ Sample transformed project:', transformedProjects[0]);
           
-          // Set all projects for different tabs
-          setRecentProjects(transformedProjects.slice(0, 9)); // Most recent 9
-          setRecommendedProjects(transformedProjects.slice(0, 9)); // All approved projects for now
-          
-          // Filter featured projects
+          // Sort projects by creation date (newest first)
+          const sortedByDate = [...transformedProjects].sort((a, b) =>
+            new Date(b.created_at || Date.now()).getTime() - new Date(a.created_at || Date.now()).getTime()
+          );
+
+          // Filter featured projects (priority 1)
           const featured = transformedProjects.filter((p) => p.is_featured);
-          setFeaturedProjects(featured.length > 0 ? featured : transformedProjects.slice(0, 3)); // Show first 3 if no featured
+          setFeaturedProjects(featured.length > 0 ? featured : []);
+
+          // Get new projects (created in last 30 days, priority 2)
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+          const newProjectsList = sortedByDate.filter((p) => {
+            const createdDate = new Date(p.created_at || Date.now());
+            return createdDate >= thirtyDaysAgo && !p.is_featured; // Exclude featured from new
+          }).slice(0, 9);
+          setNewProjects(newProjectsList);
+
+          // Set all projects for different tabs (priority 3)
+          setRecentProjects(sortedByDate.slice(0, 9)); // Most recent 9
+          setRecommendedProjects(transformedProjects.slice(0, 9)); // All approved projects for now
         }
 
         // Fetch watchlist
@@ -448,6 +464,7 @@ const InvestorDashboard: React.FC = () => {
   const navigationItems = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
     { id: 'featured', label: 'Featured', icon: Star },
+    { id: 'new', label: 'New Projects', icon: Clock },
     { id: 'browse', label: 'Browse', icon: Search },
     { id: 'all-projects', label: 'All Projects', icon: Filter },
     { id: 'watchlist', label: 'Watchlist', icon: Heart },
@@ -518,6 +535,7 @@ const InvestorDashboard: React.FC = () => {
               size="sm" 
               className={`w-full ${sidebarCollapsed ? 'justify-center px-2' : 'justify-start'}`}
               title={sidebarCollapsed ? 'Logout' : undefined}
+              onClick={logout}
             >
               <User className={`w-4 h-4 ${sidebarCollapsed ? '' : 'mr-2'}`} />
               {!sidebarCollapsed && 'Logout'}
@@ -765,7 +783,7 @@ const InvestorDashboard: React.FC = () => {
                     {featuredProjects.length} Featured
                   </Badge>
                 </div>
-                
+
                 {featuredProjects.length === 0 ? (
                   <div className="text-center py-12">
                     <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -775,11 +793,57 @@ const InvestorDashboard: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {featuredProjects.map((project) => (
-                      <ProjectCard 
-                        key={project.id} 
+                      <ProjectCard
+                        key={project.id}
                         project={project}
                         onViewDetails={() => handleViewDetails(project)}
                       />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* New Projects Tab */}
+            {activeTab === 'new' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">New Projects</h2>
+                    <p className="text-gray-600">Recently added projects seeking investment</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <Clock className="w-3 h-3 mr-1" />
+                    {newProjects.length} New (Last 30 days)
+                  </Badge>
+                </div>
+
+                {newProjects.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Clock className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No new projects</h3>
+                    <p className="text-gray-500">No new projects have been added in the last 30 days</p>
+                    <Button
+                      className="mt-4 bg-blue-600 hover:bg-blue-700"
+                      onClick={() => setActiveTab('all-projects')}
+                    >
+                      Browse All Projects
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {newProjects.map((project) => (
+                      <div key={project.id} className="relative">
+                        <ProjectCard
+                          project={project}
+                          onViewDetails={() => handleViewDetails(project)}
+                        />
+                        <div className="absolute top-2 left-2">
+                          <Badge className="bg-green-500 text-white text-xs">
+                            NEW
+                          </Badge>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}

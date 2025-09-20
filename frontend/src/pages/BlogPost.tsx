@@ -267,7 +267,7 @@ const BlogPost: React.FC = () => {
               </div>
 
               {/* Author Info */}
-              <div className="flex items-center gap-4 mb-8 p-4 bg-gray-50 rounded-lg">
+              {/* <div className="flex items-center gap-4 mb-8 p-4 bg-gray-50 rounded-lg">
                 <div className="w-16 h-16 bg-[#2C91D5] rounded-full flex items-center justify-center text-white font-bold text-xl">
                   {blog.author_first_name[0]}{blog.author_last_name[0]}
                 </div>
@@ -279,7 +279,7 @@ const BlogPost: React.FC = () => {
                     <p className="text-gray-600 text-sm">{blog.author_bio}</p>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Share Buttons */}
               <div className="flex items-center gap-4 mb-8 pb-8 border-b">
@@ -373,7 +373,7 @@ const BlogPost: React.FC = () => {
           )}
 
           {/* Newsletter CTA */}
-          <Card className="mt-16 bg-gradient-to-r from-[#2C91D5] to-blue-600 text-white">
+          <Card className="mt-16 bg-gradient-to-r from-[rgb(44,145,213)] to-[rgb(44,120,180)] text-white">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold mb-4">Stay in the Loop</h3>
               <p className="text-lg mb-6 opacity-90">

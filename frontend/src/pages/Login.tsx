@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AuthLayout from '../components/auth/AuthLayout';
-import LoginForm from '../components/auth/LoginForm';
+import EnhancedLoginForm from '../components/auth/EnhancedLoginForm';
 
 const Login: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
+  const [isWideForm, setIsWideForm] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -27,12 +28,31 @@ const Login: React.FC = () => {
     }
   }, [isAuthenticated, user]);
 
+  const handleLoginSuccess = () => {
+    // The enhanced login form will handle redirects via auth context
+    console.log('Login successful - redirecting via auth context');
+  };
+
+  const handleSwitchToSignup = () => {
+    window.location.href = '/signup';
+  };
+
+  const handleLayoutChange = (needsWideLayout: boolean) => {
+    setIsWideForm(needsWideLayout);
+  };
+
   return (
     <AuthLayout
       title="Welcome Back"
       subtitle="Sign in to your account to continue"
+      isWideForm={isWideForm}
     >
-      <LoginForm />
+      {/* <LoginForm/> */}
+      <EnhancedLoginForm
+        onSuccess={handleLoginSuccess}
+        onSwitchToSignup={handleSwitchToSignup}
+        onLayoutChange={handleLayoutChange}
+      />
     </AuthLayout>
   );
 };

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Building, 
-  Calendar, 
-  Clock, 
-  Eye, 
-  Share2, 
-  Facebook, 
-  Twitter, 
+import {
+  Building,
+  Calendar,
+  Clock,
+  Eye,
+  Share2,
+  Facebook,
+  Twitter,
   Linkedin,
   ChevronLeft,
   ChevronRight,
@@ -79,9 +79,9 @@ const CaseStudy: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await api.get(`/case-studies/${caseSlug}`);
-      
+
       if (response.data?.success) {
         setCaseStudy(response.data.data.case_study);
         setRelatedCaseStudies(response.data.data.related || []);
@@ -114,7 +114,7 @@ const CaseStudy: React.FC = () => {
   const handleShare = (platform: string) => {
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedTitle = encodeURIComponent(shareTitle);
-    
+
     let shareLink = '';
     switch (platform) {
       case 'facebook':
@@ -131,7 +131,7 @@ const CaseStudy: React.FC = () => {
         navigator.clipboard.writeText(shareUrl);
         return;
     }
-    
+
     window.open(shareLink, '_blank', 'width=600,height=400');
   };
 
@@ -179,7 +179,7 @@ const CaseStudy: React.FC = () => {
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b" >
         <div className="container mx-auto px-4 py-4">
           <nav className="flex items-center gap-2 text-sm">
             <Link to="/" className="text-gray-500 hover:text-green-600">
@@ -197,9 +197,9 @@ const CaseStudy: React.FC = () => {
 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
-          
+
           {/* Back to Case Studies */}
-          <Link 
+          <Link
             to="/case-studies"
             className="inline-flex items-center text-green-600 hover:text-green-700 mb-8 transition-colors"
           >
@@ -341,10 +341,10 @@ const CaseStudy: React.FC = () => {
 
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
+
             {/* Content Column */}
             <div className="lg:col-span-2 space-y-8">
-              
+
               {/* Challenge */}
               <Card>
                 <CardHeader>
@@ -400,7 +400,7 @@ const CaseStudy: React.FC = () => {
               {caseStudy.content && (
                 <Card>
                   <CardContent className="p-8">
-                    <div 
+                    <div
                       className="prose prose-lg max-w-none"
                       dangerouslySetInnerHTML={{ __html: caseStudy.content }}
                     />
@@ -434,7 +434,7 @@ const CaseStudy: React.FC = () => {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              
+
               {/* Key Metrics */}
               {caseStudy.metrics && Object.keys(caseStudy.metrics).length > 0 && (
                 <Card>

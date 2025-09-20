@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { X, Plus, Upload, Eye, Save } from 'lucide-react';
 import api from '../services/api';
+import { useToastMessages } from '@/hooks/use-toast';
 
 interface BlogCreateFormProps {
   onBlogCreated: (blog: any) => void;
@@ -16,6 +17,7 @@ interface BlogCreateFormProps {
 }
 
 const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel }) => {
+  const { success, error, warning } = useToastMessages();
   const [formData, setFormData] = useState({
     title: '',
     excerpt: '',
@@ -61,12 +63,12 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file.');
+      error('Please select an image file.');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      alert('Image size must be less than 5MB.');
+      error('Image size must be less than 5MB.');
       return;
     }
 
@@ -76,20 +78,16 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
       formData.append('file', file);
       formData.append('type', 'blog_image');
 
-      const response = await api.post('/admin/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await api.post('/admin/upload', formData);
 
       if (response.data?.success) {
         handleInputChange('featured_image', response.data.fileUrl);
       } else {
         throw new Error(response.data?.message || 'Upload failed');
       }
-    } catch (error: any) {
-      console.error('Image upload error:', error);
-      alert('Failed to upload image. Please try again.');
+    } catch (uploadError: any) {
+      console.error('Image upload error:', uploadError);
+      error('Failed to upload image. Please try again.');
     } finally {
       setIsUploading(false);
     }
@@ -97,7 +95,7 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
 
   const handleSubmit = async (status: 'draft' | 'published') => {
     if (!formData.title.trim() || !formData.content.trim()) {
-      alert('Please fill in the title and content.');
+      error('Please fill in the title and content.');
       return;
     }
 
@@ -113,13 +111,14 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
       const response = await api.post('/blogs', submitData);
 
       if (response.data?.success) {
+        success(`Blog post ${status === 'published' ? 'published' : 'saved as draft'} successfully!`);
         onBlogCreated(response.data.data);
       } else {
         throw new Error(response.data?.message || 'Failed to create blog post');
       }
-    } catch (error: any) {
-      console.error('Blog creation error:', error);
-      alert(error.response?.data?.message || 'Failed to create blog post. Please try again.');
+    } catch (submitError: any) {
+      console.error('Blog creation error:', submitError);
+      error(submitError.response?.data?.message || 'Failed to create blog post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
