@@ -434,7 +434,6 @@ export const EnhancedSignupFormStep1: React.FC<EnhancedSignupFormStep1Props> = (
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
           className={`w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
             canSubmit
               ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg'
@@ -455,7 +454,7 @@ export const EnhancedSignupFormStep1: React.FC<EnhancedSignupFormStep1Props> = (
         </p>
       </div>
 
-      {/* Social Login Options */}
+      {/* Social Login Options - DISABLED
       <div className="mt-6 space-y-4">
         <div className="flex items-center">
           <div className="flex-1 border-t border-gray-200"></div>
@@ -475,13 +474,13 @@ export const EnhancedSignupFormStep1: React.FC<EnhancedSignupFormStep1Props> = (
           />
         </div>
 
-        {/* OAuth Error Display */}
         {oauthError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-800 text-sm">{oauthError}</p>
           </div>
         )}
       </div>
+      */}
     </div>
   );
 };

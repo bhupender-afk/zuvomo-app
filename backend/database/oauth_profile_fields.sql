@@ -1,14 +1,14 @@
 -- Add OAuth profile completion fields to users table
 -- Migration script for OAuth user profile completion
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Add additional profile fields for OAuth users
 -- Note: Some columns may already exist, so we'll use individual queries with error handling
 
 -- Check current table structure first
 SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = 'zuvomo_db_local' AND TABLE_NAME = 'users'
+WHERE TABLE_SCHEMA = 'zuvomo_db' AND TABLE_NAME = 'users'
 ORDER BY COLUMN_NAME;
 
 -- Add indexes for better performance on search fields

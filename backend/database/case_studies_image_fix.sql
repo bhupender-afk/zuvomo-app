@@ -2,7 +2,7 @@
 -- Adds missing image columns to match API expectations
 -- Run this script to fix case studies image saving issues
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Add missing image columns if they don't exist
 SET @dbname = DATABASE();

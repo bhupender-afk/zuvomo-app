@@ -203,7 +203,6 @@ class AuthEnhancedService {
   async login(data: EnhancedLoginRequest): Promise<ApiResponse<AuthResponse>> {
     try {
       const response = await api.post<AuthResponse>('/auth-enhanced/login-enhanced', data);
- console.error('Enhanced login error:', response);
       if (response.data) {
         // Store tokens and user data
         this.setTokens(response.data.accessToken, response.data.refreshToken);

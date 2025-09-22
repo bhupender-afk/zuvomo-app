@@ -1,7 +1,7 @@
 -- Enhanced Signup Flow - Minimal Required Changes
 -- Add only the missing fields needed for enhanced signup
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Add missing fields that don't exist yet
 ALTER TABLE users

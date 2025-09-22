@@ -1,7 +1,7 @@
 -- Enhanced Authentication System - Simplified Version
 -- This script creates the essential tables for the authentication system
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Create user authentication methods table
 CREATE TABLE IF NOT EXISTS user_auth_methods (

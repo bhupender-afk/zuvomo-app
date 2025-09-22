@@ -1,7 +1,7 @@
 -- Enhanced Signup Flow - Additional User Fields (Simple Version)
 -- Add new columns to users table for enhanced investor and project owner profiles
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Add enhanced user profile fields (without IF NOT EXISTS for compatibility)
 ALTER TABLE users

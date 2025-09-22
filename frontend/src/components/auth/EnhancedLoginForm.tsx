@@ -482,12 +482,24 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
             otpCode: formData.otpCode,
             loginMethod: 'otp'
           });
-          let response = result.data;
-          console.log("OTP verification response:", response);
+          
+          console.log("🔍 OTP verification full result:", result);
+          console.log("🔍 Result.data structure:", result.data);
+          console.log("🔍 Result.error:", result.error);
+          
+          // Handle double-nested response structure correctly
+          // Backend returns: { success: true, data: { success: true, user: {...}, accessToken: "..." } }
+          // API client wraps it as: { data: { success: true, data: { success: true, user: {...} } } }
+          const response = result.data?.data || result.data;
+          console.log("🔍 OTP verification parsed response:", response);
+          console.log("🔍 Response.success:", response?.success);
+          console.log("🔍 Response.user:", response?.user);
+          console.log("🔍 Response.error:", response?.error);
 
-          if (response && response.user) {
-            const userData = response;
-            console.log('OTP Login: User data received', userData);
+          // Check for successful response with user data - handle both possible structures
+          if (result.data && !result.error && (response?.user || result.data?.user)) {
+            const userData = response?.user ? response : result.data;
+            console.log('✅ OTP Login: User data received successfully', userData);
 
             // Check if email verification is required
             if (userData.requiresVerification) {
@@ -575,12 +587,39 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
               setError('Unknown account status. Please contact support.');
             }
           } else {
-            setError(response.error || 'Invalid or expired code');
+            // Enhanced error debugging
+            console.log('❌ OTP Login Failed - Debugging info:');
+            console.log('  - result.data exists:', !!result.data);
+            console.log('  - result.error exists:', !!result.error);
+            console.log('  - response?.success:', response?.success);
+            console.log('  - response?.user exists:', !!response?.user);
+            console.log('  - Full result object:', JSON.stringify(result, null, 2));
+            
+            // Check if there's a specific error message from the API
+            const errorMessage = result.error || response?.error || 'Invalid or expired code';
+            console.log('❌ Final error message:', errorMessage);
+            setError(errorMessage);
+            
+            toast({
+              variant: "destructive",
+              title: "Login Failed",
+              description: errorMessage,
+            });
           }
         }
       }
     } catch (error) {
-      setError('Network error. Please try again.');
+      console.error('💥 OTP Login Exception - Critical Error:', error);
+      console.error('💥 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+      const errorMessage = error instanceof Error ? error.message : 'Network error. Please try again.';
+      console.error('💥 Setting error message:', errorMessage);
+      setError(errorMessage);
+      
+      toast({
+        variant: "destructive",
+        title: "Network Error",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -785,9 +824,8 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
         </div>
       </form>
 
-      {/* Social Login Options - Show below email form */}
+      {/* Social Login Options - DISABLED
       <div className="space-y-4">
-        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
@@ -826,6 +864,7 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
           </button>
         </div>
       </div>
+      */}
     </div>
   );
 
@@ -915,7 +954,8 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
           </label>
         </div>
 
-        {/* Social login options */}
+        {/* Social login options - DISABLED */}
+        {/*
         {hasSocial && (
           <div className="space-y-2">
             <div className="relative">
@@ -961,6 +1001,7 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
             </div>
           </div>
         )}
+        */}
 
         <form onSubmit={handleAuth}>
           <button

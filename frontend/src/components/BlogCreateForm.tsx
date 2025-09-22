@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, Plus, Upload, Eye, Save } from 'lucide-react';
 import api from '../services/api';
 import { useToastMessages } from '@/hooks/use-toast';
+import { getFullImageUrl } from '@/utils/url';
 
 interface BlogCreateFormProps {
   onBlogCreated: (blog: any) => void;
@@ -81,7 +82,8 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
       const response = await api.post('/admin/upload', formData);
 
       if (response.data?.success) {
-        handleInputChange('featured_image', response.data.fileUrl);
+        const fullUrl = getFullImageUrl(response.data.fileUrl);
+        handleInputChange('featured_image', fullUrl);
       } else {
         throw new Error(response.data?.message || 'Upload failed');
       }
@@ -287,6 +289,12 @@ const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onBlogCreated, onCancel
                     src={formData.featured_image}
                     alt="Featured"
                     className="w-full h-32 object-cover rounded-md"
+                    onError={(e) => {
+                      console.error('Blog image failed to load:', formData.featured_image);
+                      e.currentTarget.src = '/placeholder-image.png';
+                      error('Failed to load image preview. The image may not be accessible.');
+                    }}
+                    onLoad={() => console.log('Blog image loaded successfully:', formData.featured_image)}
                   />
                   <Button
                     variant="outline"

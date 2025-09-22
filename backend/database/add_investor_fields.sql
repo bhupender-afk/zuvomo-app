@@ -1,7 +1,7 @@
 -- Add missing investor fields to users table
 -- Migration script to enhance user authentication system
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Add missing investor-specific fields (ignore errors if columns already exist)
 ALTER TABLE users

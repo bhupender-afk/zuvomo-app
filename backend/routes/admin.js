@@ -13,7 +13,7 @@ const router = express.Router();
 // Configure multer for admin file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '../uploads/admin');
+    const uploadPath = '/var/www/uploads/admin';
     // Create directory if it doesn't exist
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
@@ -882,7 +882,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       });
     }
 
-    // Generate the file URL
+    // Generate the file URL - use full URL for proper image preview
+    const baseUrl = process.env.BASE_URL || process.env.FRONTEND_URL?.replace(':8080', ':3001') || `http://localhost:${process.env.PORT || 3001}`;
     const fileUrl = `/uploads/admin/${req.file.filename}`;
 
     console.log('[ADMIN UPLOAD] Upload successful', {

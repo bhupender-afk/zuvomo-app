@@ -1,7 +1,7 @@
 -- Enhanced Authentication System - Tables Only
 -- This script creates only the new tables without the trigger
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Create user authentication methods table
 CREATE TABLE IF NOT EXISTS user_auth_methods (

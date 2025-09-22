@@ -321,7 +321,7 @@ export function MeetTeam() {
       name: "Sandeep Sorout",
       role: "Assistant Manager, Product",
       description: "Assistant Manager by title, Problem solver by nature.",
-      image: 'public/sandeep.png',
+      image: 'Sandeep.png',
       socialLinks: { linkedin: "https://in.linkedin.com/in/sandeep-sorout-0159932233", telegram: "https://t.me/Sandeep_zuvomo" }
     },
     {

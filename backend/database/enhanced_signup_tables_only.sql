@@ -1,7 +1,7 @@
 -- Enhanced Signup Flow - Create Required Tables Only
 -- Only create the tables we need for enhanced signup functionality
 
-USE zuvomo_db_local;
+USE zuvomo_db;
 
 -- Create a table for tracking signup flow progress
 CREATE TABLE IF NOT EXISTS user_signup_progress (

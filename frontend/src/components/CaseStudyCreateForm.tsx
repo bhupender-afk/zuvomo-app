@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, Plus, Upload, Eye, Save, TrendingUp, Target, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import { useToastMessages } from '@/hooks/use-toast';
+import { getFullImageUrl } from '@/utils/url';
 
 interface CaseStudyCreateFormProps {
   onCaseStudyCreated: (caseStudy: any) => void;
@@ -122,7 +123,8 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
 
       if (response.data?.success) {
         const field = type === 'featured' ? 'featured_image' : 'company_logo';
-        handleInputChange(field, response.data.fileUrl);
+        const fullUrl = getFullImageUrl(response.data.fileUrl);
+        handleInputChange(field, fullUrl);
       } else {
         throw new Error(response.data?.message || 'Upload failed');
       }
@@ -467,6 +469,12 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
                       src={formData.featured_image}
                       alt="Featured"
                       className="w-full h-24 object-cover rounded-md"
+                      onError={(e) => {
+                        console.error('Case study featured image failed to load:', formData.featured_image);
+                        e.currentTarget.src = '/placeholder-image.png';
+                        error('Failed to load featured image preview. The image may not be accessible.');
+                      }}
+                      onLoad={() => console.log('Case study featured image loaded successfully:', formData.featured_image)}
                     />
                     <Button
                       variant="outline"
@@ -505,6 +513,12 @@ const CaseStudyCreateForm: React.FC<CaseStudyCreateFormProps> = ({ onCaseStudyCr
                       src={formData.company_logo}
                       alt="Company Logo"
                       className="w-full h-16 object-contain bg-gray-50 rounded-md p-2"
+                      onError={(e) => {
+                        console.error('Case study company logo failed to load:', formData.company_logo);
+                        e.currentTarget.src = '/placeholder-image.png';
+                        error('Failed to load company logo preview. The image may not be accessible.');
+                      }}
+                      onLoad={() => console.log('Case study company logo loaded successfully:', formData.company_logo)}
                     />
                     <Button
                       variant="outline"
