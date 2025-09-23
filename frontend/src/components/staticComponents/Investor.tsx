@@ -26,7 +26,8 @@ interface ProjectData {
 
 
 export default function Investor() {
-     const [showMoreProjects, setShowMoreProjects] = useState(false);
+     const PROJECTS_PER_PAGE = 3;
+     const [visibleProjectsCount, setVisibleProjectsCount] = useState(PROJECTS_PER_PAGE);
       const [projects, setProjects] = useState<ProjectData[]>([]);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
@@ -178,7 +179,13 @@ export default function Investor() {
       }, []);
       
       const handleViewMoreProjects = () => {
-        setShowMoreProjects(!showMoreProjects);
+        if (isShowingAll) {
+          // Reset to initial count (View Less functionality)
+          setVisibleProjectsCount(PROJECTS_PER_PAGE);
+        } else {
+          // Show more projects (increment by PROJECTS_PER_PAGE)
+          setVisibleProjectsCount(prev => Math.min(prev + PROJECTS_PER_PAGE, projects.length));
+        }
       };
     
       const handleJoinNow = () => {
@@ -202,8 +209,9 @@ export default function Investor() {
     
       
       // Calculate which projects to display
-      const initialProjects = projects.slice(0, 6);
-      const displayedProjects = showMoreProjects ? projects : initialProjects;
+      const displayedProjects = projects.slice(0, visibleProjectsCount);
+      const hasMoreProjects = visibleProjectsCount < projects.length;
+      const isShowingAll = visibleProjectsCount >= projects.length;
     
 
     return (
@@ -231,7 +239,7 @@ export default function Investor() {
               Popular Projects
             </motion.h2>
 
-            <SearchFilters />
+            {/* SearchFilters removed as requested */}
 
             {/* Project Cards */}
             <div className="mt-8">
@@ -302,22 +310,25 @@ export default function Investor() {
               )}
             </div>
             
-            <motion.div 
-              className="flex justify-center mt-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <motion.button 
-                onClick={handleViewMoreProjects}
-                whileHover={{ scale: 1.02, boxShadow: "0 8px 16px rgba(37, 99, 235, 0.3)" }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-[#2C91D5] text-white px-8 py-3 rounded-xl text-[15px] font-semibold hover:bg-[#2475c2] transition-all duration-300 shadow-sm font-inter active:bg-[#1e6bb8]"
+            {/* Only show View More/Less button if there are more than PROJECTS_PER_PAGE projects */}
+            {projects.length > PROJECTS_PER_PAGE && (
+              <motion.div 
+                className="flex justify-center mt-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
               >
-                {showMoreProjects ? 'Show Less Projects' : 'View More Projects'}
-              </motion.button>
-            </motion.div>
+                <motion.button 
+                  onClick={handleViewMoreProjects}
+                  whileHover={{ scale: 1.02, boxShadow: "0 8px 16px rgba(37, 99, 235, 0.3)" }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-[#2C91D5] text-white px-8 py-3 rounded-xl text-[15px] font-semibold hover:bg-[#2475c2] transition-all duration-300 shadow-sm font-inter active:bg-[#1e6bb8]"
+                >
+                  {isShowingAll ? 'View Less Projects' : 'View More Projects'}
+                </motion.button>
+              </motion.div>
+            )}
           </div>
         </motion.section>
             <FourStepJourney />

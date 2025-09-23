@@ -1,17 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface CaseStudyCardProps {
   title: string;
   description: string;
   category: string;
   image: string;
+  slug: string;
 }
 
 const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
   title,
   description,
   category,
-  image
+  image,
+  slug
 }) => {
   return (
     <article className="flex flex-col max-w-[480px] shadow-[0_8px_25px_0_rgba(0,0,0,0.15)] overflow-hidden relative aspect-[0.7] min-w-60 min-h-[560px] w-full flex-1 shrink basis-[0%] rounded-2xl group hover:shadow-[0_15px_35px_0_rgba(0,0,0,0.25)] transition-all duration-300">
@@ -44,7 +47,10 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
         </div>
         
         {/* Professional CTA button - Fixed at bottom */}
-        <button className="inline-flex items-center text-white font-semibold text-base bg-transparent px-8 py-3.5 rounded-full hover:bg-white hover:text-[rgb(69,67,79)] hover:scale-105 transition-all duration-300 shadow-lg group/btn border-2 border-white hover:border-white mt-auto self-start">
+        <Link 
+          to={`/case-studies/${slug}`}
+          className="inline-flex items-center text-white font-semibold text-base bg-transparent px-8 py-3.5 rounded-full hover:bg-white hover:text-[rgb(69,67,79)] hover:scale-105 transition-all duration-300 shadow-lg group/btn border-2 border-white hover:border-white mt-auto self-start"
+        >
           <span className="mr-2">Read Case Study</span>
           <svg 
             width="16" 
@@ -61,7 +67,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
               strokeLinejoin="round"
             />
           </svg>
-        </button>
+        </Link>
       </div>
     </article>
   );

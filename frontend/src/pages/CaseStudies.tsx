@@ -2,21 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { 
   Search, 
-  Building, 
-  Calendar, 
-  TrendingUp, 
-  ChevronRight, 
-  Award,
-  Filter,
-  MapPin,
-  Clock,
-  DollarSign,
-  Users
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import api from '../services/api';
@@ -137,30 +127,6 @@ const CaseStudies: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  // Get key metric from metrics object
-  const getKeyMetric = (metrics: Record<string, string>) => {
-    const keys = Object.keys(metrics);
-    if (keys.length === 0) return null;
-    
-    // Prioritize certain metrics
-    const priorityKeys = ['funding_raised', 'roi', 'growth', 'revenue_increase'];
-    const priorityKey = priorityKeys.find(key => keys.includes(key));
-    const metricKey = priorityKey || keys[0];
-    
-    return {
-      label: metricKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      value: metrics[metricKey]
-    };
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -237,7 +203,8 @@ const CaseStudies: React.FC = () => {
   title={caseStudy.title}
   description={caseStudy?.challenge}
   category={caseStudy?.tags?.[0] || 'General'}
-  image={caseStudy?.featured_image}
+  image={caseStudy?.company_logo}
+  slug={caseStudy.slug}
 />
                 // <Card key={caseStudy.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 //   {caseStudy.featured_image && (
@@ -359,121 +326,14 @@ const CaseStudies: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {caseStudies.map((caseStudy) => (
-                    <Card key={caseStudy.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                      {caseStudy.featured_image && (
-                        <div className="h-48 overflow-hidden relative">
-                          <img
-                            src={caseStudy.featured_image}
-                            alt={caseStudy.title}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                          {caseStudy.is_featured && (
-                            <Badge className="absolute top-4 left-4 bg-[#2C91D5] text-white">
-                              <Award className="w-3 h-3 mr-1" />
-                              Featured
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                      <CardContent className="p-6">
-                        {/* Company Info */}
-                        <div className="flex items-center gap-3 mb-4">
-                          {caseStudy.company_logo ? (
-                            <img
-                              src={caseStudy.company_logo}
-                              alt={caseStudy.company_name}
-                              className="w-12 h-12 object-contain"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                              <Building className="w-6 h-6 text-gray-400" />
-                            </div>
-                          )}
-                          <div>
-                            <h3 className="font-semibold text-lg">{caseStudy.company_name}</h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              {caseStudy.industry && (
-                                <span className="flex items-center gap-1">
-                                  <Building className="w-3 h-3" />
-                                  {caseStudy.industry}
-                                </span>
-                              )}
-                              {caseStudy.company_size && (
-                                <span className="flex items-center gap-1">
-                                  <Users className="w-3 h-3" />
-                                  {caseStudy.company_size}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <h4 className="text-xl font-semibold mb-3 line-clamp-2">
-                          <Link
-                            to={`/case-studies/${caseStudy.slug}`}
-                            className="hover:text-black-600 transition-colors"
-                          >
-                            {caseStudy.title}
-                          </Link>
-                        </h4>
-                        
-                        <p className="text-gray-600 mb-4 line-clamp-3">{caseStudy.challenge}</p>
-                        
-                        {/* Project Details */}
-                        <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-                          {caseStudy.project_duration && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {caseStudy.project_duration}
-                            </span>
-                          )}
-                          {caseStudy.completion_date && (
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(caseStudy.completion_date)}
-                            </span>
-                          )}
-                        </div>
-                        
-                        {/* Key Metrics */}
-                        {caseStudy.metrics && Object.keys(caseStudy.metrics).length > 0 && (
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              {Object.entries(caseStudy.metrics).slice(0, 2).map(([key, value]) => (
-                                <div key={key} className="text-center">
-                                  <div className="text-lg font-bold text-black-600">{value}</div>
-                                  <div className="text-xs text-gray-600 capitalize">
-                                    {key.replace(/_/g, ' ')}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        
-                        {/* Tags */}
-                        {caseStudy.tags && caseStudy.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {caseStudy.tags.slice(0, 3).map((tag, index) => (
-                              <button
-                                key={index}
-                                onClick={() => setSelectedTag(tag)}
-                                className="text-xs text-black-600 hover:text-black-700 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded transition-colors"
-                              >
-                                #{tag}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        
-                        <Link
-                          to={`/case-studies/${caseStudy.slug}`}
-                          className="text-black-600 hover:text-black-700 font-medium text-sm flex items-center gap-1"
-                        >
-                          Read Full Story <ChevronRight className="w-4 h-4" />
-                        </Link>
-                      </CardContent>
-                    </Card>
+                    <CaseStudyCard
+                      key={caseStudy.id}
+                      title={caseStudy.title}
+                      description={caseStudy?.challenge}
+                      category={caseStudy?.tags?.[0] || caseStudy?.industry || 'General'}
+                      image={caseStudy?.company_logo}
+                      slug={caseStudy.slug}
+                    />
                   ))}
                 </div>
 

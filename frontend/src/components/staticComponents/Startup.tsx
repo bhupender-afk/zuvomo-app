@@ -65,7 +65,7 @@ right VCs at the right time.
             
             {/* Right Investment Card */}
             <div className="flex-1 max-w-md w-full">
-                <img src='public/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
+                <img src='/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
             </div>
           </div>
         </div>

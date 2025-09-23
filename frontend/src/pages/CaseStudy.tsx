@@ -201,7 +201,7 @@ const CaseStudy: React.FC = () => {
           {/* Back to Case Studies */}
           <Link
             to="/case-studies"
-            className="inline-flex items-center text-green-600 hover:text-green-700 mb-8 transition-colors"
+            className="inline-flex items-center text-[#2C91D5] hover:text-blue-700 mb-8 transition-colors"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
             Back to Case Studies
@@ -246,7 +246,7 @@ const CaseStudy: React.FC = () => {
             )}
 
             {!caseStudy.featured_image && (
-              <div className="p-8 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+              <div className="p-8 bg-gradient-to-r from-[rgb(44,145,213)] to-[rgb(44,120,180)] text-white">
                 <div className="flex items-center gap-4 mb-6">
                   {caseStudy.company_logo ? (
                     <img
@@ -410,10 +410,10 @@ const CaseStudy: React.FC = () => {
 
               {/* Testimonial */}
               {caseStudy.testimonial && (
-                <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+                <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-[#2C91D5]">
                   <CardContent className="p-8">
                     <div className="flex items-start gap-4">
-                      <Quote className="w-8 h-8 text-green-600 flex-shrink-0 mt-1" />
+                      <Quote className="w-8 h-8 text-[#2C91D5] flex-shrink-0 mt-1" />
                       <div>
                         <p className="text-lg text-gray-700 italic mb-4">
                           "{caseStudy.testimonial}"
@@ -440,15 +440,15 @@ const CaseStudy: React.FC = () => {
                 <Card>
                   <CardHeader>
                     <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Award className="w-5 h-5 text-green-600" />
+                      <Award className="w-5 h-5 text-[#2C91D5]" />
                       Key Results
                     </h3>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {Object.entries(caseStudy.metrics).map(([key, value]) => (
-                        <div key={key} className="text-center p-4 bg-green-50 rounded-lg">
-                          <div className="text-2xl font-bold text-green-600">{value}</div>
+                        <div key={key} className="text-center p-4 bg-blue-50 rounded-lg">
+                          <div className="text-2xl font-bold text-[#2C91D5]">{value}</div>
                           <div className="text-sm text-gray-600 capitalize">
                             {key.replace(/_/g, ' ')}
                           </div>
@@ -507,7 +507,7 @@ const CaseStudy: React.FC = () => {
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
                       {caseStudy.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-green-600 border-green-600">
+                        <Badge key={index} variant="outline" className="text-[#2C91D5] border-[#2C91D5]">
                           {tag}
                         </Badge>
                       ))}
@@ -517,14 +517,14 @@ const CaseStudy: React.FC = () => {
               )}
 
               {/* CTA */}
-              <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white">
+              <Card className="bg-gradient-to-r from-[rgb(44,145,213)] to-[rgb(44,120,180)] text-white">
                 <CardContent className="p-6 text-center">
                   <TrendingUp className="w-12 h-12 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">Ready for Similar Results?</h3>
                   <p className="text-sm mb-4 opacity-90">
                     Let us help you achieve your funding goals just like {caseStudy.company_name}.
                   </p>
-                  <Button className="w-full bg-white text-green-600 hover:bg-gray-100">
+                  <Button className="w-full bg-white text-[#2C91D5] hover:bg-gray-100">
                     Get Started Today
                   </Button>
                 </CardContent>

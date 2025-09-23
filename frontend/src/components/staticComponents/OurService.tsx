@@ -36,19 +36,22 @@ export default function OurService() {
             title: "RWA vs. DeFi vs. DePIN vs. AI: Who's Winning the 2025 VC Funding War?",
             description: "The first half of 2025 marked a pivotal period for crypto venture capital, demonstrating a discernible rebound in total funding that collectively surpassed the total funding figures for the entirety of 2024.",
             category: "Market Analysis",
-            image: "https://api.builder.io/api/v1/image/assets/TEMP/635f795a41e7888f3faced2e318107315cec1614?placeholderIfAbsent=true"
+            image: "https://api.builder.io/api/v1/image/assets/TEMP/635f795a41e7888f3faced2e318107315cec1614?placeholderIfAbsent=true",
+            slug: "rwa-defi-depin-ai-2025-vc-funding-war"
         },
         {
             title: "Why 70% Public Companies, Michael Saylor's Strategy, and Holding $67 Billion of BTC",
             description: "An in-depth analysis of corporate Bitcoin adoption strategies and Michael Saylor's approach to holding $67 billion in BTC reserves.",
             category: "Bitcoin Strategy",
-            image: "https://api.builder.io/api/v1/image/assets/TEMP/db2a5a72c9699d26dddbba5248a2f725a6452ea6?placeholderIfAbsent=true"
+            image: "https://api.builder.io/api/v1/image/assets/TEMP/db2a5a72c9699d26dddbba5248a2f725a6452ea6?placeholderIfAbsent=true",
+            slug: "michael-saylor-bitcoin-strategy-67-billion"
         },
         {
             title: "How 4 Crypto Narratives Fueled a $13 Billion Dollar Fundraising Resurgence in 2024",
             description: "Exploring the four key crypto narratives that drove a massive $13 billion fundraising resurgence throughout 2024.",
             category: "Crypto Trends",
-            image: "https://api.builder.io/api/v1/image/assets/TEMP/a2e55bec0ca00b57ad8940c86cf6c1d6e9e16893?placeholderIfAbsent=true"
+            image: "https://api.builder.io/api/v1/image/assets/TEMP/a2e55bec0ca00b57ad8940c86cf6c1d6e9e16893?placeholderIfAbsent=true",
+            slug: "crypto-narratives-13-billion-fundraising-2024"
         }
     ];
 
@@ -91,7 +94,7 @@ export default function OurService() {
 
                             {/* Right Investment Card */}
                             <div className="flex-1 max-w-md w-full">
-                                <img src='public/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
+                                <img src='/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
                             </div>
                         </div>
                     </div>

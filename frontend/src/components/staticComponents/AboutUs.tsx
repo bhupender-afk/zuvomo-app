@@ -52,7 +52,7 @@ export default function AboutUs() {
 
                             {/* Right Investment Card */}
                             <div className="flex-1 max-w-md w-full">
-                                <img src='public/about.png' alt='About Us' className='w-full h-auto rounded-lg shadow-xl' />
+                                <img src='/about.png' alt='About Us' className='w-full h-auto rounded-lg shadow-xl' />
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ export default function AboutUs() {
                         {/* Right Image */}
                         <div className="flex-1 max-w-lg">
                             <img
-                                src='public/raise.png'
+                                src='/raise.png'
                                 alt="Team working together"
                                 className="w-full h-auto rounded-lg shadow-xl"
                             />

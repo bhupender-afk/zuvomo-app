@@ -36,92 +36,17 @@ export function ExclusiveDealsComponent() {
               </button>
             </div>
             
-            {/* Right Investment Card */}
+            {/* Right Investment Card - Screenshot Image */}
             <div className="flex-1 max-w-md w-full">
-              <div className="bg-white rounded-xl shadow-xl p-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gray-300 rounded"></div>
-                    <div>
-                      <h4 className="font-bold text-gray-900">First Trust</h4>
-                      <p className="text-sm text-gray-600">Capital Partners</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Company Description */}
-                <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                  Distinguished by a blend of diverse talents, our exceptional team
-                  thrives on unity, innovation, and shared values, forging a collect...
-                </p>
-                
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center space-x-1">
-                      <TrendingUp className="w-4 h-4 text-blue-500" />
-                      <span className="text-sm font-semibold">$10m</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center space-x-1">
-                      <Users className="w-4 h-4 text-blue-500" />
-                      <span className="text-sm font-semibold">Pre Seed</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center space-x-1">
-                      <DollarSign className="w-4 h-4 text-blue-500" />
-                      <span className="text-sm font-semibold">Early Growth</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">IoT</span>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Healthcare</span>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">SaaS</span>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Startup</span>
-                </div>
-                
-                {/* Funding Progress */}
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-semibold">Fund Raised: $22,000K</span>
-                    <span className="text-sm text-gray-600">75% Completed</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div className="bg-green-500 h-3 rounded-full transition-all duration-500" style={{width: '75%'}}></div>
-                  </div>
-                </div>
-                
-                {/* Bottom Actions */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex text-yellow-400">
-                      {[...Array(3)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-current" />
-                      ))}
-                      {[...Array(2)].map((_, i) => (
-                        <Star key={i + 3} className="w-4 h-4 text-gray-300" />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-600">3.5</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-1 text-gray-500">
-                      <Share2 className="w-4 h-4" />
-                      <span className="text-sm">15</span>
-                    </div>
-                    <button className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-4 py-1 rounded-full text-sm font-medium transition-colors">
-                      Know More
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <img
+                src="/investor-screenshot.png"
+                alt="Investment Dashboard Screenshot"
+                className="w-full h-auto rounded-lg shadow-xl"
+                onError={(e) => {
+                  // Fallback to placeholder if screenshot not found
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
+              />
             </div>
           </div>
         </div>

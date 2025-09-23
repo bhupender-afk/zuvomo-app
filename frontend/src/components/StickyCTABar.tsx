@@ -16,26 +16,8 @@ const StickyCTABar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const checkAuthentication = () => {
-    const token = localStorage.getItem('zuvomo_access_token');
-    const userStr = localStorage.getItem('zuvomo_user');
-    return token && userStr;
-  };
-
   const handleSubmitStartup = () => {
-    // Check if user is authenticated
-    if (!checkAuthentication()) {
-      // Show confirmation dialog before redirecting to signup
-      if (confirm('You need to be a registered member to submit your startup. Would you like to create an account now?')) {
-        window.location.href = '/signup';
-      }
-      return;
-    }
-
-    // User is authenticated, proceed with startup submission
-    if (!window.open('https://forms.google.com/startup-submission', '_blank')) {
-      alert('Startup submission form would open here. Please prepare your pitch deck and business plan.');
-    }
+    window.location.href = '/signup';
   };
 
   const scrollToTop = () => {

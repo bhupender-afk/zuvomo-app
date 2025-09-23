@@ -30,7 +30,8 @@ interface ProjectData {
 }
 
 const Index = () => {
-  const [showMoreProjects, setShowMoreProjects] = useState(false);
+  const PROJECTS_PER_PAGE = 3;
+  const [visibleProjectsCount, setVisibleProjectsCount] = useState(PROJECTS_PER_PAGE);
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -183,7 +184,13 @@ const Index = () => {
   }, []);
   
   const handleViewMoreProjects = () => {
-    setShowMoreProjects(!showMoreProjects);
+    if (isShowingAll) {
+      // Reset to initial count (View Less functionality)
+      setVisibleProjectsCount(PROJECTS_PER_PAGE);
+    } else {
+      // Show more projects (increment by PROJECTS_PER_PAGE)
+      setVisibleProjectsCount(prev => Math.min(prev + PROJECTS_PER_PAGE, projects.length));
+    }
   };
 
   const handleJoinNow = () => {
@@ -207,8 +214,9 @@ const Index = () => {
 
   
   // Calculate which projects to display
-  const initialProjects = projects.slice(0, 6);
-  const displayedProjects = showMoreProjects ? projects : initialProjects;
+  const displayedProjects = projects.slice(0, visibleProjectsCount);
+  const hasMoreProjects = visibleProjectsCount < projects.length;
+  const isShowingAll = visibleProjectsCount >= projects.length;
 
   const servicesData = [
     {
@@ -330,19 +338,22 @@ const Index = () => {
       title: "RWA vs. DeFi vs. DePIN vs. AI: Who's Winning the 2025 VC Funding War?",
       description: "The first half of 2025 marked a pivotal period for crypto venture capital, demonstrating a discernible rebound in total funding that collectively surpassed the total funding figures for the entirety of 2024.",
       category: "Market Analysis",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/635f795a41e7888f3faced2e318107315cec1614?placeholderIfAbsent=true"
+      image: "https://api.builder.io/api/v1/image/assets/TEMP/635f795a41e7888f3faced2e318107315cec1614?placeholderIfAbsent=true",
+      slug: "rwa-defi-depin-ai-2025-vc-funding-war"
     },
     {
       title: "Why 70% Public Companies, Michael Saylor's Strategy, and Holding $67 Billion of BTC",
       description: "An in-depth analysis of corporate Bitcoin adoption strategies and Michael Saylor's approach to holding $67 billion in BTC reserves.",
       category: "Bitcoin Strategy",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/db2a5a72c9699d26dddbba5248a2f725a6452ea6?placeholderIfAbsent=true"
+      image: "https://api.builder.io/api/v1/image/assets/TEMP/db2a5a72c9699d26dddbba5248a2f725a6452ea6?placeholderIfAbsent=true",
+      slug: "michael-saylor-bitcoin-strategy-67-billion"
     },
     {
       title: "How 4 Crypto Narratives Fueled a $13 Billion Dollar Fundraising Resurgence in 2024",
       description: "Exploring the four key crypto narratives that drove a massive $13 billion fundraising resurgence throughout 2024.",
       category: "Crypto Trends",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/a2e55bec0ca00b57ad8940c86cf6c1d6e9e16893?placeholderIfAbsent=true"
+      image: "https://api.builder.io/api/v1/image/assets/TEMP/a2e55bec0ca00b57ad8940c86cf6c1d6e9e16893?placeholderIfAbsent=true",
+      slug: "crypto-narratives-13-billion-fundraising-2024"
     }
   ];
 
@@ -373,7 +384,7 @@ const Index = () => {
               Popular Projects
             </motion.h2>
             
-            <SearchFilters />
+            {/* <SearchFilters /> */}
             
             {/* Project Cards */}
             <div className="mt-8">
@@ -444,22 +455,25 @@ const Index = () => {
               )}
             </div>
             
-            <motion.div 
-              className="flex justify-center mt-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <motion.button 
-                onClick={handleViewMoreProjects}
-                whileHover={{ scale: 1.02, boxShadow: "0 8px 16px rgba(37, 99, 235, 0.3)" }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-[#2C91D5] text-white px-8 py-3 rounded-xl text-[15px] font-semibold hover:bg-[#2475c2] transition-all duration-300 shadow-sm font-inter active:bg-[#1e6bb8]"
+            {/* Only show View More/Less button if there are more than PROJECTS_PER_PAGE projects */}
+            {projects.length > PROJECTS_PER_PAGE && (
+              <motion.div 
+                className="flex justify-center mt-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
               >
-                {showMoreProjects ? 'Show Less Projects' : 'View More Projects'}
-              </motion.button>
-            </motion.div>
+                <motion.button 
+                  onClick={handleViewMoreProjects}
+                  whileHover={{ scale: 1.02, boxShadow: "0 8px 16px rgba(37, 99, 235, 0.3)" }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-[#2C91D5] text-white px-8 py-3 rounded-xl text-[15px] font-semibold hover:bg-[#2475c2] transition-all duration-300 shadow-sm font-inter active:bg-[#1e6bb8]"
+                >
+                  {isShowingAll ? 'View Less Projects' : 'View More Projects'}
+                </motion.button>
+              </motion.div>
+            )}
           </div>
         </motion.section>
 
@@ -533,14 +547,31 @@ const Index = () => {
             <ProjectTable />
             
             {/* Smart Services Section */}
-            <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mt-16 mb-10 font-inter leading-tight">
-              Smart Services for Startup Success
-            </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {servicesData.map((service, index) => (
-                <ServiceCard key={index} {...service} />
-              ))}
+            <div className="mt-16">
+              <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
+                Smart Services for Startup Success
+              </h2>
+              
+              {/* Services with Handshake Image */}
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
+                {/* Handshake Image */}
+                <div className="w-full lg:w-1/3 flex justify-center">
+                  <img
+                    src="/handshake.png"
+                    className="w-full max-w-[300px] h-auto object-contain"
+                    alt="Partnership and collaboration"
+                  />
+                </div>
+                
+                {/* Services Grid */}
+                <div className="w-full lg:w-2/3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {servicesData.map((service, index) => (
+                      <ServiceCard key={index} {...service} />
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
