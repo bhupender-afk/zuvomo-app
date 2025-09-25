@@ -237,7 +237,7 @@ const UserManagementTable: React.FC<UserManagementTableProps> = ({ refreshTrigge
     };
     return (
       <Badge className={colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800'}>
-        {role.replace('_', ' ')}
+        {role?.replace('_', ' ')}
       </Badge>
     );
   };
@@ -461,11 +461,11 @@ const UserManagementTable: React.FC<UserManagementTableProps> = ({ refreshTrigge
           <div className="space-y-4">
             {selectedUser && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium">{selectedUser.first_name} {selectedUser.last_name}</h4>
-                <p className="text-sm text-gray-600">{selectedUser.email}</p>
-                <p className="text-sm text-gray-600">Role: {selectedUser.user_type.replace('_', ' ')}</p>
-                {selectedUser.company && (
-                  <p className="text-sm text-gray-600">Company: {selectedUser.company}</p>
+                <h4 className="font-medium">{selectedUser?.first_name} {selectedUser?.last_name}</h4>
+                <p className="text-sm text-gray-600">{selectedUser?.email}</p>
+                <p className="text-sm text-gray-600">Role: {selectedUser?.user_type?.replace('_', ' ')}</p>
+                {selectedUser?.company && (
+                  <p className="text-sm text-gray-600">Company: {selectedUser?.company}</p>
                 )}
               </div>
             )}
@@ -483,7 +483,7 @@ const UserManagementTable: React.FC<UserManagementTableProps> = ({ refreshTrigge
                 Cancel
               </Button>
               <Button
-                onClick={() => selectedUser && handleApproveUser(selectedUser.id, adminNotes)}
+                onClick={() => selectedUser && handleApproveUser(selectedUser?.id, adminNotes)}
                 disabled={actionLoading}
                 className="bg-green-600 hover:bg-green-700"
               >
@@ -503,9 +503,9 @@ const UserManagementTable: React.FC<UserManagementTableProps> = ({ refreshTrigge
           <div className="space-y-4">
             {selectedUser && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium">{selectedUser.first_name} {selectedUser.last_name}</h4>
-                <p className="text-sm text-gray-600">{selectedUser.email}</p>
-                <p className="text-sm text-gray-600">Role: {selectedUser.user_type.replace('_', ' ')}</p>
+                <h4 className="font-medium">{selectedUser?.first_name} {selectedUser?.last_name}</h4>
+                <p className="text-sm text-gray-600">{selectedUser?.email}</p>
+                <p className="text-sm text-gray-600">Role: {selectedUser?.user_type?.replace('_', ' ')}</p>
               </div>
             )}
             <div>
@@ -523,7 +523,7 @@ const UserManagementTable: React.FC<UserManagementTableProps> = ({ refreshTrigge
                 Cancel
               </Button>
               <Button
-                onClick={() => selectedUser && handleRejectUser(selectedUser.id, rejectionReason)}
+                onClick={() => selectedUser && handleRejectUser(selectedUser?.id, rejectionReason)}
                 disabled={actionLoading || !rejectionReason.trim()}
                 className="bg-red-600 hover:bg-red-700"
               >

@@ -555,17 +555,17 @@ const Index = () => {
               {/* Services with Handshake Image */}
               <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
                 {/* Handshake Image */}
-                <div className="w-full lg:w-1/3 flex justify-center">
+                {/* <div className="w-full lg:w-1/3 flex justify-center">
                   <img
                     src="/handshake.png"
                     className="w-full max-w-[300px] h-auto object-contain"
                     alt="Partnership and collaboration"
                   />
-                </div>
+                </div> */}
                 
                 {/* Services Grid */}
-                <div className="w-full lg:w-2/3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="w-full lg:w-3/3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6">
                     {servicesData.map((service, index) => (
                       <ServiceCard key={index} {...service} />
                     ))}

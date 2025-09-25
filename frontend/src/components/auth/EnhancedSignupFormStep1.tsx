@@ -23,6 +23,12 @@ export interface SignupStep1Data {
   agreeToMarketing: boolean;
 }
 
+export interface UpdateProfileData {
+  email: string;
+  company?: string;
+  websiteUrl?: string;
+}
+
 export const EnhancedSignupFormStep1: React.FC<EnhancedSignupFormStep1Props> = ({
   onNext,
   initialData = {}

@@ -4,16 +4,20 @@ import authEnhancedService, { AuthDetectionResult, EnhancedLoginRequest } from '
 import PendingApprovalScreen from './PendingApprovalScreen';
 import RejectionScreen from './RejectionScreen';
 import { WaitingListScreen } from './WaitingListScreen';
-import InvestorProfileCompletion from './InvestorProfileCompletion';
+import InvestorProfileCompletion, { InvestorProfileData } from './InvestorProfileCompletion';
 import OTPVerification from './OTPVerification';
 import ForgotPassword from './ForgotPassword';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { UpdateProfileData } from './EnhancedSignupFormStep1';
 
 export interface EnhancedLoginFormProps {
   onSuccess?: () => void;
   onSwitchToSignup?: () => void;
   onLayoutChange?: (needsWideLayout: boolean) => void;
+}
+interface CombinedSignupData extends UpdateProfileData, Partial<InvestorProfileData> {
+  // Combined interface for all signup data
 }
 
 export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
@@ -30,6 +34,7 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
     otpCode: '',
     loginMethod: 'password'
   });
+  
 
   const [authDetection, setAuthDetection] = useState<AuthDetectionResult | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +48,7 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
   // Notify parent about layout changes when step changes to wide form steps
   useEffect(() => {
     if (onLayoutChange) {
-      const needsWideLayout = step === 'rejected' || step === 'pending';
+      const needsWideLayout = step === 'rejected' || step === 'pending' || step === 'complete_profile';
       onLayoutChange(needsWideLayout);
     }
   }, [step, onLayoutChange]);
@@ -190,8 +195,11 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
           } else if (detectionData.nextStep === 'complete_profile') {
             console.log("User needs to complete profile");
             // Redirect to profile completion
-            window.location.href = '/signup'; // You can customize this route
+            // window.location.href = '/signup'; // You can customize this route
+            // onLayoutChange && onLayoutChange(true);
 
+            setUserInfo(detectionData.user);
+            setStep('complete_profile');
             toast({
               title: "Profile Incomplete",
               description: "Redirecting to complete your profile setup...",
@@ -1100,6 +1108,104 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
     setFormData({ email: '', password: '', otpCode: '', loginMethod: 'password' });
   };
 
+    const handleProfileComplete = (profileData: InvestorProfileData) => {
+      const combinedData = { ...profileData, ...userInfo };
+      console.log('Combined signup data:', combinedData);
+      // setSignupData(combinedData);
+      handleCompleteSignup(combinedData);
+    };
+  
+    const handleCompleteSignup = async (finalData: CombinedSignupData) => {
+      setIsLoading(true);
+      setError(null);
+  
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/enhanced-profile-update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: finalData.email,
+            company: finalData.company,
+            location: finalData.location,
+            bio: finalData.bio,
+            linkedinUrl: finalData.linkedinUrl,
+            websiteUrl: finalData.websiteUrl,
+            investmentRange: finalData.investmentRange,
+            portfolioSize: finalData.portfolioSize,
+            investmentCategories: finalData.investmentCategories,
+            experienceLevel: finalData.experienceLevel,
+            investmentFocus: finalData.investmentFocus,
+            accreditedInvestor: finalData.accreditedInvestor,
+            enhancedSignup: true,
+          }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Registration failed');
+        }
+  
+        await response.json();
+  
+        // Move to waiting screen
+        setStep('pending');
+
+        if (onSuccess) {
+          onSuccess();
+        }
+  
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+        setError(errorMessage);
+        if (error) {
+          setError(errorMessage);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+  
+    if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Updateing Your Account</h3>
+          <p className="text-gray-600">Please wait while we set up your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Registration Failed</h3>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => {
+              setError(null);
+              setStep('email');
+            }}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+
   // Show Waiting List Screen
   if (step === 'pending') {
     return (
@@ -1177,13 +1283,7 @@ export const EnhancedLoginForm: React.FC<EnhancedLoginFormProps> = ({
   if (step === 'complete_profile') {
     return (
       <InvestorProfileCompletion
-        onNext={async (profileData) => {
-          // Save profile data to backend
-          console.log('Profile data to save:', profileData);
-          // After profile completion, go to pending approval
-          setStep('pending');
-          setSuccess('Profile completed successfully! Your application is now pending approval.');
-        }}
+        onNext={handleProfileComplete}
         onBack={() => {
           // Go back to email step
           setStep('email');

@@ -495,6 +495,142 @@ router.post('/enhanced-signup', [
   }
 });
 
+router.post('/enhanced-profile-update', [
+  body('email').isEmail().withMessage('Valid email is required'),
+], async (req, res) => {
+  try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const {
+      email,
+      location,
+      bio,
+      linkedinUrl,
+      websiteUrl,
+      investmentRange,
+      portfolioSize,
+      investmentCategories,
+      experienceLevel,
+      investmentFocus,
+      accreditedInvestor,
+      enhancedSignup
+    } = req.body;
+    console.log('Profile update data received:', req.body);
+    // Check if user exists and is email verified
+    const existingUser = await getOne(
+      'SELECT id, is_verified, first_name, last_name, company, phone, marketing_consent,user_type FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (!existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User not found. Please complete initial registration first.'
+      });
+    }
+
+    if (!existingUser.is_verified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email not verified. Please verify your email first.'
+      });
+    }
+
+    const role = existingUser.user_type; // Use existing user type if not provided
+
+    const userId = existingUser.id;
+
+    // Update user with profile completion data (including investor fields)
+    const updateQuery = `
+      UPDATE users SET
+        first_name = ?,
+        last_name = ?,
+        company = ?,
+        location = ?,
+        bio = ?,
+        linkedin_url = ?,
+        website_url = ?,
+        phone = ?,
+        investment_range = ?,
+        portfolio_size = ?,
+        investment_categories = ?,
+        experience_level = ?,
+        investment_focus = ?,
+        accredited_investor = ?,
+        marketing_consent = ?,
+        enhanced_signup = ?,
+        preferred_category = ?,
+        investment_stage = ?
+      WHERE id = ? AND email = ?
+    `;
+    const firstName = existingUser.first_name;
+    const lastName = existingUser.last_name;
+    const phone = existingUser.phone;
+    const marketingConsent = existingUser.marketing_consent;
+    const company = existingUser.company;
+    console.log('Updating profile for existingUser:',existingUser);
+
+    const values = [
+      firstName,
+      lastName,
+      company || null,
+      location || null,
+      bio || null,
+      linkedinUrl || null,
+      websiteUrl || null,
+      phone || null,
+      investmentRange || null,
+      portfolioSize || null,
+      investmentCategories ? JSON.stringify(investmentCategories) : null,
+      experienceLevel || 'intermediate',
+      investmentFocus ? JSON.stringify(investmentFocus) : null,
+      accreditedInvestor || false,
+      marketingConsent || false,
+      enhancedSignup || true,
+      investmentCategories && investmentCategories.length > 0 ? investmentCategories[0] : null, // preferred_category
+      investmentFocus && investmentFocus.includes ? (investmentFocus.includes('early-stage') ? 'early-stage' : 'growth') : null, // investment_stage
+      userId,
+      email
+    ];
+    console.log('Executing profile update with values:', values);
+
+    const result = await executeQuery(updateQuery, values);
+
+    // Use the generated userId since we provided our own ID
+
+    // Note: Admin notifications and signup progress tracking will be added later
+    // when the additional tables are created
+
+    res.status(201).json({
+      success: true,
+      message: 'Profile completed successfully!',
+      data: {
+        userId,
+        email,
+        role,
+        firstName,
+        lastName
+      }
+    });
+
+  } catch (error) {
+    console.error('Update Profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Profile update failed. Please try again.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // Get pending approvals for admin dashboard
 router.get('/pending-approvals', async (req, res) => {
   try {

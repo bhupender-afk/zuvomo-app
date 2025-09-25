@@ -56,7 +56,7 @@ const transformUserToEnhanced = (dbUser) => {
     // Investor-specific fields
     investment_range: dbUser.investment_range,
     investment_focus: dbUser.investment_focus,
-    investment_categories: dbUser.investment_categories ? JSON.parse(dbUser.investment_categories) : [],
+    investment_categories: dbUser.investment_categories ? dbUser.investment_categories : [],
     accredited_investor: Boolean(dbUser.accredited_investor),
 
     // System fields
@@ -83,6 +83,7 @@ router.post('/detect-auth', [
 
     // Check if user exists
     const user = await getOne('SELECT * FROM users WHERE email = ?', [email]);
+    console.log("useruser:", user);
 
     if (!user) {
       return res.json({
@@ -185,8 +186,13 @@ router.post('/detect-auth', [
       // Rejected users can resubmit their application
       nextStep = 'rejected';
     } else if (user.approval_status === 'pending') {
-      // Users pending approval
-      nextStep = 'pending_approval';
+      if(user.user_type === 'investor' && (!user.investment_range || !user.investment_categories)) {
+        // Investors need to complete their profile
+        nextStep = 'complete_profile';
+      } else {
+        // Users pending approval
+        nextStep = 'pending_approval';
+      }
     } else if (user.approval_status === 'approved') {
       // Approved users can authenticate
       nextStep = 'authenticate';

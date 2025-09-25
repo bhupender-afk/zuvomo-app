@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { executeQuery, getOne } = require('../config/database');
 
 class OTPService {
@@ -15,16 +17,41 @@ class OTPService {
     // Initialize email transporter
     if (process.env.SMTP_HOST) {
       console.log('📬 Creating real SMTP transporter...');
+
+      // Auto-detect secure based on port if not explicitly set
+      const port = parseInt(process.env.SMTP_PORT || 587);
+      const isSecure = port === 465 ? true : (process.env.SMTP_SECURE === 'true');
+
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT || 587,
-        secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+        port: port,
+        secure: isSecure, // true for 465, false for other ports
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
+        // Additional configuration for better compatibility
+        tls: {
+          rejectUnauthorized: false, // Allow self-signed certificates
+          minVersion: 'TLSv1.2', // Use modern TLS version
+          // Remove ciphers to use default secure ones
+        },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,  // 10 seconds
+        socketTimeout: 10000     // 10 seconds
       });
-      console.log('✅ SMTP transporter created successfully');
+
+      console.log(`✅ SMTP transporter created (Port: ${port}, Secure: ${isSecure})`);
+
+      // Verify connection on initialization
+      this.transporter.verify((error) => {
+        if (error) {
+          console.error('❌ SMTP connection verification failed:', error.message);
+          console.error('   Note: Check your SMTP settings and firewall/network configuration');
+        } else {
+          console.log('✅ SMTP server connection verified successfully');
+        }
+      });
     } else {
       console.log('⚠️  No SMTP configuration found - using fallback console logger');
       // Fallback to console logging in development
@@ -39,6 +66,51 @@ class OTPService {
         }
       };
     }
+  }
+
+  // Load email template from file
+  loadTemplate(templateName) {
+    try {
+      const templatePath = path.join(__dirname, '..', 'templates', templateName);
+      console.log(`📧 Loading email template: ${templatePath}`);
+
+      if (!fs.existsSync(templatePath)) {
+        console.warn(`⚠️  Template file not found: ${templatePath}`);
+        return null;
+      }
+
+      const template = fs.readFileSync(templatePath, 'utf8');
+      console.log(`✅ Template loaded successfully: ${templateName}`);
+      return template;
+    } catch (error) {
+      console.error(`❌ Error loading template ${templateName}:`, error.message);
+      return null;
+    }
+  }
+
+  // Replace template variables with actual values
+  replaceTemplateVariables(template, variables) {
+    let processedTemplate = template;
+
+    // Default variables
+    const defaultVars = {
+      website_url: process.env.FRONTEND_URL || 'https://zuvomo.com',
+      otp_expiry_minutes: '10',
+      company_name: 'Zuvomo',
+      current_year: new Date().getFullYear().toString()
+    };
+
+    // Merge default and provided variables
+    const allVariables = { ...defaultVars, ...variables };
+
+    // Replace all template variables
+    Object.keys(allVariables).forEach(key => {
+      const placeholder = `{{${key}}}`;
+      processedTemplate = processedTemplate.replace(new RegExp(placeholder, 'g'), allVariables[key] || '');
+    });
+
+    console.log('✅ Template variables replaced successfully');
+    return processedTemplate;
   }
 
   // Generate a 6-digit OTP code
@@ -76,118 +148,100 @@ class OTPService {
     console.log('  - Type:', type);
     console.log('  - User:', userName);
     console.log('  - OTP Code:', otpCode);
-    const emailTemplates = {
+
+    // Template mapping for different OTP types
+    const templateMap = {
       email_verification: {
-        subject: 'Verify Your Email - Zuvomo',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #2C91D5; margin: 0;">Zuvomo</h1>
-              <p style="color: #666; margin: 5px 0;">Investment Platform</p>
-            </div>
-
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-              <h2 style="color: #333; margin-top: 0;">Email Verification</h2>
-              <p style="color: #666; line-height: 1.6;">
-                Hi ${userName || 'there'},<br><br>
-                Welcome to Zuvomo! Please use the verification code below to verify your email address:
-              </p>
-
-              <div style="text-align: center; margin: 30px 0;">
-                <div style="background: #2C91D5; color: white; font-size: 32px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; display: inline-block;">
-                  ${otpCode}
-                </div>
-              </div>
-
-              <p style="color: #666; line-height: 1.6;">
-                This code will expire in 10 minutes. If you didn't request this verification, please ignore this email.
-              </p>
-            </div>
-
-            <div style="text-align: center; color: #999; font-size: 14px;">
-              <p>© 2024 Zuvomo. All rights reserved.</p>
-            </div>
-          </div>
-        `
+        file: 'otp-send.html',
+        subject: 'Verify Your Email - Zuvomo'
       },
       login: {
-        subject: 'Your Login Code - Zuvomo',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #2C91D5; margin: 0;">Zuvomo</h1>
-              <p style="color: #666; margin: 5px 0;">Investment Platform</p>
-            </div>
-
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-              <h2 style="color: #333; margin-top: 0;">Login Verification</h2>
-              <p style="color: #666; line-height: 1.6;">
-                Hi ${userName || 'there'},<br><br>
-                Use the code below to complete your login to Zuvomo:
-              </p>
-
-              <div style="text-align: center; margin: 30px 0;">
-                <div style="background: #2C91D5; color: white; font-size: 32px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; display: inline-block;">
-                  ${otpCode}
-                </div>
-              </div>
-
-              <p style="color: #666; line-height: 1.6;">
-                This code will expire in 10 minutes. If you didn't request this login, please ignore this email and consider changing your password.
-              </p>
-            </div>
-
-            <div style="text-align: center; color: #999; font-size: 14px;">
-              <p>© 2024 Zuvomo. All rights reserved.</p>
-            </div>
-          </div>
-        `
+        file: 'otp-send.html',
+        subject: 'Your Login Code - Zuvomo'
       },
       password_reset: {
-        subject: 'Reset Your Password - Zuvomo',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #2C91D5; margin: 0;">Zuvomo</h1>
-              <p style="color: #666; margin: 5px 0;">Investment Platform</p>
-            </div>
-
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-              <h2 style="color: #333; margin-top: 0;">Password Reset</h2>
-              <p style="color: #666; line-height: 1.6;">
-                Hi ${userName || 'there'},<br><br>
-                Use the code below to reset your Zuvomo password:
-              </p>
-
-              <div style="text-align: center; margin: 30px 0;">
-                <div style="background: #dc3545; color: white; font-size: 32px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; display: inline-block;">
-                  ${otpCode}
-                </div>
-              </div>
-
-              <p style="color: #666; line-height: 1.6;">
-                This code will expire in 10 minutes. If you didn't request a password reset, please ignore this email and consider changing your password.
-              </p>
-            </div>
-
-            <div style="text-align: center; color: #999; font-size: 14px;">
-              <p>© 2024 Zuvomo. All rights reserved.</p>
-            </div>
-          </div>
-        `
+        file: 'password-reset.html',
+        subject: 'Reset Your Password - Zuvomo'
       }
     };
 
-    const template = emailTemplates[type] || emailTemplates.email_verification;
+    const templateConfig = templateMap[type] || templateMap.email_verification;
+
+    // Load HTML template
+    let htmlTemplate = this.loadTemplate(templateConfig.file);
+
+    // Fallback to basic template if file loading fails
+    if (!htmlTemplate) {
+      console.warn('⚠️  Falling back to basic inline template');
+      htmlTemplate = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #2F3A63; margin: 0;">Zuvomo</h1>
+            <p style="color: #666; margin: 5px 0;">Investment Platform</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h2 style="color: #333; margin-top: 0;">Verification Code</h2>
+            <p style="color: #666; line-height: 1.6;">Hi {{user_name}}, your verification code is:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <div style="background: #2F3A63; color: white; font-size: 32px; font-weight: bold; padding: 20px; border-radius: 8px; letter-spacing: 5px; display: inline-block;">
+                {{otp_code}}
+              </div>
+            </div>
+            <p style="color: #666; line-height: 1.6;">This code expires in {{otp_expiry_minutes}} minutes.</p>
+          </div>
+          <div style="text-align: center; color: #999; font-size: 14px;">
+            <p>© {{current_year}} Zuvomo. All rights reserved.</p>
+          </div>
+        </div>`;
+    }
+
+    // Prepare template variables
+    const templateVariables = {
+      otp_code: otpCode,
+      user_name: userName || 'there',
+      otp_type: type,
+      email: email
+    };
+
+    // Replace template variables
+    const processedHtml = this.replaceTemplateVariables(htmlTemplate, templateVariables);
+
+    // Create plain text version for better deliverability
+    const plainText = `
+Zuvomo - ${templateConfig.subject}
+
+Hello ${userName || 'there'},
+
+Your verification code is: ${otpCode}
+
+This code will expire in 10 minutes.
+
+IMPORTANT SECURITY NOTICE:
+- Never share this code with anyone
+- Zuvomo will never ask for this code via phone or email
+- If you didn't request this, please ignore this email
+
+Best regards,
+The Zuvomo Team
+
+© ${new Date().getFullYear()} Zuvomo Private Limited. All rights reserved.
+Website: https://zuvomo.com
+    `.trim();
 
     try {
       console.log('📮 Sending email via transporter...');
       const info = await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || '"Zuvomo Platform" <support@zuvomo.com>',
+        from: process.env.SMTP_FROM || '"Zuvomo" <support@zuvomo.com>',
         to: email,
-        subject: template.subject,
-        html: template.html,
-        text: template.text || undefined,
+        subject: templateConfig.subject,
+        html: processedHtml,
+        text: plainText, // Add plain text version
+        headers: {
+          'X-Mailer': 'Zuvomo Platform',
+          'X-Priority': '1',
+          'Reply-To': 'support@zuvomo.com',
+          'List-Unsubscribe': '<mailto:support@zuvomo.com?subject=Unsubscribe>',
+        },
       });
 
       console.log('✅ OTP email sent successfully:', info.messageId);
