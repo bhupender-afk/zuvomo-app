@@ -20,6 +20,7 @@ class OTPService {
 
       // Auto-detect secure based on port if not explicitly set
       const port = parseInt(process.env.SMTP_PORT || 587);
+      // Gmail SMTP: port 465 uses SSL, port 587 uses STARTTLS (secure=false)
       const isSecure = port === 465 ? true : (process.env.SMTP_SECURE === 'true');
 
       this.transporter = nodemailer.createTransport({
@@ -30,26 +31,37 @@ class OTPService {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
-        // Additional configuration for better compatibility
+        // Additional configuration for better compatibility and timeouts
+        connectionTimeout: 60000, // 60 seconds for slower networks
+        greetingTimeout: 30000,   // 30 seconds
+        socketTimeout: 45000,     // 45 seconds
+        // Connection pooling for better reliability
+        pool: true,
+        maxConnections: 5,
+        maxMessages: 10,
         tls: {
-          rejectUnauthorized: false, // Allow self-signed certificates
-          minVersion: 'TLSv1.2', // Use modern TLS version
-          // Remove ciphers to use default secure ones
-        },
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000,  // 10 seconds
-        socketTimeout: 10000     // 10 seconds
+          rejectUnauthorized: false // Allow self-signed certificates in dev
+        }
       });
 
       console.log(`✅ SMTP transporter created (Port: ${port}, Secure: ${isSecure})`);
 
-      // Verify connection on initialization
+      // Verify connection on initialization (with timeout handling)
+      const verifyTimeout = setTimeout(() => {
+        console.warn('⚠️  SMTP verification timeout - continuing with fallback mode');
+        console.warn('   This may indicate network/firewall issues with external SMTP');
+      }, 10000);
+
       this.transporter.verify((error) => {
+        clearTimeout(verifyTimeout);
         if (error) {
           console.error('❌ SMTP connection verification failed:', error.message);
           console.error('   Note: Check your SMTP settings and firewall/network configuration');
+          console.warn('🔄 Enabling fallback mode for email debugging');
+          this.fallbackMode = true;
         } else {
           console.log('✅ SMTP server connection verified successfully');
+          this.fallbackMode = false;
         }
       });
     } else {
@@ -71,19 +83,35 @@ class OTPService {
   // Load email template from file
   loadTemplate(templateName) {
     try {
-      const templatePath = path.join(__dirname, '..', 'templates', templateName);
-      console.log(`📧 Loading email template: ${templatePath}`);
+      // Try multiple possible template paths
+      const possiblePaths = [
+        path.join(__dirname, '..', 'templates', templateName),
+        path.join(process.cwd(), 'backend', 'templates', templateName),
+        path.join(process.cwd(), 'templates', templateName)
+      ];
 
-      if (!fs.existsSync(templatePath)) {
-        console.warn(`⚠️  Template file not found: ${templatePath}`);
+      let templatePath = null;
+      for (const testPath of possiblePaths) {
+        console.log(`📧 Testing template path: ${testPath}`);
+        if (fs.existsSync(testPath)) {
+          templatePath = testPath;
+          break;
+        }
+      }
+
+      if (!templatePath) {
+        console.warn(`⚠️  Template file not found: ${templateName}`);
+        console.warn(`   Searched paths:`, possiblePaths);
         return null;
       }
 
+      console.log(`📧 Loading email template from: ${templatePath}`);
       const template = fs.readFileSync(templatePath, 'utf8');
-      console.log(`✅ Template loaded successfully: ${templateName}`);
+      console.log(`✅ Template loaded successfully: ${templateName} (${template.length} characters)`);
       return template;
     } catch (error) {
       console.error(`❌ Error loading template ${templateName}:`, error.message);
+      console.error(`   Stack:`, error.stack);
       return null;
     }
   }
@@ -138,6 +166,26 @@ class OTPService {
     } catch (error) {
       console.error('Error storing OTP:', error);
       return false;
+    }
+  }
+
+  // Retry helper function with exponential backoff
+  async retryWithBackoff(fn, maxAttempts = 3, delay = 1000) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        console.log(`⚠️  Attempt ${attempt}/${maxAttempts} failed:`, error.message);
+
+        if (attempt === maxAttempts) {
+          throw error;
+        }
+
+        // Exponential backoff: wait 1s, 2s, 4s, etc.
+        const waitTime = delay * Math.pow(2, attempt - 1);
+        console.log(`🔄 Retrying in ${waitTime}ms...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
     }
   }
 
@@ -203,6 +251,14 @@ class OTPService {
       email: email
     };
 
+    console.log('📧 Template variables prepared:', {
+      otp_code: otpCode,
+      user_name: userName || 'there',
+      otp_type: type,
+      email: email,
+      template_length: htmlTemplate ? htmlTemplate.length : 0
+    });
+
     // Replace template variables
     const processedHtml = this.replaceTemplateVariables(htmlTemplate, templateVariables);
 
@@ -229,20 +285,23 @@ Website: https://zuvomo.com
     `.trim();
 
     try {
-      console.log('📮 Sending email via transporter...');
-      const info = await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || '"Zuvomo" <support@zuvomo.com>',
-        to: email,
-        subject: templateConfig.subject,
-        html: processedHtml,
-        text: plainText, // Add plain text version
-        headers: {
-          'X-Mailer': 'Zuvomo Platform',
-          'X-Priority': '1',
-          'Reply-To': 'support@zuvomo.com',
-          'List-Unsubscribe': '<mailto:support@zuvomo.com?subject=Unsubscribe>',
-        },
-      });
+      console.log('📮 Sending email via transporter with retry logic...');
+
+      const info = await this.retryWithBackoff(async () => {
+        return await this.transporter.sendMail({
+          from: process.env.SMTP_FROM || '"Zuvomo" <support@zuvomo.com>',
+          to: email,
+          subject: templateConfig.subject,
+          html: processedHtml,
+          text: plainText, // Add plain text version
+          headers: {
+            'X-Mailer': 'Zuvomo Platform',
+            'X-Priority': '1',
+            'Reply-To': 'product@sethinikhil.com',
+            'List-Unsubscribe': '<mailto:product@sethinikhil.com?subject=Unsubscribe>',
+          },
+        });
+      }, 3, 1000);
 
       console.log('✅ OTP email sent successfully:', info.messageId);
       return true;
@@ -250,7 +309,22 @@ Website: https://zuvomo.com
       console.error('❌ Error sending OTP email:');
       console.error('  - Error message:', error.message);
       console.error('  - Error code:', error.code);
-      console.error('  - Full error:', error);
+
+      // If SMTP fails, show what would have been sent (for debugging)
+      if (error.code === 'ETIMEDOUT' || error.code === 'ECONNREFUSED') {
+        console.log('🔄 SMTP failed due to connectivity - showing email content for debugging:');
+        console.log('================== EMAIL CONTENT ==================');
+        console.log('📧 TO:', email);
+        console.log('📧 SUBJECT:', templateConfig.subject);
+        console.log('📧 OTP CODE:', otpCode);
+        console.log('📧 TEMPLATE USED:', templateConfig.file);
+        console.log('📧 HTML LENGTH:', processedHtml.length, 'characters');
+        console.log('📧 FIRST 200 CHARS:', processedHtml.substring(0, 200) + '...');
+        console.log('==================================================');
+        console.warn('⚠️  The template was loaded and processed correctly, but SMTP delivery failed');
+        console.warn('   Check network connectivity to smtp.gmail.com:587');
+      }
+
       return false;
     }
   }
