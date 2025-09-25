@@ -99,7 +99,12 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3002',        // Vite dev server port
   'http://localhost:3003',        // Alternative Vite port
-  'http://13.200.209.191:8080',   // Production server
+  'https://www.zuvomo.com',       // Production domain with www (HTTPS)
+  'https://zuvomo.com',           // Production domain without www (HTTPS)
+  'http://www.zuvomo.com',        // Production domain with www (HTTP)
+  'http://zuvomo.com',            // Production domain without www (HTTP)
+  'http://150.241.245.77',        // Direct IP access
+  'http://150.241.245.77:80',     // Direct IP access with port 80
   process.env.FRONTEND_URL        // Environment-specific URL
 ].filter(Boolean);
 
@@ -129,8 +134,8 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static file serving for uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static file serving for uploads - disabled (handled by nginx)
+// app.use('/uploads', express.static('/var/www/uploads'));
 
 
 // Health check endpoint
@@ -198,3 +203,4 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 startServer();
+
