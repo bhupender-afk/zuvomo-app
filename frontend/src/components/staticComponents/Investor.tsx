@@ -220,7 +220,7 @@ export default function Investor() {
 
             <ExclusiveDealsComponent />
                  {/* Popular Projects Section */}
-        <motion.section 
+        {/* <motion.section 
           id="projects"
           className="w-full py-16 bg-gradient-to-b from-white to-gray-50"
           initial={{ opacity: 0 }}
@@ -239,9 +239,7 @@ export default function Investor() {
               Popular Projects
             </motion.h2>
 
-            {/* SearchFilters removed as requested */}
-
-            {/* Project Cards */}
+      
             <div className="mt-8">
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -310,7 +308,7 @@ export default function Investor() {
               )}
             </div>
             
-            {/* Only show View More/Less button if there are more than PROJECTS_PER_PAGE projects */}
+          
             {projects.length > PROJECTS_PER_PAGE && (
               <motion.div 
                 className="flex justify-center mt-12"
@@ -330,7 +328,7 @@ export default function Investor() {
               </motion.div>
             )}
           </div>
-        </motion.section>
+        </motion.section> */}
             <FourStepJourney />
             <StartupRegisterBanner/>
             {/* <MeetTeam /> */}

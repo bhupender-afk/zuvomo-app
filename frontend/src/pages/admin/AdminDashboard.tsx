@@ -784,7 +784,13 @@ const AdminDashboard: React.FC = () => {
             {/* Sidebar Header */}
             <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold text-[#2C91D5]">Zuvomo</h1>
+                <a href="/" className="flex items-center hover:opacity-80 transition-opacity">
+                  <img
+                    src="/Zuvomo New Logo/zuvomo_06.png"
+                    alt="Zuvomo Logo"
+                    className="h-6 w-auto object-contain"
+                  />
+                </a>
                 <span className="ml-2 text-xs text-gray-500">Admin</span>
               </div>
               <Button

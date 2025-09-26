@@ -112,8 +112,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title, subt
           <div className="flex justify-between h-16">
             {/* Logo and Brand */}
             <div className="flex items-center">
-              <a href="/" className="flex items-center">
-                <span className="text-2xl font-bold text-brand-blue">Zuvomo</span>
+              <a href="/" className="flex items-center hover:opacity-80 transition-opacity">
+                <img
+                  src="/Zuvomo New Logo/zuvomo_06.png"
+                  alt="Zuvomo Logo"
+                  className="h-8 w-auto object-contain"
+                />
               </a>
               <span className="ml-4 text-gray-300">|</span>
               <span className="ml-4 text-sm text-gray-600 capitalize">

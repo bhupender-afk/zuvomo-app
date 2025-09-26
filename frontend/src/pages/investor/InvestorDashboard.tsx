@@ -481,7 +481,13 @@ const InvestorDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               {!sidebarCollapsed && (
                 <div className="flex items-center">
-                  <h1 className="text-xl font-bold text-gray-900">Zuvomo</h1>
+                  <a href="/" className="flex items-center hover:opacity-80 transition-opacity">
+                    <img
+                      src="/Zuvomo New Logo/zuvomo_06.png"
+                      alt="Zuvomo Logo"
+                      className="h-6 w-auto object-contain"
+                    />
+                  </a>
                   <span className="ml-2 text-xs text-gray-500">Investor</span>
                 </div>
               )}

@@ -13,10 +13,9 @@ const Header = () => {
 
   // Reusable navigation link styles
   const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
-    `relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-      isActive
-        ? "bg-brand-orange text-white shadow-lg"
-        : "text-white hover:text-white hover:bg-white/10 hover:scale-105"
+    `relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive
+      ? "bg-brand-orange text-white shadow-lg"
+      : "text-white hover:text-white hover:bg-white/10 hover:scale-105"
     }`;
 
   // Handle scroll effect for header
@@ -120,7 +119,7 @@ const Header = () => {
 
             {/* Navigation */}
             <nav className="hidden lg:flex items-center space-x-2">
-              <NavLink to="/" className={navLinkStyles}>
+              <NavLink to="/" className={navLinkStyles} end>
                 Explore
               </NavLink>
               <NavLink to="/startups" className={navLinkStyles}>
@@ -129,15 +128,38 @@ const Header = () => {
               <NavLink to="/investors" className={navLinkStyles}>
                 For Investors
               </NavLink>
-              <NavLink to="/blog" className={navLinkStyles}>
+              <NavLink to="https://blog.zuvomo.com" target='_blank' className={navLinkStyles}>
                 Blog
               </NavLink>
-              <NavLink to="/case-studies" className={navLinkStyles}>
+              {/* <NavLink to="/case-studies" className={navLinkStyles}>
                 Case Studies
-              </NavLink>
+              </NavLink> */}
               <NavLink to="/about-us" className={navLinkStyles}>
                 About Us
               </NavLink>
+              {/* <NavLink
+                to="/#contact"
+                className={navLinkStyles}
+                onClick={() => {
+                  window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: 'smooth'
+                  });
+                }}
+              >
+                Contact Us
+              </NavLink> */}
+              <button
+                className={navLinkStyles({ isActive: false, })} // or a separate class
+                onClick={() => {
+                  window.scrollTo({
+                    top: document.documentElement.scrollHeight,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                Contact Us
+              </button>
               <NavLink to="/our-service" className={navLinkStyles}>
                 Our Services
               </NavLink>
@@ -238,191 +260,181 @@ const Header = () => {
               <div className="w-6 h-6 flex items-center justify-center">
                 <div className="relative">
                   {/* Hamburger lines with smooth animation */}
-                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
-                    isMobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
-                  }`}></span>
-                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
-                    isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
-                  }`}></span>
-                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${
-                    isMobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
-                  }`}></span>
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
+                    }`}></span>
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                    }`}></span>
+                  <span className={`block absolute h-0.5 w-6 bg-current transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
+                    }`}></span>
                 </div>
               </div>
             </button>
           </div>
 
-        {/* Mobile Navigation Backdrop */}
-        {isMobileMenuOpen && (
+          {/* Mobile Navigation Backdrop */}
+          {/* {isMobileMenuOpen && (
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
             onClick={closeMobileMenu}
           />
-        )}
+        )} */}
 
-        {/* Mobile Navigation Menu */}
-        <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
-          isMobileMenuOpen
+          {/* Mobile Navigation Menu */}
+          <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMobileMenuOpen
             ? 'max-h-screen opacity-100'
             : 'max-h-0 opacity-0'
-        }`}>
-          <div className="bg-[#2F3A63] border-t border-white/10 pb-6">
-            <nav className="flex flex-col space-y-1 pt-4 px-4">
-              {/* Mobile Navigation Links */}
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+            }`}>
+            <div className="bg-[#2F3A63] border-t border-white/10 pb-6">
+              <nav className="flex flex-col space-y-1 pt-4 px-4">
+                {/* Mobile Navigation Links */}
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                Explore
-              </NavLink>
-              <NavLink
-                to="/startups"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  Explore
+                </NavLink>
+                <NavLink
+                  to="/startups"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                Startups
-              </NavLink>
-              <NavLink
-                to="/investors"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  Startups
+                </NavLink>
+                <NavLink
+                  to="/investors"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                For Investors
-              </NavLink>
-              <NavLink
-                to="/blog"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  For Investors
+                </NavLink>
+                <NavLink
+                  to="https://blog.zuvomo.com" target='_blank'
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                Blog
-              </NavLink>
-              <NavLink
-                to="/case-studies"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  Blog
+                </NavLink>
+                {/* <NavLink
+                  to="/case-studies"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                      isActive
+                        ? 'bg-brand-orange text-white shadow-lg'
+                        : 'text-white hover:bg-white/10 hover:text-white'
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  Case Studies
+                </NavLink> */}
+                <NavLink
+                  to="/about-us"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                Case Studies
-              </NavLink>
-              <NavLink
-                to="/about-us"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  About Us
+                </NavLink>
+                <NavLink
+                  to="/our-service"
+                  className={({ isActive }) =>
+                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                About Us
-              </NavLink>
-              <NavLink
-                to="/our-service"
-                className={({ isActive }) =>
-                  `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                    isActive
-                      ? 'bg-brand-orange text-white shadow-lg'
-                      : 'text-white hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                onClick={closeMobileMenu}
-              >
-                Our Services
-              </NavLink>
+                    }`
+                  }
+                  onClick={closeMobileMenu}
+                >
+                  Our Services
+                </NavLink>
 
-              {/* Mobile Auth Section */}
-              <div className="pt-6 border-t border-white/10 mt-4">
-                {isAuthenticated && user ? (
-                  <>
-                    <div className="flex items-center space-x-3 px-4 py-4 bg-white/5 rounded-xl mb-4">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <span className="text-brand-navy font-semibold text-sm">
-                          {user.first_name?.[0]}{user.last_name?.[0]}
-                        </span>
+                {/* Mobile Auth Section */}
+                <div className="pt-6 border-t border-white/10 mt-4">
+                  {isAuthenticated && user ? (
+                    <>
+                      <div className="flex items-center space-x-3 px-4 py-4 bg-white/5 rounded-xl mb-4">
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                          <span className="text-brand-navy font-semibold text-sm">
+                            {user.first_name?.[0]}{user.last_name?.[0]}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white">
+                            {user.first_name} {user.last_name}
+                          </p>
+                          <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white">
-                          {user.first_name} {user.last_name}
-                        </p>
-                        <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
+                      <div className="space-y-3">
+                        <a
+                          href={getDashboardUrl()}
+                          className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 text-center block"
+                          onClick={closeMobileMenu}
+                        >
+                          Dashboard
+                        </a>
+                        <button
+                          onClick={() => {
+                            closeMobileMenu();
+                            handleLogout();
+                          }}
+                          className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
+                        >
+                          Sign Out
+                        </button>
                       </div>
-                    </div>
+                    </>
+                  ) : (
                     <div className="space-y-3">
-                      <a
-                        href={getDashboardUrl()}
-                        className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 text-center block"
-                        onClick={closeMobileMenu}
-                      >
-                        Dashboard
-                      </a>
                       <button
                         onClick={() => {
                           closeMobileMenu();
-                          handleLogout();
+                          handleLogin();
                         }}
                         className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
                       >
-                        Sign Out
+                        Log In
+                      </button>
+                      <button
+                        onClick={() => {
+                          closeMobileMenu();
+                          handleSignUp();
+                        }}
+                        className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200"
+                      >
+                        Sign Up
                       </button>
                     </div>
-                  </>
-                ) : (
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => {
-                        closeMobileMenu();
-                        handleLogin();
-                      }}
-                      className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
-                    >
-                      Log In
-                    </button>
-                    <button
-                      onClick={() => {
-                        closeMobileMenu();
-                        handleSignUp();
-                      }}
-                      className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200"
-                    >
-                      Sign Up
-                    </button>
-                  </div>
-                )}
-              </div>
-            </nav>
+                  )}
+                </div>
+              </nav>
+            </div>
           </div>
-        </div>
         </div>
       </header>
 

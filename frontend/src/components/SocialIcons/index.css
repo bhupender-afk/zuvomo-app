@@ -1,0 +1,203 @@
+/* Social Icons CSS - Comprehensive styling for all social media icons */
+
+/* Base social icon container styles */
+.social-icon-link {
+      width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--zuvomo-white);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon-link:hover {
+  /* background-color: #; */
+  transform: scale(1.05);
+}
+
+.social-icon-link:active {
+  transform: scale(0.95);
+}
+
+.social-icon-link:focus {
+  /* outline: 2px solid #2b91d6; */
+  outline-offset: 2px;
+}
+
+/* Size variants */
+.social-icon-small {
+  width: 32px;
+  height: 32px;
+}
+
+.social-icon-medium {
+  width: 36px;
+  height: 36px;
+}
+
+.social-icon-large {
+  width: 40px;
+  height: 40px;
+}
+
+.social-icon-xl {
+  width: 48px;
+  height: 48px;
+}
+
+/* Brand-specific hover colors */
+.social-icon-facebook:hover {
+  /* background-color: #1877f2; */
+}
+
+.social-icon-twitter:hover {
+  /* background-color: #000000; */
+}
+
+.social-icon-instagram:hover {
+  /* background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); */
+}
+
+.social-icon-linkedin:hover {
+  /* background-color: #0077b5; */
+}
+
+/* SVG icon styles */
+.social-icon-svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  transition: fill 0.3s ease;
+}
+
+.social-icon-link:hover .social-icon-svg {
+  fill: white;
+}
+
+/* Container styles */
+.social-icons-container {
+  max-width: 433px;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  display: flex;
+  width: 100%;
+  gap: 0 14px;
+  margin-top: 13px;
+  padding-top: 1px;
+}
+
+.social-icons-label {
+  max-width: 412px;
+  flex: 1;
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+  margin: auto 0;
+}
+
+.social-icons-label-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.social-icons-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .social-icons-container {
+    max-width: 100%;
+    gap: 0 8px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .social-icons-group {
+    gap: 8px;
+  }
+
+  .social-icon-link {
+    padding: 3px;
+  }
+
+  .social-icon-svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Accessibility improvements */
+.social-icon-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.social-icon-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.social-icon-loading:hover {
+  transform: none;
+  background-color: #2b91d6;
+}
+
+/* Animation for group */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.social-icons-animated {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.social-icons-animated .social-icon-link:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.social-icons-animated .social-icon-link:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.social-icons-animated .social-icon-link:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.social-icons-animated .social-icon-link:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .social-icons-label {
+    color: #f8f9fa;
+  }
+}
+
+/* Print styles */
+@media print {
+  .social-icons-container {
+    display: none;
+  }
+}

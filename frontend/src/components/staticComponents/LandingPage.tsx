@@ -303,22 +303,23 @@ export function MeetTeam() {
             </p>
             
             {/* Mobile: Simple grid, Desktop: Carousel */}
-            <div className="block md:hidden">
+            <div className="block lg:hidden">
               <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
                 {teamData.slice(0, 3).map((member, index) => (
                   <TeamMember key={index} {...member} />
                 ))}
               </div>
             </div>
+           
             
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <Carousel
                 itemsPerView={3}
-                gap={24}
+               gap={20}
                 showArrows={true}
                 showDots={true}
-                autoPlay={false}
-                autoPlayInterval={4000}
+                autoPlay={true}
+                autoPlayInterval={5000}
               >
                 {teamData.slice(0, 3).map((member, index) => (
                   <div key={index} className="px-2">

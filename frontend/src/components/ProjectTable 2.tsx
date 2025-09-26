@@ -24,25 +24,25 @@ const ProjectTable = () => {
     {
       name: "Vulcan Forged",
       logo: "/logos/vulcan logo.png",
-      amountRaised: "$ 8.1 Million",
+      amountRaised: "$ 5.2 Million",
       initialMcap: "$ 8 Million",
-      currentMcap: "$ 928 Million",
+      currentMcap: "$ 992 Million",
       roi: "12,300%"
     },
     {
       name: "Morpheus.Network",
       logo: "/logos/Morpheus logo.png",
-      amountRaised: "$ 9.88 Million",
+      amountRaised: "$ 3.1 Million",
       initialMcap: "$ 12 Million",
-      currentMcap: "$ 204 Million",
+      currentMcap: "$ 192 Million",
       roi: "1,500%"
     },
     {
       name: "Landshare",
       logo: "/logos/Landshare logo.png",
-      amountRaised: "$ 750 Thousand",
+      amountRaised: "$ 2.8 Million",
       initialMcap: "$ 15 Million",
-      currentMcap: "$ 27 Million",
+      currentMcap: "$ 277 Million",
       roi: "1,747%"
     },
     {
@@ -50,31 +50,31 @@ const ProjectTable = () => {
       logo: "/logos/Pencils protocol logo.png",
       amountRaised: "$ 4.5 Million",
       initialMcap: "$ 18 Million",
-      currentMcap: "$ 2.4 Million",
+      currentMcap: "$ 67 Million",
       roi: "274%"
     },
     {
       name: "Zebec Protocol",
       logo: "/logos/Zebec logo.png",
-      amountRaised: "$ 6 Million",
+      amountRaised: "$ 28 Million",
       initialMcap: "$ 85 Million",
-      currentMcap: "$ 554 Million",
+      currentMcap: "$ 150 Million",
       roi: "76%"
     },
     {
       name: "Dexcheck",
       logo: "/logos/Dexcheck logo.png",
-      amountRaised: "$ 970 Thousand",
+      amountRaised: "$ 1.8 Million",
       initialMcap: "$ 6 Million",
-      currentMcap: "$ 60 Million",
+      currentMcap: "$ 110 Million",
       roi: "1,725%"
     },
     {
       name: "Fomo.Fund",
       logo: "/logos/FomoFund logo.png",
-      amountRaised: "$ 2 Million",
+      amountRaised: "$ 3.7 Million",
       initialMcap: "$ 22 Million",
-      currentMcap: "$ 59 Million",
+      currentMcap: "$ 80 Million",
       roi: "262%"
     }
   ];
@@ -194,7 +194,7 @@ const ProjectTable = () => {
 
               {/* Expandable Details */}
               {expandedCards.includes(index) && (
-                <div className="border-t border-gray-200 pt-3 space-y-2">
+                <div className="border-t border-gray-200 pt-3 space-y-2 animate-in slide-in-from-top-2">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <span className="text-xs text-gray-500 block">Initial Mcap</span>

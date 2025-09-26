@@ -365,7 +365,7 @@ const Index = () => {
         <Hero />
         
         {/* Popular Projects Section */}
-        <motion.section 
+        {/* <motion.section 
           id="projects"
           className="w-full py-16 bg-gradient-to-b from-white to-gray-50"
           initial={{ opacity: 0 }}
@@ -383,10 +383,8 @@ const Index = () => {
             >
               Popular Projects
             </motion.h2>
+          
             
-            {/* <SearchFilters /> */}
-            
-            {/* Project Cards */}
             <div className="mt-8">
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -455,7 +453,6 @@ const Index = () => {
               )}
             </div>
             
-            {/* Only show View More/Less button if there are more than PROJECTS_PER_PAGE projects */}
             {projects.length > PROJECTS_PER_PAGE && (
               <motion.div 
                 className="flex justify-center mt-12"
@@ -475,9 +472,50 @@ const Index = () => {
               </motion.div>
             )}
           </div>
-        </motion.section>
+        </motion.section> */}
 
-        {/* In The News Section */}
+      
+
+        {/* Successful Project Launches Section */}
+        <section className="w-full py-12">
+          <div className="container mx-auto px-4">
+            <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
+              Successful Project Launches
+            </h2>
+            
+            <ProjectTable />
+            
+            {/* Smart Services Section */}
+            <div className="mt-16">
+              <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
+                Smart Services for Startup Success
+              </h2>
+              
+              {/* Services with Handshake Image */}
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
+                {/* Handshake Image */}
+                {/* <div className="w-full lg:w-1/3 flex justify-center">
+                  <img
+                    src="/handshake.png"
+                    className="w-full max-w-[300px] h-auto object-contain"
+                    alt="Partnership and collaboration"
+                  />
+                </div> */}
+                
+                {/* Services Grid */}
+                <div className="w-full lg:w- 4/4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 justify-items-center">
+                    {servicesData.map((service, index) => (
+                      <ServiceCard key={index} {...service} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+          {/* In The News Section */}
         <section className="w-full bg-[#F6F7FA] mt-20 py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-10 font-inter leading-tight">
@@ -537,45 +575,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Successful Project Launches Section */}
-        <section className="w-full py-12">
-          <div className="container mx-auto px-4">
-            <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
-              Successful Project Launches
-            </h2>
-            
-            <ProjectTable />
-            
-            {/* Smart Services Section */}
-            <div className="mt-16">
-              <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
-                Smart Services for Startup Success
-              </h2>
-              
-              {/* Services with Handshake Image */}
-              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
-                {/* Handshake Image */}
-                {/* <div className="w-full lg:w-1/3 flex justify-center">
-                  <img
-                    src="/handshake.png"
-                    className="w-full max-w-[300px] h-auto object-contain"
-                    alt="Partnership and collaboration"
-                  />
-                </div> */}
-                
-                {/* Services Grid */}
-                <div className="w-full lg:w-3/3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6">
-                    {servicesData.map((service, index) => (
-                      <ServiceCard key={index} {...service} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Journey Steps Section */}
         <section className="w-full bg-white py-12">
           <div className="container mx-auto px-4">
@@ -583,7 +582,7 @@ const Index = () => {
               Kick Start Your Journey In 4 Steps
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 mt-12">
               {[
                 {
                   icon: "https://api.builder.io/api/v1/image/assets/TEMP/e883190a4a32bc3bb9f0f7990d5d728ec18cba35?placeholderIfAbsent=true",
@@ -793,14 +792,14 @@ const Index = () => {
               ))}
             </div>
             
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <button 
                 onClick={handleViewAllCaseStudies}
                 className="px-12 py-3 text-base text-[#2c91d5] border border-[#2C91D5] rounded-full hover:bg-[#2c91d5] hover:text-white transition-all duration-200"
               >
                 View More
               </button>
-            </div>
+            </div> */}
           </div>
         </section>
 
