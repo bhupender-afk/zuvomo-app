@@ -7,7 +7,7 @@ interface TelegramIconProps {
 
 const TelegramIcon: React.FC<TelegramIconProps> = ({
     className = "w-9 h-9",
-    href = "https://telegram.org/@zuvomo"
+    href = "https://t.me/nsethi"
 }) => {
     return (
         <a href={href} className={`social-icon-link ${className}`} target="_blank" rel="noopener noreferrer" aria-label="Follow us on Telegram">

@@ -8,7 +8,7 @@ interface FacebookIconProps {
 
 const FacebookIcon: React.FC<FacebookIconProps> = ({
   className = "social-icon-medium",
-  href = "https://facebook.com/zuvomo"
+  href = "https://www.facebook.com/Zuvomo/"
 }) => {
   return (
     <a

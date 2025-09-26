@@ -8,7 +8,7 @@ interface TwitterIconProps {
 
 const TwitterIcon: React.FC<TwitterIconProps> = ({
   className = "social-icon-medium",
-  href = "https://twitter.com/zuvomo"
+  href = "https://x.com/officialZuvomo"
 }) => {
   return (
     <a

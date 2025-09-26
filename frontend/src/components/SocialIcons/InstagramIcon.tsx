@@ -8,7 +8,7 @@ interface InstagramIconProps {
 
 const InstagramIcon: React.FC<InstagramIconProps> = ({
   className = "social-icon-medium",
-  href = "https://instagram.com/zuvomo"
+  href = "https://www.instagram.com/officialzuvomo/?hl=en"
 }) => {
   return (
     <a

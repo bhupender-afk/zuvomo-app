@@ -7,7 +7,7 @@ interface MediumIconProps {
 
 const MediumIcon: React.FC<MediumIconProps> = ({
     className = "w-9 h-9",
-    href = "https://medium.com/@zuvomo"
+    href = "https://medium.com/@zuvomo_official"
 }) => {
     return (
         <a href={href} target="_blank" rel="noopener noreferrer" aria-label="Follow us on Medium"

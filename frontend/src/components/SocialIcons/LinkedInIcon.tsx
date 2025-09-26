@@ -8,7 +8,7 @@ interface LinkedInIconProps {
 
 const LinkedInIcon: React.FC<LinkedInIconProps> = ({
   className = "social-icon-medium",
-  href = "https://linkedin.com/company/zuvomo"
+  href = "https://in.linkedin.com/company/zuvomo"
 }) => {
   return (
     <a
