@@ -25,3 +25,7 @@ export const getFullImageUrl = (url: string | undefined | null): string => {
 
   return `${baseUrl}${cleanUrl}`;
 };
+
+ export function handleJoinNow() {
+        window.location.href = '/signup';
+    }

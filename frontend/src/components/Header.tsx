@@ -106,49 +106,37 @@ const Header = () => {
           ? 'shadow-[0_4px_12px_0_rgba(47,58,99,0.35)]'  // darker, deeper shadow when scrolled
           : 'shadow-[0_2px_6px_0_rgba(47,58,99,0.20)]'   // subtle shadow by default
         }`}>
-        <div className="container mx-auto px-3 md:px-4 lg:px-6 xl:px-8 py-3">
+        <div className="container mx-auto px-3 md:px-8 lg:px-12 xl:px-8 py-3">
           <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-6 xl:gap-8">
             {/* Logo */}
             <a href="/" className="flex-shrink-0 cursor-pointer">
               <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/1dff84ef9a6b5c3ed5b94cf511907445481c3c6b?placeholderIfAbsent=true"
+                src="/Zlogo.png"
                 className="h-10 w-auto hover:opacity-90 transition-opacity"
                 alt="Zuvomo Logo"
               />
             </a>
 
             {/* Navigation */}
-            <nav className="hidden xl:flex items-center gap-3">
+            <nav className="hidden md:flex items-center gap-1 md:gap-1.5 lg:gap-2 xl:gap-3">
               <NavLink to="/" className={navLinkStyles} end>
-                Explore
+                Home
+              </NavLink>
+              <NavLink to="/about-us" className={navLinkStyles}>
+                About Us
               </NavLink>
               <NavLink to="/startups" className={navLinkStyles}>
                 Startups
               </NavLink>
               <NavLink to="/investors" className={navLinkStyles}>
-                For Investors
+                VCs
               </NavLink>
               <NavLink to="https://blog.zuvomo.com" target='_blank' className={navLinkStyles}>
                 Blog
               </NavLink>
-              {/* <NavLink to="/case-studies" className={navLinkStyles}>
-                Case Studies
-              </NavLink> */}
-              <NavLink to="/about-us" className={navLinkStyles}>
-                About Us
+               <NavLink to="/our-service" className={navLinkStyles}>
+                Services
               </NavLink>
-              {/* <NavLink
-                to="/#contact"
-                className={navLinkStyles}
-                onClick={() => {
-                  window.scrollTo({
-                    top: document.documentElement.scrollHeight,
-                    behavior: 'smooth'
-                  });
-                }}
-              >
-                Contact Us
-              </NavLink> */}
               <button
                 className={navLinkStyles({ isActive: false, })} // or a separate class
                 onClick={() => {
@@ -160,13 +148,11 @@ const Header = () => {
               >
                 Contact Us
               </button>
-              <NavLink to="/our-service" className={navLinkStyles}>
-                Our Services
-              </NavLink>
+            
             </nav>
 
             {/* Auth buttons / User menu */}
-            <div className="hidden xl:flex items-center gap-3 flex-shrink-0">
+            <div className="hidden md:flex items-center gap-1 md:gap-2 lg:gap-3 flex-shrink-0">
               {isAuthenticated && user ? (
                 <div className="relative">
                   <button
@@ -248,13 +234,13 @@ const Header = () => {
               )}
             </div>
 
-            {/* Drawer menu button */}
+            {/* Mobile menu button */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleMobileMenu();
               }}
-              className="xl:hidden text-white hover:text-[#E3F2FD] transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-105"
+              className="md:hidden text-white hover:text-[#E3F2FD] transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-105"
               aria-label="Toggle mobile menu"
             >
               <div className="w-6 h-6 flex items-center justify-center">
@@ -271,16 +257,16 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Drawer Navigation Backdrop */}
+          {/* Mobile Navigation Backdrop */}
           {isMobileMenuOpen && (
             <div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 xl:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
               onClick={closeMobileMenu}
             />
           )}
 
-          {/* Drawer Navigation Menu */}
-          <div className={`xl:hidden fixed right-0 top-0 h-full w-80 bg-[#2F3A63] z-50 transition-transform duration-300 ease-in-out ${isMobileMenuOpen
+          {/* Mobile Navigation Menu */}
+          <div className={`md:hidden fixed right-0 top-0 h-full w-80 bg-[#2F3A63] z-50 transition-transform duration-300 ease-in-out ${isMobileMenuOpen
             ? 'transform translate-x-0'
             : 'transform translate-x-full'
             }`}>
@@ -288,7 +274,7 @@ const Header = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/1dff84ef9a6b5c3ed5b94cf511907445481c3c6b?placeholderIfAbsent=true"
+                  src="/Zuvomo New Logo/Zlogov2.png"
                   className="h-8 w-auto"
                   alt="Zuvomo Logo"
                 />

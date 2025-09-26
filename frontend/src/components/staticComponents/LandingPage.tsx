@@ -4,6 +4,7 @@ import AnimatedCounter from '../AnimatedCounter';
 import { motion } from 'framer-motion';
 import TeamMember from '../TeamMember';
 import Carousel from '@/components/Carousel';
+import { handleJoinNow } from '@/utils/url';
 
 
 
@@ -17,12 +18,13 @@ export function ExclusiveDealsComponent() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             {/* Left Content */}
             <div className="flex-1 max-w-2xl">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                Unlock exclusive{' '}
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                <span className='text-orange-500'>Unlock {" "}</span>
+                 exclusive{' '}
                 <span className="text-orange-500">1%</span>
                 {' '}deals.
               </h2>
-              <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
                 Be the first.
               </h3>
               
@@ -31,8 +33,8 @@ export function ExclusiveDealsComponent() {
                 vetted and graded by experts.
               </p>
               
-              <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                Join Now
+              <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                JOIN NOW
               </button>
             </div>
             
@@ -76,8 +78,8 @@ export function StartupRegisterBanner() {
             Register As A Startup
           </h2>
           
-          <button className="bg-white hover:bg-gray-100 text-blue-600 font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap">
-            Join Now
+          <button onClick={handleJoinNow} className="bg-white hover:bg-gray-100 text-[rgb(44,145,213)] font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap">
+           JOIN NOW
           </button>
         </div>
       </div>
@@ -98,22 +100,22 @@ export function FourStepJourney() {
   const steps = [
     {
       icon: User,
-      title: "Sign Up",
+      title: "1. Sign Up",
       description: "Register for instant access to crypto funding networks, growth playbooks, and expert advisories"
     },
     {
       icon: Rocket,
-      title: "Get your Startup Evaluated",
+      title: "2. Get your Startup Evaluated",
       description: "Get business insights from experts. Our startup evaluation will help you find key problem areas and gaps to be filled"
     },
     {
       icon: Users,
-      title: "Connect with VC's Experts",
+      title: "3. Connect with VCs Experts",
       description: "Secure mentorship, strategic alliances, and funding with our network of 1000+ VCs"
     },
     {
       icon: TrendingUp,
-      title: "Plot your Journey",
+      title: "4. Plot your Journey",
       description: "Plan and document your growth roadmap, create business scaling strategies, and partnership ecosystem vision"
     }
   ];
@@ -135,7 +137,7 @@ export function FourStepJourney() {
             return (
               <div key={index} className="text-center group">
                 {/* Icon */}
-                <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-blue-500 rounded-full mb-6 group-hover:bg-blue-600 transition-colors duration-200 shadow-lg group-hover:shadow-xl">
+                <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-[#2F3A63] rounded-full mb-6 group-hover:bg-[#2F3A63] transition-colors duration-200 shadow-lg group-hover:shadow-xl">
                   <IconComponent className="w-10 h-10 md:w-12 md:h-12 text-white" />
                 </div>
                 
@@ -150,9 +152,9 @@ export function FourStepJourney() {
                 </p>
                 
                 {/* Step Number */}
-                <div className="mt-4 text-blue-500 font-bold text-lg">
+                {/* <div className="mt-4 text-blue-500 font-bold text-lg">
                   Step {index + 1}
-                </div>
+                </div> */}
               </div>
             );
           })}
@@ -161,7 +163,7 @@ export function FourStepJourney() {
         {/* CTA Button */}
         <div className="text-center">
           <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-10 py-4 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-            Join Now
+            JOIN NOW
           </button>
         </div>
       </div>

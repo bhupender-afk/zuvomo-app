@@ -7,6 +7,7 @@ import ServiceCard from '../ServiceCard';
 import ProjectTable from '../ProjectTable';
 import StartupEvaluationGrid from './LandingPage';
 import CaseStudyCard from '../CaseStudyCard';
+import { handleJoinNow } from '@/utils/url';
 
 export default function OurService() {
     const servicesData = [
@@ -70,25 +71,22 @@ export default function OurService() {
                         <div className="flex-1 max-w-2xl">
 
 
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                                    Supporting{' '}
-                                    <span className="text-blue-500">Startups </span>
-                                      with Tools for{' '}
-                                    <span className="text-orange-500">Growth </span>& {" "}
-                                    <span className="text-orange-500">Sustainability</span>
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
+                                    Empowering{' '}
+                                    <span className="text-orange-500">Web3 startups </span>
+                                      with strategy, visibility, and 
+                                    <span className="text-orange-500"> {" "}long-term growth. </span>
                                
                                 </h2>
-                                {/* <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
-                Be the first.
-              </h3> */}
+                               
 
                                 <p className="text-gray-600 text-lg mb-8 leading-relaxed">
                                     Our mission is to help CEOs get their startups capital-ready and meet the
                                     right VCs at the right time.
                                 </p>
 
-                                <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                    Join Now
+                                <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                    JOIN NOW
                                 </button>
                             </div>
 
@@ -100,7 +98,7 @@ export default function OurService() {
                     </div>
                 </div>
             </div>
-              <section className="w-full py-12">
+              <section className="w-full py-12 pt-0">
           <div className="container mx-auto px-4">
              <div className="mt-16">
               <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
@@ -123,7 +121,7 @@ export default function OurService() {
             {/* Services Section */}
              
             {/* <StartupEvaluationGrid /> */}
-              <section id="case-studies" className="w-full pt-12 pb-6">
+              {/* <section id="case-studies" className="w-full pt-12 pb-6">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-4 font-inter leading-tight">
               Case Studies
@@ -139,15 +137,8 @@ export default function OurService() {
               ))}
             </div>
             
-            {/* <div className="flex justify-center">
-              <button 
-                className="px-12 py-3 text-base text-[#2c91d5] border border-[#2C91D5] rounded-full hover:bg-[#2c91d5] hover:text-white transition-all duration-200"
-              >
-                View More
-              </button>
-            </div> */}
           </div>
-        </section>
+        </section> */}  
             <Footer />
             <StickyCTABar />
         </div>

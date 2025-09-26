@@ -21,62 +21,67 @@ const ProjectTable = () => {
   };
 
   const projects: ProjectData[] = [
-    {
-      name: "Vulcan Forged",
-      logo: "/logos/vulcan logo.png",
-      amountRaised: "$ 8.1 Million",
-      initialMcap: "$ 8 Million",
-      currentMcap: "$ 928 Million",
-      roi: "12,300%"
-    },
+
     {
       name: "Morpheus.Network",
       logo: "/logos/Morpheus logo.png",
-      amountRaised: "$ 9.88 Million",
-      initialMcap: "$ 12 Million",
-      currentMcap: "$ 204 Million",
+      amountRaised: "$9.88 Million",
+      initialMcap: "$12 Million",
+      currentMcap: "$204 Million",
       roi: "1,500%"
-    },
-    {
-      name: "Landshare",
-      logo: "/logos/Landshare logo.png",
-      amountRaised: "$ 750 Thousand",
-      initialMcap: "$ 15 Million",
-      currentMcap: "$ 27 Million",
-      roi: "1,747%"
-    },
-    {
-      name: "Pencils Protocol",
-      logo: "/logos/Pencils protocol logo.png",
-      amountRaised: "$ 4.5 Million",
-      initialMcap: "$ 18 Million",
-      currentMcap: "$ 2.4 Million",
-      roi: "274%"
     },
     {
       name: "Zebec Protocol",
       logo: "/logos/Zebec logo.png",
-      amountRaised: "$ 6 Million",
-      initialMcap: "$ 85 Million",
-      currentMcap: "$ 554 Million",
+      amountRaised: "$6 Million",
+      initialMcap: "$85 Million",
+      currentMcap: "$554 Million",
       roi: "76%"
     },
+
     {
-      name: "Dexcheck",
-      logo: "/logos/Dexcheck logo.png",
-      amountRaised: "$ 970 Thousand",
-      initialMcap: "$ 6 Million",
-      currentMcap: "$ 60 Million",
-      roi: "1,725%"
+      name: "Pencils Protocol",
+      logo: "/logos/Pencils protocol logo.png",
+      amountRaised: "$4.5 Million",
+      initialMcap: "$18 Million",
+      currentMcap: "$2.4 Million",
+      roi: "274%"
     },
     {
       name: "Fomo.Fund",
       logo: "/logos/FomoFund logo.png",
-      amountRaised: "$ 2 Million",
-      initialMcap: "$ 22 Million",
-      currentMcap: "$ 59 Million",
+      amountRaised: "$2 Million",
+      initialMcap: "$22 Million",
+      currentMcap: "$59 Million",
       roi: "262%"
-    }
+    },
+    {
+      name: "Vulcan Forged",
+      logo: "/logos/vulcan logo.png",
+      amountRaised: "$2 Million",
+      initialMcap: "$8 Million",
+      currentMcap: "$928 Million",
+      roi: "12,300%"
+    },
+
+
+    {
+      name: "Dexcheck",
+      logo: "/logos/Dexcheck logo.png",
+      amountRaised: "$1 Million",
+      initialMcap: "$6 Million",
+      currentMcap: "$60 Million",
+      roi: "1,725%"
+    },
+    {
+      name: "Landshare",
+      logo: "/logos/Landshare logo.png",
+      amountRaised: "$1 Million",
+      initialMcap: "$15 Million",
+      currentMcap: "$27 Million",
+      roi: "1,747%"
+    },
+
   ];
 
   return (
@@ -94,16 +99,16 @@ const ProjectTable = () => {
           {/* Navigation icons - hidden on mobile */}
           <div className="hidden sm:flex items-center gap-2 lg:gap-4 ml-4 lg:ml-6">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600 lg:w-5 lg:h-5">
-              <rect x="3" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2"/>
-              <rect x="14" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2"/>
-              <rect x="14" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2"/>
-              <rect x="3" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2"/>
+              <rect x="3" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" />
+              <rect x="14" y="3" width="7" height="7" stroke="currentColor" strokeWidth="2" />
+              <rect x="14" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" />
+              <rect x="3" y="14" width="7" height="7" stroke="currentColor" strokeWidth="2" />
             </svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600 lg:w-5 lg:h-5">
-              <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600 lg:w-5 lg:h-5">
-              <path d="M9 19l7-7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 19l7-7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
 
@@ -111,7 +116,7 @@ const ProjectTable = () => {
           <div className="flex-1 max-w-[200px] sm:max-w-[400px] lg:max-w-[600px] mx-2 sm:mx-auto">
             <div className="flex items-center bg-white rounded px-2 sm:px-3 py-1">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-gray-400 mr-1 sm:mr-2 sm:w-[14px] sm:h-[14px]">
-                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" stroke="currentColor" strokeWidth="2"/>
+                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" stroke="currentColor" strokeWidth="2" />
               </svg>
               <span className="text-xs sm:text-sm text-gray-600 truncate">zuvomo.com</span>
             </div>
@@ -120,12 +125,12 @@ const ProjectTable = () => {
           {/* Right side icons - simplified for mobile */}
           <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600 lg:w-5 lg:h-5">
-              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <div className="hidden sm:block">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600 lg:w-5 lg:h-5">
-                <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/>
-                <path d="M5 15H3a2 2 0 01-2-2V3a2 2 0 012-2h10a2 2 0 012 2v2" stroke="currentColor" strokeWidth="2"/>
+                <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2" />
+                <path d="M5 15H3a2 2 0 01-2-2V3a2 2 0 012-2h10a2 2 0 012 2v2" stroke="currentColor" strokeWidth="2" />
               </svg>
             </div>
           </div>
@@ -159,7 +164,7 @@ const ProjectTable = () => {
                     fill="none"
                     className={`transform transition-transform ${expandedCards.includes(index) ? 'rotate-180' : ''}`}
                   >
-                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
               </div>

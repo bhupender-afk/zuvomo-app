@@ -7,9 +7,10 @@ import ServiceCard from '../ServiceCard';
 import ProjectTable from '../ProjectTable';
 import FAQ from '../FAQ';
 import { StartupRegisterBanner } from './LandingPage';
+import { handleJoinNow } from '@/utils/url';
 
 export default function Startup() {
-     const servicesData = [
+  const servicesData = [
     {
       icon: "https://api.builder.io/api/v1/image/assets/TEMP/8ce8ef7ef8c4e0cabe8d01e9fdb2d1ccc5d95062?placeholderIfAbsent=true",
       title: "Full Stack Advisory",
@@ -32,56 +33,58 @@ export default function Startup() {
     }
   ];
   return (
- <div className="bg-white overflow-x-hidden">
+    <div className="bg-white overflow-x-hidden">
       <Header />
-     <div className="p-6 md:p-12" style={{ backgroundImage: `url('/Bg.png')`,      backgroundPosition: 'left center',
+      <div className="p-6 md:p-12" style={{
+        backgroundImage: `url('/Bg.png')`, backgroundPosition: 'left center',
         backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat'}}>
-      <div className="max-w-7xl mx-auto">
-        <div className="rounded-lg p-6 md:p-12">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            {/* Left Content */}
-            <div className="flex-1 max-w-2xl">
-                 
+        backgroundRepeat: 'no-repeat'
+      }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="rounded-lg p-6 md:p-12">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+              {/* Left Content */}
+              <div className="flex-1 max-w-2xl">
 
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                Build smarter,{' '}
-                <span className="text-orange-500">fund faster,</span>
-                {' '}and grow louder.
-              </h2>
-              {/* <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
+
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
+                  Build smarter,{' '}
+                  <span className="text-orange-500">fund faster,</span>
+                  {' '}and grow louder.
+                </h2>
+                {/* <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900">
                 Be the first.
               </h3> */}
-              
-              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-               Our mission is to help CEOs get their startups capital-ready and meet the
-right VCs at the right time.
-              </p>
-              
-              <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                Join Now
-              </button>
-            </div>
-            
-            {/* Right Investment Card */}
-            <div className="flex-1 max-w-md w-full">
+
+                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                  Our mission is to help CEOs get their startups capital-ready and meet the
+                  right VCs at the right time.
+                </p>
+
+                <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                  JOIN NOW
+                </button>
+              </div>
+
+              {/* Right Investment Card */}
+              <div className="flex-1 max-w-md w-full">
                 <img src='/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-   
-       <section className="w-full py-12">
-          <div className="container mx-auto px-4">
-            <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
-              Successful Project Launches
-            </h2>
-            
-            <ProjectTable />
-            
-            {/* Smart Services Section */}
-            {/* <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mt-16 mb-10 font-inter leading-tight">
+
+      <section className="w-full py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
+            Successful Project Launches
+          </h2>
+
+          <ProjectTable />
+
+          {/* Smart Services Section */}
+          {/* <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mt-16 mb-10 font-inter leading-tight">
               Smart Services for Startup Success
             </h2>
             
@@ -90,17 +93,17 @@ right VCs at the right time.
                 <ServiceCard key={index} {...service} />
               ))}
             </div> */}
-          </div>
-        </section>
-          <StartupRegisterBanner/>
-        <section className="w-full bg-white pt-6 pb-12">
-          <div className="container mx-auto px-4">
-            <FAQ />
-          </div>
-        </section>
+        </div>
+      </section>
+      <StartupRegisterBanner />
+      <section className="w-full bg-white  pb-12">
+        <div className="container mx-auto px-4">
+          <FAQ />
+        </div>
+      </section>
 
 
-     <Footer />
+      <Footer />
       <StickyCTABar />
     </div>
   );

@@ -6,6 +6,9 @@ import Footer from '../Footer';
 import { CallToActionBanner, MeetTeam } from './LandingPage';
 
 export default function AboutUs() {
+    function handleJoinNow() {
+        window.location.href = '/signup';
+    }
     return (
         <div className="bg-white overflow-x-hidden">
             <Header />
@@ -15,13 +18,13 @@ export default function AboutUs() {
                 backgroundRepeat: 'no-repeat'
             }}>
                 <div className="max-w-7xl mx-auto">
-                    <div className="rounded-lg p-6 md:p-12">
+                    <div className="rounded-lg p-6 md:p-6">
                         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
                             {/* Left Content */}
                             <div className="flex-1 max-w-2xl">
 
 
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
                                     About Us{' '}
 
                                 </h2>
@@ -45,8 +48,8 @@ export default function AboutUs() {
                                     design a data-backed roadmap for CEOs.
                                 </p>
 
-                                <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                    Join Now
+                                <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                    JOIN NOW
                                 </button>
                             </div>
 
@@ -58,14 +61,14 @@ export default function AboutUs() {
                     </div>
                 </div>
             </div>
-            <div className="min-h-screen bg-gray-50">
+            <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
-                <div className="container mx-auto px-6 py-16">
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div className="rounded-lg p-6 md:p-6 mt-4">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
                         {/* Left Content */}
                         <div className="flex-1 max-w-2xl">
-                            <h1 className="text-5xl lg:text-6xl font-bold mb-4">
-                                <span className="text-blue-500">$800 Million+</span>
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
+                                <span className="text-[rgb(44,145,213)]">$800 Million+</span>
                                 <span className="text-gray-900 block mt-2">
                                     Raised in Investments for Startups
                                 </span>
@@ -82,8 +85,8 @@ export default function AboutUs() {
                                 strategies, we are a founder's reliable ally.
                             </p>
 
-                            <button className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-4 rounded-full text-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
-                                Join Now
+                            <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-4 rounded-full text-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                                JOIN NOW
                             </button>
                         </div>
 
@@ -104,7 +107,7 @@ export default function AboutUs() {
                         <div className="grid md:grid-cols-3 gap-12">
                             {/* Our Values */}
                             <div className="text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-6">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2F3A63] rounded-full mb-6">
                                     <Check className="w-8 h-8 text-white" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Values</h3>
@@ -117,7 +120,7 @@ export default function AboutUs() {
 
                             {/* Company Goal */}
                             <div className="text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-6">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2F3A63] rounded-full mb-6">
                                     <Star className="w-8 h-8 text-white" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Company Goal</h3>
@@ -130,10 +133,10 @@ export default function AboutUs() {
 
                             {/* Satisfaction Guarantee */}
                             <div className="text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-6">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2F3A63] rounded-full mb-6">
                                     <RotateCcw className="w-8 h-8 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Satisfaction Guarantee</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Shared Success</h3>
                                 <p className="text-gray-600 leading-relaxed">
                                     Your success is ours. We have helped hundreds of businesses achieve their dreams and wish to
                                     do the same for you. We offer a 100% satisfaction guarantee.

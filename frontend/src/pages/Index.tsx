@@ -302,20 +302,20 @@ const Index = () => {
 
   const testimonialsData = [
     {
-      quote: "Their input was clear. It gave us the clarity we needed to move forward with our project",
-      author: "Alishia Fulton",
+      quote: "Nikhil It gave us the clarity we needed to move forward with our project",
+      author: "Vulcan Forged",
       role: "Director",
       avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9a5e9915b662476f9c68ecc4e2c8c79a925ca813?placeholderIfAbsent=true"
     },
     {
       quote: "They were able to see what was needed and where to begin in the first place.",
-      author: "John Doe",
+      author: "Morpheus Network",
       role: "CO & Founder",
       avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9dff43610f1657a2137a23d3ac72a7125c2c019b?placeholderIfAbsent=true"
     },
     {
-      quote: "Zuvomo transformed our startup vision into reality. Their strategic guidance and network connections were invaluable.",
-      author: "Sarah Mitchell",
+      quote: "They understand both what we're building and who it’s for, and that matters.",
+      author: "Landshare",
       role: "CEO & Co-Founder",
       avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9a5e9915b662476f9c68ecc4e2c8c79a925ca813?placeholderIfAbsent=true"
     },
@@ -516,7 +516,7 @@ const Index = () => {
         </section>
 
           {/* In The News Section */}
-        <section className="w-full bg-[#F6F7FA] mt-20 py-12">
+        <section className="w-full bg-[#F6F7FA] py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-10 font-inter leading-tight">
               In The News
@@ -628,7 +628,7 @@ const Index = () => {
                 onClick={handleJoinNow}
                 className="px-12 py-3 text-base text-[#2C91D5] font-medium border border-[#2C91D5] rounded-full  hover:bg-[rgb(30,120,180)] hover:text-white transition-all duration-200"
               >
-                Join Now
+                JOIN NOW
               </button>
             </div>
           </div>
@@ -715,7 +715,7 @@ const Index = () => {
                   onClick={handleJoinNow}
                   className="bg-[#2C91D5] text-white px-8 sm:px-12 py-3 rounded-full text-sm sm:text-base font-medium hover:opacity-90 transition-all duration-200"
                 >
-                  Join Now
+                  JOIN NOW
                 </button>
               </div>
               
@@ -776,7 +776,7 @@ const Index = () => {
         </section>
 
         {/* Case Studies Section */}
-        <section id="case-studies" className="w-full pt-12 pb-6">
+        {/* <section id="case-studies" className="w-full pt-12 pb-6">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-4 font-inter leading-tight">
               Case Studies
@@ -792,16 +792,9 @@ const Index = () => {
               ))}
             </div>
             
-            {/* <div className="flex justify-center">
-              <button 
-                onClick={handleViewAllCaseStudies}
-                className="px-12 py-3 text-base text-[#2c91d5] border border-[#2C91D5] rounded-full hover:bg-[#2c91d5] hover:text-white transition-all duration-200"
-              >
-                View More
-              </button>
-            </div> */}
+           
           </div>
-        </section>
+        </section> */}
 
         {/* FAQ Section */}
         <section className="w-full bg-white pt-6 pb-12">
