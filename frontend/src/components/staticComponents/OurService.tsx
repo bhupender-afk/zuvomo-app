@@ -100,7 +100,29 @@ export default function OurService() {
                     </div>
                 </div>
             </div>
-            <StartupEvaluationGrid />
+              <section className="w-full py-12">
+          <div className="container mx-auto px-4">
+             <div className="mt-16">
+              <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
+                Smart Services for Startup Success
+              </h2>
+              
+            
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
+                <div className="w-full lg:w- 4/4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 justify-items-center">
+                    {servicesData.map((service, index) => (
+                      <ServiceCard key={index} {...service} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+        </section>
+            {/* Services Section */}
+             
+            {/* <StartupEvaluationGrid /> */}
               <section id="case-studies" className="w-full pt-12 pb-6">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-4 font-inter leading-tight">
@@ -117,14 +139,13 @@ export default function OurService() {
               ))}
             </div>
             
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <button 
-                // onClick={handleViewAllCaseStudies}
                 className="px-12 py-3 text-base text-[#2c91d5] border border-[#2C91D5] rounded-full hover:bg-[#2c91d5] hover:text-white transition-all duration-200"
               >
                 View More
               </button>
-            </div>
+            </div> */}
           </div>
         </section>
             <Footer />

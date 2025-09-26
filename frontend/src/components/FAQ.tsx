@@ -11,19 +11,19 @@ const FAQ = () => {
   const faqItems: FAQItem[] = [
     {
       question: "How does Zuvomo grade startups?",
-      answer: "We use a comprehensive evaluation framework that includes market analysis, team assessment, technology review, and business model validation."
+      answer: "At Zuvomo, we grade startups through an intense, data-driven evaluation process designed to identify and validate high-potential Web3 and blockchain projects. Our grading combines advanced AI insights, hands-on advisory experience, and real-time market data to provide a transparent and reliable ranking."
     },
     {
       question: "What are the winning token sale strategies?",
-      answer: "Successful token sales require proper tokenomics design, community building, regulatory compliance, and strategic marketing."
+      answer: "We design winning token sale strategies by creating transparent and sustainable tokenomics, building engaged communities early, and planning structured sale phases with fair vesting schedules to ensure market stability. We partner with trusted influencers, launchpads, and market makers to boost credibility and liquidity. "
     },
     {
-      question: "What do VCs appreciate the most?",
-      answer: "VCs value strong founding teams, clear market opportunity, scalable business models, and demonstrable traction."
+      question: "What do Investor appreciate the most?",
+      answer: "Investors appreciate strong, passionate founding teams; scalable business models targeting large markets; clear proof of concept with measurable traction; transparent execution backed by data; and solutions addressing real-world problems. They value founders who effectively leverage advisory networks and investor validation."
     },
     {
       question: "Launch is overwhelming. Where do I get started from?",
-      answer: "Start with our startup evaluation process, then connect with our advisory team for a customized roadmap."
+      answer: "If the launch feels overwhelming, start with a clear roadmap, such as defining your project, building a strong and engaged community early, and designing transparent tokenomics. Leverage our expert advisory services and data-driven tools to validate your strategy, connect with trusted startup investors, and optimize your marketing for maximum impact. "
     }
   ];
 

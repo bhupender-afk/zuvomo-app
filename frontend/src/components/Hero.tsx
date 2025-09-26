@@ -51,7 +51,7 @@ const Hero = () => {
                   Zuvomo supports handpicked Web3 startups with capital, advisory, and execution to help founders succeed.
                 </p>
                 <p className="hidden lg:block">
-                  Powered by AI and backed by an earned network of VCs, KOLs, and domain experts, we operate as veteran ambassadors of the crypto ecosystem. Over the past 8+ years, we have empowered strong teams led by passionate founders, raising over $800M across 100+ projects since 2017.
+                  Powered by AI and backed by an earned network of Startup Investors, KOLs, and domain experts, we operate as veteran ambassadors of the crypto ecosystem. Over the past 8+ years, we have empowered strong teams led by passionate founders, raising over $800M across 100+ projects since 2017.
                 </p>
                 <p className="hidden md:block lg:hidden">
                   Over 8+ years, we've empowered founders, raising $800M+ across 100+ projects since 2017.
@@ -65,13 +65,13 @@ const Hero = () => {
                 onClick={handleSubmitStartup}
                 className="bg-white text-[#2C91D5] px-6 py-3 rounded-full font-semibold text-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl hover:bg-[#2C91D5] hover:text-white active:scale-95"
               >
-                Submit your startups
+                Submit your Startups
               </button>
               <button 
                 onClick={handleRegisterVC}
                 className="bg-[#2C91D5] text-white px-6 py-3 rounded-full font-semibold text-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-[#2C91D5] hover:bg-[#2475c2] active:scale-95"
               >
-                Register as VC's
+                Register as Investor
               </button>
             </div>
           </div>

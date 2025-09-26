@@ -13,7 +13,7 @@ const Header = () => {
 
   // Reusable navigation link styles
   const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
-    `relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive
+    `relative px-2 md:px-3 lg:px-4 xl:px-5 py-1.5 md:py-2 text-[11px] md:text-xs lg:text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${isActive
       ? "bg-brand-orange text-white shadow-lg"
       : "text-white hover:text-white hover:bg-white/10 hover:scale-105"
     }`;
@@ -106,8 +106,8 @@ const Header = () => {
           ? 'shadow-[0_4px_12px_0_rgba(47,58,99,0.35)]'  // darker, deeper shadow when scrolled
           : 'shadow-[0_2px_6px_0_rgba(47,58,99,0.20)]'   // subtle shadow by default
         }`}>
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-3 md:px-4 lg:px-6 xl:px-8 py-3">
+          <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-6 xl:gap-8">
             {/* Logo */}
             <a href="/" className="flex-shrink-0 cursor-pointer">
               <img
@@ -118,7 +118,7 @@ const Header = () => {
             </a>
 
             {/* Navigation */}
-            <nav className="hidden lg:flex items-center space-x-2">
+            <nav className="hidden xl:flex items-center gap-3">
               <NavLink to="/" className={navLinkStyles} end>
                 Explore
               </NavLink>
@@ -166,26 +166,26 @@ const Header = () => {
             </nav>
 
             {/* Auth buttons / User menu */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden xl:flex items-center gap-3 flex-shrink-0">
               {isAuthenticated && user ? (
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-navy"
+                    className="flex items-center gap-1 md:gap-2 lg:gap-2 xl:gap-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-navy"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <span className="text-brand-navy font-medium text-sm">
+                    <div className="flex items-center gap-1 md:gap-2 lg:gap-2 xl:gap-3">
+                      <div className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-brand-navy font-medium text-[10px] md:text-xs lg:text-sm">
                           {user.first_name?.[0]}{user.last_name?.[0]}
                         </span>
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm font-medium text-white">
+                      <div className="text-left hidden xl:block">
+                        <p className="text-xs lg:text-sm font-medium text-white">
                           {user.first_name} {user.last_name}
                         </p>
-                        <p className="text-xs text-white/80 capitalize">{user.role.replace('_', ' ')}</p>
+                        <p className="text-[10px] lg:text-xs text-white/80 capitalize">{user.role.replace('_', ' ')}</p>
                       </div>
-                      <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 lg:w-4 lg:h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
@@ -234,13 +234,13 @@ const Header = () => {
                 <>
                   <button
                     onClick={handleLogin}
-                    className="px-5 py-2 text-[13px] text-[#2C91D5] bg-white font-medium rounded-full border border-[#2C91D5] hover:bg-[#2C91D5] hover:text-white transition-all duration-200 hover:scale-105"
+                    className="px-2 md:px-3 lg:px-4 xl:px-5 py-1 md:py-1.5 lg:py-2 text-[10px] md:text-[11px] lg:text-xs xl:text-sm text-[#2C91D5] bg-white font-medium rounded-full border border-[#2C91D5] hover:bg-[#2C91D5] hover:text-white transition-all duration-200 hover:scale-105 whitespace-nowrap"
                   >
                     Log In
                   </button>
                   <button
                     onClick={handleSignUp}
-                    className="px-5 py-2 text-sm text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 hover:scale-105"
+                    className="px-2 md:px-3 lg:px-4 xl:px-5 py-1 md:py-1.5 lg:py-2 text-[10px] md:text-[11px] lg:text-xs xl:text-sm text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 hover:scale-105 whitespace-nowrap"
                   >
                     Sign Up
                   </button>
@@ -248,13 +248,13 @@ const Header = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Drawer menu button */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleMobileMenu();
               }}
-              className="lg:hidden text-white hover:text-[#E3F2FD] transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-105"
+              className="xl:hidden text-white hover:text-[#E3F2FD] transition-all duration-300 p-2 rounded-lg hover:bg-white/10 hover:scale-105"
               aria-label="Toggle mobile menu"
             >
               <div className="w-6 h-6 flex items-center justify-center">
@@ -271,26 +271,44 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Mobile Navigation Backdrop */}
-          {/* {isMobileMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
-            onClick={closeMobileMenu}
-          />
-        )} */}
+          {/* Drawer Navigation Backdrop */}
+          {isMobileMenuOpen && (
+            <div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 xl:hidden"
+              onClick={closeMobileMenu}
+            />
+          )}
 
-          {/* Mobile Navigation Menu */}
-          <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMobileMenuOpen
-            ? 'max-h-screen opacity-100'
-            : 'max-h-0 opacity-0'
+          {/* Drawer Navigation Menu */}
+          <div className={`xl:hidden fixed right-0 top-0 h-full w-80 bg-[#2F3A63] z-50 transition-transform duration-300 ease-in-out ${isMobileMenuOpen
+            ? 'transform translate-x-0'
+            : 'transform translate-x-full'
             }`}>
-            <div className="bg-[#2F3A63] border-t border-white/10 pb-6">
-              <nav className="flex flex-col space-y-1 pt-4 px-4">
-                {/* Mobile Navigation Links */}
+            <div className="h-full flex flex-col shadow-xl">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between p-6 border-b border-white/10">
+                <img
+                  src="https://api.builder.io/api/v1/image/assets/TEMP/1dff84ef9a6b5c3ed5b94cf511907445481c3c6b?placeholderIfAbsent=true"
+                  className="h-8 w-auto"
+                  alt="Zuvomo Logo"
+                />
+                <button
+                  onClick={closeMobileMenu}
+                  className="text-white hover:text-[#E3F2FD] transition-colors p-2 rounded-lg hover:bg-white/10"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="flex flex-col space-y-2 p-6 flex-1">
+                {/* Drawer Navigation Links */}
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -302,7 +320,7 @@ const Header = () => {
                 <NavLink
                   to="/startups"
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -314,7 +332,7 @@ const Header = () => {
                 <NavLink
                   to="/investors"
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -326,7 +344,7 @@ const Header = () => {
                 <NavLink
                   to="https://blog.zuvomo.com" target='_blank'
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -335,23 +353,10 @@ const Header = () => {
                 >
                   Blog
                 </NavLink>
-                {/* <NavLink
-                  to="/case-studies"
-                  className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? 'bg-brand-orange text-white shadow-lg'
-                        : 'text-white hover:bg-white/10 hover:text-white'
-                    }`
-                  }
-                  onClick={closeMobileMenu}
-                >
-                  Case Studies
-                </NavLink> */}
                 <NavLink
                   to="/about-us"
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -360,10 +365,22 @@ const Header = () => {
                 >
                   About Us
                 </NavLink>
+                <button
+                  className="px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center text-white hover:bg-white/10 hover:text-white text-left"
+                  onClick={() => {
+                    closeMobileMenu();
+                    window.scrollTo({
+                      top: document.documentElement.scrollHeight,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  Contact Us
+                </button>
                 <NavLink
                   to="/our-service"
                   className={({ isActive }) =>
-                    `px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
+                    `px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 flex items-center ${isActive
                       ? 'bg-brand-orange text-white shadow-lg'
                       : 'text-white hover:bg-white/10 hover:text-white'
                     }`
@@ -373,66 +390,67 @@ const Header = () => {
                   Our Services
                 </NavLink>
 
-                {/* Mobile Auth Section */}
-                <div className="pt-6 border-t border-white/10 mt-4">
-                  {isAuthenticated && user ? (
-                    <>
-                      <div className="flex items-center space-x-3 px-4 py-4 bg-white/5 rounded-xl mb-4">
-                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                          <span className="text-brand-navy font-semibold text-sm">
-                            {user.first_name?.[0]}{user.last_name?.[0]}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white">
-                            {user.first_name} {user.last_name}
-                          </p>
-                          <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
-                        </div>
+              </nav>
+
+              {/* Drawer Auth Section */}
+              <div className="p-6 border-t border-white/10 mt-auto">
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center space-x-4 px-6 py-4 bg-white/5 rounded-xl mb-6">
+                      <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-brand-navy font-bold text-lg">
+                          {user.first_name?.[0]}{user.last_name?.[0]}
+                        </span>
                       </div>
-                      <div className="space-y-3">
-                        <a
-                          href={getDashboardUrl()}
-                          className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200 text-center block"
-                          onClick={closeMobileMenu}
-                        >
-                          Dashboard
-                        </a>
-                        <button
-                          onClick={() => {
-                            closeMobileMenu();
-                            handleLogout();
-                          }}
-                          className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
-                        >
-                          Sign Out
-                        </button>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-base font-semibold text-white truncate">
+                          {user.first_name} {user.last_name}
+                        </p>
+                        <p className="text-sm text-white/70 capitalize truncate">{user.role.replace('_', ' ')}</p>
                       </div>
-                    </>
-                  ) : (
+                    </div>
                     <div className="space-y-3">
+                      <a
+                        href={getDashboardUrl()}
+                        className="w-full px-6 py-4 text-base font-medium text-white bg-[#2C91D5] rounded-xl border border-[#2C91D5] hover:opacity-90 transition-all duration-200 text-center block"
+                        onClick={closeMobileMenu}
+                      >
+                        Dashboard
+                      </a>
                       <button
                         onClick={() => {
                           closeMobileMenu();
-                          handleLogin();
+                          handleLogout();
                         }}
-                        className="w-full px-6 py-3 text-sm font-medium text-[#2C91D5] bg-white rounded-full border border-white hover:bg-gray-50 transition-all duration-200"
+                        className="w-full px-6 py-4 text-base font-medium text-[#2C91D5] bg-white rounded-xl border border-white hover:bg-gray-50 transition-all duration-200"
                       >
-                        Log In
-                      </button>
-                      <button
-                        onClick={() => {
-                          closeMobileMenu();
-                          handleSignUp();
-                        }}
-                        className="w-full px-6 py-3 text-sm font-medium text-white bg-[#2C91D5] rounded-full border border-[#2C91D5] hover:opacity-90 transition-all duration-200"
-                      >
-                        Sign Up
+                        Sign Out
                       </button>
                     </div>
-                  )}
-                </div>
-              </nav>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => {
+                        closeMobileMenu();
+                        handleLogin();
+                      }}
+                      className="w-full px-6 py-4 text-base font-medium text-[#2C91D5] bg-white rounded-xl border border-white hover:bg-gray-50 transition-all duration-200"
+                    >
+                      Log In
+                    </button>
+                    <button
+                      onClick={() => {
+                        closeMobileMenu();
+                        handleSignUp();
+                      }}
+                      className="w-full px-6 py-4 text-base font-medium text-white bg-[#2C91D5] rounded-xl border border-[#2C91D5] hover:opacity-90 transition-all duration-200"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

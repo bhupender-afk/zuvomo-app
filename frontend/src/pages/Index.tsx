@@ -596,8 +596,8 @@ const Index = () => {
                 },
                 {
                   icon: "https://api.builder.io/api/v1/image/assets/TEMP/110e2d29ecc9cf35bcec6c11093175602d08599b?placeholderIfAbsent=true",
-                  title: "Connect with VC's Experts",
-                  description: "Get access to 1,000+ VCs for mentorship, strategic deals, and capital."
+                  title: "Connect with Startup Investors Experts",
+                  description: "Get access to 1,000+ Startup Investors for mentorship, strategic deals, and capital."
                 },
                 {
                   icon: "https://api.builder.io/api/v1/image/assets/TEMP/9aa02c702a857b7f5d105cf40d2612fd6d2749a6?placeholderIfAbsent=true",

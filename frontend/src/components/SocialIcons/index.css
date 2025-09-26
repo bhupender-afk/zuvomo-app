@@ -90,6 +90,19 @@
   gap: 0 14px;
   margin-top: 13px;
   padding-top: 1px;
+  justify-content: flex-start;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .social-icons-container {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .social-icons-container {
+    justify-content: flex-start;
+  }
 }
 
 .social-icons-label {
@@ -110,8 +123,20 @@
 .social-icons-group {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 14px;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .social-icons-group {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .social-icons-group {
+    justify-content: flex-start;
+  }
 }
 
 /* Responsive design */
@@ -121,12 +146,13 @@
     gap: 0 8px;
     margin-top: 8px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
   }
 
   .social-icons-group {
     gap: 8px;
+    justify-content: flex-start;
   }
 
   .social-icon-link {
