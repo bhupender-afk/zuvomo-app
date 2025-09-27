@@ -40,42 +40,42 @@ const Footer = () => {
               <nav className="w-full text-sm font-medium gap-2 mt-3.5">
                 <div className="flex w-full flex-col text-white whitespace-nowrap">
                   <div className="flex">
-                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="/" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       Home
                     </a>
                   </div>
                 </div>
                 <div className="flex w-full flex-col text-white mt-2">
                   <div className="flex">
-                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="/about-us" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       About Us
                     </a>
                   </div>
                 </div>
                 <div className="flex w-full flex-col whitespace-nowrap mt-2">
                   <div className="flex">
-                    <a href="#" className="rounded-[20px] text-white text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="/startups" className="rounded-[20px] text-white text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       Startups
                     </a>
                   </div>
                 </div>
                 <div className="flex w-full flex-col text-white whitespace-nowrap mt-2">
                   <div className="flex">
-                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="/investors" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       VCs
                     </a>
                   </div>
                 </div>
                 <div className="flex w-full flex-col text-white whitespace-nowrap mt-2">
                   <div className="flex">
-                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="https://blog.zuvomo.com" target='_blank' className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       Blog
                     </a>
                   </div>
                 </div>
                 <div className="flex w-full flex-col text-white whitespace-nowrap mt-2">
                   <div className="flex">
-                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                    <a href="/our-service" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
                       Services
                     </a>
                   </div>
