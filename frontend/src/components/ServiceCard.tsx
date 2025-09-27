@@ -29,7 +29,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         stiffness: 300,
         damping: 30
       }}
-      className={`max-w-[325px] min-h-[200px] w-full flex-1 p-5 rounded-2xl group cursor-pointer backdrop-blur-sm border transition-all duration-300 ${
+      className={`max-w-[400px] min-h-[220px] w-full flex-1 p-5 rounded-2xl group cursor-pointer backdrop-blur-sm border transition-all duration-300 ${
         variant === 'highlighted' 
           ? 'bg-gradient-to-br from-[#2c91d5] via-[#2c91d5] to-[#1e40af] text-white border-white/20 shadow-[0_8px_32px_0_rgba(44,145,213,0.2)] hover:shadow-[0_20px_40px_0_rgba(44,145,213,0.3)]' 
           : 'bg-white hover:bg-[#2c91d5] hover:text-white border-gray-100 shadow-[0_2px_12px_0_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_0_rgba(0,0,0,0.12)]'

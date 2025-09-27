@@ -29,7 +29,7 @@ const Footer = () => {
         {/* Navigation Links Section - Right Group */}
         <div className="flex justify-start sm:justify-center lg:justify-end items-start gap-8 lg:gap-12 flex-wrap pt-5 w-full lg:w-auto">
           {/* Account Links */}
-          {/* <div className="justify-start items-stretch flex flex-col min-w-[150px] pt-0">
+          <div className="justify-start items-stretch flex flex-col min-w-[150px] pt-0">
             <div className="w-full flex-1 gap-[13.99px] px-3">
               <h3 className="w-full text-base text-white font-bold whitespace-nowrap leading-[1.2]">
                 <div className="text-base font-bold leading-[19.2px]">
@@ -55,7 +55,14 @@ const Footer = () => {
                 <div className="flex w-full flex-col whitespace-nowrap mt-2">
                   <div className="flex">
                     <a href="#" className="rounded-[20px] text-white text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
-                      Security
+                      Startups
+                    </a>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col text-white whitespace-nowrap mt-2">
+                  <div className="flex">
+                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                      VCs
                     </a>
                   </div>
                 </div>
@@ -66,6 +73,14 @@ const Footer = () => {
                     </a>
                   </div>
                 </div>
+                <div className="flex w-full flex-col text-white whitespace-nowrap mt-2">
+                  <div className="flex">
+                    <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
+                      Services
+                    </a>
+                  </div>
+                </div>
+                
                 <div className="flex w-full flex-col text-white mt-2">
                   <div className="flex">
                     <a href="#" className="text-sm font-medium leading-[21px] hover:text-[#0dcaf0] transition-colors">
@@ -75,7 +90,7 @@ const Footer = () => {
                 </div>
               </nav>
             </div>
-          </div> */}
+          </div>
 
           {/* Quick Links */}
           {/* <div className="justify-start items-stretch flex flex-col text-white min-w-[150px] pt-0">

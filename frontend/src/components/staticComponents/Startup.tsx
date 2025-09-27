@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Star, RotateCcw, Share2, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { Check, Star, RotateCcw, Share2, TrendingUp, Users, DollarSign, Bold } from 'lucide-react';
 import Header from '../Header';
 import StickyCTABar from '../StickyCTABar';
 import Footer from '../Footer';
@@ -32,6 +32,9 @@ export default function Startup() {
       description: "Stay liquid, tradeable, and secure from day one."
     }
   ];
+  const OrganeText =(text:string)=>{
+    return <span className="text-[#F8673C] font-bold">{text}</span>
+  }
   return (
     <div className="bg-white overflow-x-hidden">
       <Header />
@@ -57,8 +60,7 @@ export default function Startup() {
               </h3> */}
 
                 <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                  Our mission is to help CEOs get their startups capital-ready and meet the
-                  right VCs at the right time.
+                  Our mission is to help CEOs get their startups funding ready with the {OrganeText("right advisory")} and connect with the {OrganeText("right VCs")} at the {OrganeText("right time")}. 
                 </p>
 
                 <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
@@ -85,7 +87,7 @@ export default function Startup() {
 
           {/* Smart Services Section */}
           {/* <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mt-16 mb-10 font-inter leading-tight">
-              Smart Services for Startup Success
+              Services
             </h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -106,16 +106,20 @@ const Header = () => {
           ? 'shadow-[0_4px_12px_0_rgba(47,58,99,0.35)]'  // darker, deeper shadow when scrolled
           : 'shadow-[0_2px_6px_0_rgba(47,58,99,0.20)]'   // subtle shadow by default
         }`}>
-        <div className="container mx-auto px-3 md:px-8 lg:px-12 xl:px-8 py-3">
+        <div className="container mx-auto px-3 md:px-4 lg:px-12 xl:px-8 py-3">
           <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-6 xl:gap-8">
             {/* Logo */}
             <a href="/" className="flex-shrink-0 cursor-pointer">
               <img
-                src="/Zlogo.png"
-                className="h-10 w-auto hover:opacity-90 transition-opacity"
+                // src="https://api.builder.io/api/v1/image/assets/TEMP/1dff84ef9a6b5c3ed5b94cf511907445481c3c6b?placeholderIfAbsent=true"
+                src='/Zuvomo1.png'
+                // className="h-10 w-auto hover:opacity-90 transition-opacity  md:w-28 aspect-auto cover contain"
+                className="w-28 h-12 object-contain lg:w-32 md:w-16 sm:w-32"
                 alt="Zuvomo Logo"
               />
+              
             </a>
+           
 
             {/* Navigation */}
             <nav className="hidden md:flex items-center gap-1 md:gap-1.5 lg:gap-2 xl:gap-3">

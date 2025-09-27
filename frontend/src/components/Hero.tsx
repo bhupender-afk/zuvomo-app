@@ -21,23 +21,22 @@ const Hero = () => {
           {/* Text Content - Left Side */}
           <div className="w-full lg:w-[60%] flex flex-col justify-center py-6 lg:py-0 text-center lg:text-left z-10 relative">
             {/* Tagline */}
-            <div className="flex items-center justify-center lg:justify-start gap-2 text-white mb-4">
+            {/* <div className="flex items-center justify-center lg:justify-start gap-2 text-white mb-4">
               <span className="text-lg md:text-xl text-orange-500">•</span>
               <span className="text-xs md:text-sm uppercase tracking-wider">
                 YOU BUILD. WE HANDLE WHAT COMES NEXT.
               </span>
-            </div>
+            </div> */}
             
             {/* Main Heading - Single Line Layout */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 lg:mb-6">
-              <div className="mb-2">
-                <span className="text-white">Great Ideas </span>
-                <span className="text-[#F8673C]">Deserve</span>
-              </div>
-              <div>
-                <span className="text-white">Capital and </span>
-                <span className="text-[#2C91D5]">Credibility</span>
-              </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 lg:mb-6 text-white max-w-4xl mx-auto lg:mx-0">
+              
+                <span className="text-[#F8673C]">Funding {" ,   "}</span>
+                <span className="text-[#F8673C]">visibility</span> and
+                <span className="text-[#F8673C]">{" "}world domination</span> for visionary 
+                <span className="text-[#F8673C]">{" "}CEOs</span>
+              {/* </div> */}
+             
             </h1>
             
             {/* Description */}
@@ -45,13 +44,13 @@ const Hero = () => {
               <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-0.5 bg-white/30"></div>
               <div className="lg:pl-6 space-y-3 text-sm md:text-base text-white/90 leading-relaxed max-w-xl mx-auto lg:mx-0">
                 <p className="hidden md:block">
-                  Zuvomo supports handpicked Web3 startups through token sales, liquidity, and capital. We take the journey with founders, combining AI insights, proven advisory, and data-backed execution to help them dominate with precision and confidence.
+                  Zuvomo supports handpicked Web3 startups through funding, token sales, and visibility. We take the journey with founders, combining AI insights, proven advisory, and data-backed execution to help them dominate with precision and confidence.
                 </p>
                 <p className="md:hidden">
-                  Zuvomo supports handpicked Web3 startups with capital, advisory, and execution to help founders succeed.
+                  Zuvomo supports handpicked Web3 startups through funding, token sales, and visibility. We take the journey with founders, combining AI insights, proven advisory, and data-backed execution to help them dominate with precision and confidence.
                 </p>
                 <p className="hidden lg:block">
-                  Powered by AI and backed by an earned network of Startup Investors, KOLs, and domain experts, we operate as veteran ambassadors of the crypto ecosystem. Over the past 8+ years, we have empowered strong teams led by passionate founders, raising over $800M across 100+ projects since 2017.
+                  Powered by AI and backed by an earned network of VCs, KOLs, and domain experts, we operate as veteran ambassadors of the crypto ecosystem. Over the past 8+ years, we have empowered strong teams led by passionate founders, raising over $800M across 100+ projects since 2017.
                 </p>
                 <p className="hidden md:block lg:hidden">
                   Over 8+ years, we've empowered founders, raising $800M+ across 100+ projects since 2017.

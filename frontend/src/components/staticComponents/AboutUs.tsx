@@ -70,19 +70,19 @@ export default function AboutUs() {
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
                                 <span className="text-[rgb(44,145,213)]">$800 Million+</span>
                                 <span className="text-gray-900 block mt-2">
-                                    Raised in Investments for Startups
+                                    Raised! We’ve got you covered
                                 </span>
                             </h1>
 
                             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                                Launched in 2017, Zuvomo has helped 150+ startups in the crypto and
-                                blockchain industry with strategies, capital, and partnerships to
-                                dominate markets.
+                                We know the journey of a founder is never easy. The late nights, sleepless sprints, managing teams, DAOs, and token communities, the pressure to deliver on protocol milestones and governance votes. We salute that passion. We feel it because we live it. Your fight is our fight.
                             </p>
 
+                            <p className="text-gray-600 text-lg mb-6 leading-relaxed">
+                                We love what we do because, like you, we believe in a new internet. We believe in decentralization, we believe in DeFi protocols, we believe in RWA, we believe in NFTs, Layer 2 scaling, and DAOs. We have been part of this ecosystem since 2017, true OGs who have witnessed bull runs, bear markets, and everything in between, and stayed the course.
+                            </p>
                             <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                                From acing launches to creating successful ROI-driven marketing
-                                strategies, we are a founder's reliable ally.
+                                Together, let’s transform the ecosystem and build the trustless, decentralized internet of the future.
                             </p>
 
                             <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-4 rounded-full text-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
@@ -110,11 +110,9 @@ export default function AboutUs() {
                                 <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2F3A63] rounded-full mb-6">
                                     <Check className="w-8 h-8 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Values</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Values</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Value over everything. For investors, we shortlist only the best projects and provide
-                                    adding value and insight, to the portfolio. and that they get not only funding but also a
-                                    strategic partner.
+                                   We champion builders who choose real utility over hype and create lasting change in Web3.
                                 </p>
                             </div>
 
@@ -123,11 +121,9 @@ export default function AboutUs() {
                                 <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2F3A63] rounded-full mb-6">
                                     <Star className="w-8 h-8 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Company Goal</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-4">Goal</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    In a world where most projects fail within the first year, Zuvomo exists to defy the statistics.
-                                    Our mission is to guide and educates themselves to make your startup an
-                                    unforgettable project.
+                                    To help bold ideas break the noise and become movements that shape the future of the internet.
                                 </p>
                             </div>
 
@@ -138,8 +134,7 @@ export default function AboutUs() {
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Shared Success</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Your success is ours. We have helped hundreds of businesses achieve their dreams and wish to
-                                    do the same for you. We offer a 100% satisfaction guarantee.
+                                    When our founders win, the entire community wins - your growth is our badge of honor
                                 </p>
                             </div>
                         </div>

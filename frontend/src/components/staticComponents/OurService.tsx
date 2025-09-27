@@ -7,31 +7,10 @@ import ServiceCard from '../ServiceCard';
 import ProjectTable from '../ProjectTable';
 import StartupEvaluationGrid from './LandingPage';
 import CaseStudyCard from '../CaseStudyCard';
-import { handleJoinNow } from '@/utils/url';
+import { handleJoinNow, staticData } from '@/utils/url';
 
 export default function OurService() {
-    const servicesData = [
-        {
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/8ce8ef7ef8c4e0cabe8d01e9fdb2d1ccc5d95062?placeholderIfAbsent=true",
-            title: "Full Stack Advisory",
-            description: "You build, we take care of the rest until the end."
-        },
-        {
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/07aec0b2d4b918e6cf8f8693d05dd64ddf9021ac?placeholderIfAbsent=true",
-            title: "VC Funding",
-            description: "Get funded by investors who fuel real growth."
-        },
-        {
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/379ff523d56d512107ce8b080603ef92ecb938de?placeholderIfAbsent=true",
-            title: "Marketing",
-            description: "We build narratives and communities that last."
-        },
-        {
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/d39452372f8ded7c2fd8ba119ddad5acb8b1ff3d?placeholderIfAbsent=true",
-            title: "Liquidity/OTC",
-            description: "Stay liquid, tradeable, and secure from day one."
-        }
-    ];
+   
     const caseStudiesData = [
         {
             title: "RWA vs. DeFi vs. DePIN vs. AI: Who's Winning the 2025 VC Funding War?",
@@ -102,14 +81,19 @@ export default function OurService() {
           <div className="container mx-auto px-4">
              <div className="mt-16">
               <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
-                Smart Services for Startup Success
+                Forger: Where Web3 Success is Shaped
+              </h2>
+              <h2  
+              className="text-[24px] md:text-[30px] text-center mb-8 font-inter leading-tight font-normal text-black-100/20  max-w-7xl mx-auto"
+              >
+                We forge your token, story, and strategy into a foundation that attracts investors, ignites communities, and sustains long term growth. Explore our core services — Advisory, Funding, Marketing, and Liquidity — built to fuel every phase of your journey.
               </h2>
               
             
-              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
-                <div className="w-full lg:w- 4/4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 justify-items-center">
-                    {servicesData.map((service, index) => (
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8 mt-12">
+                <div className="w-full lg:w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                    {staticData.forgeContent.map((service, index) => (
                       <ServiceCard key={index} {...service} />
                     ))}
                   </div>
@@ -118,6 +102,45 @@ export default function OurService() {
             </div>
             </div>
         </section>
+         <div className="p-6 md:p-12" style={{
+                backgroundImage: `url('/Bg.png')`, backgroundPosition: 'left center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat'
+            }}>
+                <div className="max-w-7xl mx-auto">
+                    <div className="rounded-lg p-6 md:p-12">
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+                            {/* Left Content */}
+                        <div className="flex-1 max-w-2xl">
+
+
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
+                                    Empowering{' '}
+                                    <span className="text-orange-500">Web3 startups </span>
+                                      with strategy, visibility, and 
+                                    <span className="text-orange-500"> {" "}long-term growth. </span>
+                               
+                                </h2>
+                               
+
+                                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                                    Our mission is to help CEOs get their startups capital-ready and meet the
+                                    right VCs at the right time.
+                                </p>
+
+                                <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                    JOIN NOW
+                                </button>
+                            </div>
+
+                            {/* Right Investment Card */}
+                            <div className="flex-1 max-w-md w-full">
+                                <img src='/handshake.png' alt='Handshake' className='w-full h-auto rounded-lg shadow-xl' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {/* Services Section */}
              
             {/* <StartupEvaluationGrid /> */}

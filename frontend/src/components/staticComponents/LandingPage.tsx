@@ -18,19 +18,17 @@ export function ExclusiveDealsComponent() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             {/* Left Content */}
             <div className="flex-1 max-w-2xl">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
                 <span className='text-orange-500'>Unlock {" "}</span>
                  exclusive{' '}
                 <span className="text-orange-500">1%</span>
-                {' '}deals.
+                {' '}token{" "}<span className="text-orange-500">deals.{" "}</span> 
+                 Be the first.
               </h2>
-              <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
-                Be the first.
-              </h3>
+              
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Meet passionate founders with breakout ideas, where every project is
-                vetted and graded by experts.
+                Meet passionate founders building protocols, DAOs, DeFi apps, RWAs, and Layer 1,2 solutions where every project is vetted, tokenomics reviewed, and graded by domain experts.
               </p>
               
               <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
@@ -100,23 +98,23 @@ export function FourStepJourney() {
   const steps = [
     {
       icon: User,
-      title: "1. Sign Up",
-      description: "Register for instant access to crypto funding networks, growth playbooks, and expert advisories"
+      title: "1. Join",
+      description: "Get instant access to funding networks, playbooks, and Web3 experts ready to back your vision."
     },
     {
       icon: Rocket,
-      title: "2. Get your Startup Evaluated",
-      description: "Get business insights from experts. Our startup evaluation will help you find key problem areas and gaps to be filled"
+      title: "2. Evaluate",
+      description: "Receive a startup scorecard and tokenomics check to identify gaps and growth opportunities."
     },
     {
       icon: Users,
-      title: "3. Connect with VCs Experts",
-      description: "Secure mentorship, strategic alliances, and funding with our network of 1000+ VCs"
+      title: "3. Connect",
+      description: "Tap into our network of 1000 plus VCs, KOLs, and mentors to secure funding and partnerships."
     },
     {
       icon: TrendingUp,
-      title: "4. Plot your Journey",
-      description: "Plan and document your growth roadmap, create business scaling strategies, and partnership ecosystem vision"
+      title: "4. Scale",
+      description: "Plot your growth roadmap, design liquidity strategies, and align with the future of Web3."
     }
   ];
 
@@ -254,7 +252,7 @@ export function MeetTeam() {
     {
       name: "Rajat Thapa",
       role: "Content Analyst",
-      description: "Digital marketer with a flair for creating social media content.",
+      description: "Digital storyteller with a Web3-first mindset",
       image: "https://api.builder.io/api/v1/image/assets/TEMP/f9dad5498f2febd8444e5c9ccbf76e10cafba6d7?placeholderIfAbsent=true",
       socialLinks: { linkedin: "https://in.linkedin.com/in/rajat-thapa-655042181", telegram: "https://t.me/Rajat_zuvomo" }
     },

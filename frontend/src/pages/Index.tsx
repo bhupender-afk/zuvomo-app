@@ -15,7 +15,8 @@ import Footer from '@/components/Footer';
 import Carousel from '@/components/Carousel';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import StickyCTABar from '@/components/StickyCTABar';
-import { MeetTeam } from '@/components/staticComponents/LandingPage';
+import { FourStepJourney, MeetTeam } from '@/components/staticComponents/LandingPage';
+import { staticData } from '@/utils/url';
 
 interface ProjectData {
   id: string;
@@ -218,118 +219,25 @@ const Index = () => {
   const hasMoreProjects = visibleProjectsCount < projects.length;
   const isShowingAll = visibleProjectsCount >= projects.length;
 
-  const servicesData = [
-    {
-      icon: "https://api.builder.io/api/v1/image/assets/TEMP/8ce8ef7ef8c4e0cabe8d01e9fdb2d1ccc5d95062?placeholderIfAbsent=true",
-      title: "Full Stack Advisory",
-      description: "You build, we take care of the rest until the end."
-    },
-    {
-      icon: "https://api.builder.io/api/v1/image/assets/TEMP/07aec0b2d4b918e6cf8f8693d05dd64ddf9021ac?placeholderIfAbsent=true",
-      title: "VC Funding",
-      description: "Get funded by investors who fuel real growth."
-    },
-    {
-      icon: "https://api.builder.io/api/v1/image/assets/TEMP/379ff523d56d512107ce8b080603ef92ecb938de?placeholderIfAbsent=true",
-      title: "Marketing",
-      description: "We build narratives and communities that last."
-    },
-    {
-      icon: "https://api.builder.io/api/v1/image/assets/TEMP/d39452372f8ded7c2fd8ba119ddad5acb8b1ff3d?placeholderIfAbsent=true",
-      title: "Liquidity/OTC",
-      description: "Stay liquid, tradeable, and secure from day one."
-    }
-  ];
-
-  const teamData = [
-    {
-      name: "Nikhil Sethi",
-      role: "Director",
-      description: "Successfully crowdfunded 100+ startups. Ex Bajaj Allianz, BlaBlaCar.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/7d0192e868781511256b405413a44ec3dd6bab77?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "https://www.linkedin.com/in/sethinik/", telegram: "https://t.me/nsethi" }
-    },
-    {
-      name: "Vandana Khanna",
-      role: "Project Manager",
-      description: "Project Manager by title, Problem solver by nature.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/80e023fd16e317d90724e58651663bcfdb1d7c3a?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "https://in.linkedin.com/in/khanna-vandana", telegram: "https://t.me/vandana_khanna" }
-    },
-    {
-      name: "Rajat Thapa",
-      role: "Content Analyst",
-      description: "Digital marketer with a flair for creating social media content.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/f9dad5498f2febd8444e5c9ccbf76e10cafba6d7?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "https://in.linkedin.com/in/rajat-thapa-655042181", telegram: "https://t.me/Rajat_zuvomo" }
-    },
-    {
-      name: "Sarah Johnson",
-      role: "Lead Developer",
-      description: "Full-stack developer with 8+ years in blockchain and DeFi protocols.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/7d0192e868781511256b405413a44ec3dd6bab77?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "#", telegram: "#" }
-    },
-    {
-      name: "Michael Chen",
-      role: "Investment Strategist",
-      description: "Former Goldman Sachs analyst specializing in crypto investments and market analysis.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/80e023fd16e317d90724e58651663bcfdb1d7c3a?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "#", telegram: "#" }
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Marketing Director",
-      description: "Brand strategist who has scaled 50+ Web3 projects from idea to market leadership.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/f9dad5498f2febd8444e5c9ccbf76e10cafba6d7?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "#", telegram: "#" }
-    },
-    {
-      name: "David Kim",
-      role: "Technical Advisor",
-      description: "Blockchain architect with expertise in smart contracts and DeFi protocols.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/7d0192e868781511256b405413a44ec3dd6bab77?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "#", telegram: "#" }
-    },
-    {
-      name: "Lisa Wang",
-      role: "Community Manager",
-      description: "Community growth specialist who has built engaged communities for major crypto projects.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/80e023fd16e317d90724e58651663bcfdb1d7c3a?placeholderIfAbsent=true",
-      socialLinks: { linkedin: "#", telegram: "#" }
-    }
-  ];
 
   const testimonialsData = [
     {
-      quote: "Nikhil It gave us the clarity we needed to move forward with our project",
+      quote: "Our relationship with Nikhil Sethi has been solid since the token sale in 2021. His expertise in content, KOL management, and PR gave Vulcan Forged the visibility needed to stand out in the L1 and web3 gaming.",
       author: "Vulcan Forged",
-      role: "Director",
-      avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9a5e9915b662476f9c68ecc4e2c8c79a925ca813?placeholderIfAbsent=true"
+      role: "L1 and Gaming",
+      avatar: "/logos/vulcan logo.png"
     },
     {
-      quote: "They were able to see what was needed and where to begin in the first place.",
+      quote: "We worked with Nikhil Sethi for over 8 years, and his strategic direction and content approach have been invaluable. His ability to align our messaging consistently strengthened our position in the Web3 and supply chain space.",
       author: "Morpheus Network",
-      role: "CO & Founder",
-      avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9dff43610f1657a2137a23d3ac72a7125c2c019b?placeholderIfAbsent=true"
+      role: "Supply Chain",
+      avatar: "/logos/Morpheus logo.png"
     },
     {
-      quote: "They understand both what we're building and who it’s for, and that matters.",
+      quote: "Our journey with Zuvomo began with the token sale and continues to this day. From PR and KOL outreach to liquidity, content, and ongoing support, Nikhil Sethi and his team have been instrumental in driving Landshare’s growth in the RWA space.",
       author: "Landshare",
-      role: "CEO & Co-Founder",
-      avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9a5e9915b662476f9c68ecc4e2c8c79a925ca813?placeholderIfAbsent=true"
-    },
-    {
-      quote: "The team's expertise in blockchain and DeFi helped us navigate complex technical challenges with confidence.",
-      author: "Marcus Chen",
-      role: "CTO",
-      avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9dff43610f1657a2137a23d3ac72a7125c2c019b?placeholderIfAbsent=true"
-    },
-    {
-      quote: "Outstanding results! They connected us with the right investors and helped secure our Series A funding.",
-      author: "Elena Rodriguez",
-      role: "Founder",
-      avatar: "https://api.builder.io/api/v1/image/assets/TEMP/9a5e9915b662476f9c68ecc4e2c8c79a925ca813?placeholderIfAbsent=true"
+      role: "RWA",
+      avatar: "/logos/Landshare logo.png"
     }
   ];
 
@@ -488,7 +396,7 @@ const Index = () => {
             {/* Smart Services Section */}
             <div className="mt-16">
               <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
-                Smart Services for Startup Success
+                Services
               </h2>
               
               {/* Services with Handshake Image */}
@@ -505,7 +413,7 @@ const Index = () => {
                 {/* Services Grid */}
                 <div className="w-full lg:w- 4/4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 justify-items-center">
-                    {servicesData.map((service, index) => (
+                    {staticData.servicesData.map((service, index) => (
                       <ServiceCard key={index} {...service} />
                     ))}
                   </div>
@@ -515,11 +423,11 @@ const Index = () => {
           </div>
         </section>
 
-          {/* In The News Section */}
+          {/* As Seen In Section */}
         <section className="w-full bg-[#F6F7FA] py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-10 font-inter leading-tight">
-              In The News
+              As Seen In
             </h2>
             
             <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
@@ -576,7 +484,7 @@ const Index = () => {
         </section>
 
         {/* Journey Steps Section */}
-        <section className="w-full bg-white py-12">
+        {/* <section className="w-full bg-white py-12">
           <div className="container mx-auto px-4">
             <h2 className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-10 font-inter leading-tight">
               Kick Start Your Journey In 4 Steps
@@ -586,7 +494,7 @@ const Index = () => {
               {[
                 {
                   icon: "https://api.builder.io/api/v1/image/assets/TEMP/e883190a4a32bc3bb9f0f7990d5d728ec18cba35?placeholderIfAbsent=true",
-                  title: "Sign Up",
+                  title: "1.Join",
                   description: "Register to access our funding networks, growth playbooks, and expert advisors."
                 },
                 {
@@ -632,8 +540,9 @@ const Index = () => {
               </button>
             </div>
           </div>
-        </section>
+        </section> */}
 
+<FourStepJourney/>
         {/* Statistics Section */}
         <section className="relative w-full min-h-[372px] text-white text-center overflow-hidden">
           <img
@@ -758,7 +667,7 @@ const Index = () => {
             
             <div className="hidden lg:block">
               <Carousel
-                itemsPerView={2}
+                itemsPerView={3}
                 gap={20}
                 showArrows={true}
                 showDots={true}
