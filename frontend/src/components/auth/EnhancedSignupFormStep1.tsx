@@ -215,6 +215,7 @@ export const EnhancedSignupFormStep1: React.FC<EnhancedSignupFormStep1Props> = (
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
       <div className="text-center mb-8">
+        <img src='zuvomo_06.png' alt='Zuvomo Logo' className='mx-auto h-10 mb-4' />
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
         <p className="text-gray-600">Join the Zuvomo investment community</p>
       </div>

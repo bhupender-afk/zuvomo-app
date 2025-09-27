@@ -39,7 +39,7 @@ export function ExclusiveDealsComponent() {
             {/* Right Investment Card - Screenshot Image */}
             <div className="flex-1 max-w-md w-full">
               <img
-                src="/investor-screenshot.png"
+                src="/forger/Vcs.jpeg"
                 alt="Investment Dashboard Screenshot"
                 className="w-full h-auto rounded-lg shadow-xl"
                 onError={(e) => {

@@ -58,37 +58,37 @@ export const staticData = {
         {
             title: "Fundamentals (Advisory)",
             description: "From tokenomics to listings, we craft roadmaps that scale. Backed 100+ startups, boosting valuations up to $500M with launches 40% faster.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/1c4e2f0a4f0f4e8b6e2b5c6d7f8a9b0c1d2e3f4g?placeholderIfAbsent=true",
+            icon: "forger/Fundamental.png",
             slug: "the-forge-web3-startup-growth-insights"
         },
         {
             title: "Opportunity (VC/Private)",
             description: "Access 1,000+ VCs, angels, and syndicates. Helped founders raise $800M+ across 100+ projects, securing capital 3x faster.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/2b3c4d5e67f8a9b0c1d2e3f4g5h6i7j8k9l0m1n?placeholderIfAbsent=true",
+            icon: "forger/OpportunityBlue.png",
             slug: "navigating-web3-funding-guide"
         },
         {
             title: "Reach (Community)",
             description: "Grow with 2,000+ KOLs and 100+ PR outlets. Campaigns delivered 50M+ reach and 20%+ monthly active retention.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/3c4d5e6f7g8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o?placeholderIfAbsent=true",
+            icon: "forger/Reach.png",
             slug: "top-5-marketing-strategies-web3-startups"
         },
         {
             title: "Generation (Token)",
             description: "We design and launch tokens with sustainable demand. Engineered liquidity pools that kept tokens trading strong post-launch.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/1c4e2f0a4f0f4e8b6e2b5c6d7f8a9b0c1d2e3f4g?placeholderIfAbsent=true",
+            icon: "forger/Generation.png",
             slug: "the-forge-web3-startup-growth-insights"
         },
         {
             title: "Exchange",
             description: "From onboarding to post-listing, we manage CEX and DEX relations. Secured tier-1 listings and ensured smooth secondary markets.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/3c4d5e6f7g8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o?placeholderIfAbsent=true",
+            icon: "forger/Exchange.png",
             slug: "top-5-marketing-strategies-web3-startups"
         },
         {
             title: "Relations (Liquidity/IR)",
             description: "Maintain investor trust with clear reporting and liquidity support. Retained institutional confidence and stability through market cycles.",
-            icon: "https://api.builder.io/api/v1/image/assets/TEMP/1c4e2f0a4f0f4e8b6e2b5c6d7f8a9b0c1d2e3f4g?placeholderIfAbsent=true",
+            icon: "forger/Relations.png",
             slug: "the-forge-web3-startup-growth-insights"
         }
     ] 

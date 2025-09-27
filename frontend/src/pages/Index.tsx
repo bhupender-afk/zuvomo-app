@@ -609,7 +609,7 @@ const Index = () => {
             <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
               <div className="w-full lg:w-1/2 text-center lg:text-left">
                 <h2 className="text-[24px] sm:text-[32px] lg:text-[40px] font-bold leading-tight mb-4 lg:mb-6 font-inter">
-                  <span className="text-[#0b0720]">Backed 100+ </span>
+                  <span className="text-[#0b0720]">Backed 150+ </span>
                   <span className="text-[#2C91D5] font-bold">Startups,</span>
                   <br />
                   <span className="text-[#0b0720]">Since 2017</span>

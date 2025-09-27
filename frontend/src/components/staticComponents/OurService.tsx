@@ -83,11 +83,11 @@ export default function OurService() {
               <h2 id="services" className="text-[32px] md:text-[36px] font-bold text-center text-[#1d1d1d] mb-8 font-inter leading-tight">
                 Forger: Where Web3 Success is Shaped
               </h2>
-              <h2  
+              {/* <h2  
               className="text-[24px] md:text-[30px] text-center mb-8 font-inter leading-tight font-normal text-black-100/20  max-w-7xl mx-auto"
               >
                 We forge your token, story, and strategy into a foundation that attracts investors, ignites communities, and sustains long term growth. Explore our core services — Advisory, Funding, Marketing, and Liquidity — built to fuel every phase of your journey.
-              </h2>
+              </h2> */}
               
             
               <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8 mt-12">

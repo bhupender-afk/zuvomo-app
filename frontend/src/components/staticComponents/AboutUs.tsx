@@ -9,6 +9,12 @@ export default function AboutUs() {
     function handleJoinNow() {
         window.location.href = '/signup';
     }
+
+    const teamData = (content)=>{
+        return (
+            <span className='font-bold italic '>{content}</span>
+        )
+    }
     return (
         <div className="bg-white overflow-x-hidden">
             <Header />
@@ -32,7 +38,7 @@ export default function AboutUs() {
                 Be the first.
               </h3> */}
 
-                                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                                <p className="text-gray-600 text-lg mb-4 leading-relaxed">
                                     Founded in 2017, Zuvomo is a full-stack growth platform built for Web3
                                     startups. Over the past 8 years, we've raised over $800 million across
                                     100+ projects, supporting visionary teams through every phase of
@@ -40,14 +46,22 @@ export default function AboutUs() {
                                     design a data-backed roadmap for CEOs.
                                 </p>
 
-                                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                                    Founded in 2017, Zuvomo is a full-stack growth platform built for Web3
-                                    startups. Over the past 8 years, we've raised over $800 million across
-                                    100+ projects, supporting visionary teams through every phase of
-                                    growth. From token launches to liquidity and business development, we
-                                    design a data-backed roadmap for CEOs.
+                                <p className="text-gray-600 text-lg mb-4 leading-relaxed ">
+                                   {teamData("Our mission is to fuel trailblazing Web3 CEOs with funding, visibility, and global reach,")}{" "}
+
+                                   
+                                     and to shape a decentralized ecosystem where {teamData("credibility drives domination. Your growth is your badge of honor.")} We make sure it shines.
+
                                 </p>
 
+                                <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+                                    At Zuvomo, lasting success stems from utility over hype, as we build solutions that tackle real-world problems rather than chasing short-lived narratives. We work with founders who share this conviction, helping them scale projects with {teamData("real-world impact, trusted communities, and sustainable growth.")}
+
+                                </p>
+                                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                                    Led by {teamData("Nikhil Sethi")}, a Top Rated Plus and Expert Vetted consultant on {teamData("Upwork")}, with over {teamData("15 years of experience")} and {teamData("hundreds of millions raised across 100-plus Web3 projects")}, Zuvomo stands as a partner for founders who want to go beyond the noise and build with purpose.
+
+                                </p>
                                 <button onClick={handleJoinNow} className="bg-[rgb(44,145,213)] hover:bg-[rgb(30,120,180)] text-white font-semibold px-8 py-3 rounded-full text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                                     JOIN NOW
                                 </button>
@@ -55,7 +69,7 @@ export default function AboutUs() {
 
                             {/* Right Investment Card */}
                             <div className="flex-1 max-w-md w-full">
-                                <img src='/about.png' alt='About Us' className='w-full h-auto rounded-lg shadow-xl' />
+                                <img src='/Shield02.png' alt='About Us' className='w-full h-auto rounded-lg shadow-xl' />
                             </div>
                         </div>
                     </div>
@@ -112,7 +126,7 @@ export default function AboutUs() {
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Values</h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                   We champion builders who choose real utility over hype and create lasting change in Web3.
+                                    We champion builders who choose real utility over hype and create lasting change in Web3.
                                 </p>
                             </div>
 
@@ -141,8 +155,8 @@ export default function AboutUs() {
                     </div>
                 </div>
             </div>
-            <CallToActionBanner/>
-             <MeetTeam/>
+            <CallToActionBanner />
+            <MeetTeam />
             <Footer />
             <StickyCTABar />
         </div>

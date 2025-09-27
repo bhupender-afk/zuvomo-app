@@ -31,7 +31,7 @@ const Hero = () => {
             {/* Main Heading - Single Line Layout */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 lg:mb-6 text-white max-w-4xl mx-auto lg:mx-0">
               
-                <span className="text-[#F8673C]">Funding {" ,   "}</span>
+                <span className="text-[#F8673C]">Funding{",   "}</span>
                 <span className="text-[#F8673C]">visibility</span> and
                 <span className="text-[#F8673C]">{" "}world domination</span> for visionary 
                 <span className="text-[#F8673C]">{" "}CEOs</span>

@@ -45,13 +45,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         >
           <img
             src={icon}
-            className={`aspect-[1] object-contain w-10 self-stretch max-w-[60px] my-auto transition-all duration-300 ease-in-out ${
+            className={`aspect-[1] object-contain w-10 self-stretch max-w-[60px] my-auto transition-all duration-300 ease-in-out  ${
               variant === 'highlighted' 
                 ? '' 
                 : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110'
             }`}
             alt={`${title} icon`}
           />
+          {/* <div className="absolute inset-0 bg-blue-500 opacity-40 mix-blend-multiply"></div> */}
         </div>
       </div>
       

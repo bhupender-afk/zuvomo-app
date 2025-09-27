@@ -33,9 +33,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle, isSi
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-blue mb-2">
+            <img src='zuvomo_06.png' alt='Zuvomo Logo' className='mx-auto h-10 mb-4' />
+            {/* <h1 className="text-3xl font-bold text-brand-blue mb-2">
               Zuvomo
-            </h1>
+            </h1> */}
             {/* <h2 className="text-xl font-semibold text-gray-900 mb-2">
               {title}
             </h2>
